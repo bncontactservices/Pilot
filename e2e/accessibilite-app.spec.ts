@@ -19,17 +19,22 @@ const PAGES_PROJET = [
   ["/import", "import"],
   ["/rapports", "rapports"],
   ["/cadre-logique", "cadre logique"],
+  ["/composantes", "composantes"],
   ["/plan-de-travail", "plan de travail"],
   ["/phases", "phases et étapes"],
   ["/realisations", "réalisations"],
   ["/prochaines-etapes", "prochaines étapes"],
   ["/etats-avancement", "états d’avancement"],
   ["/documents", "documents"],
+  ["/finances", "budget et dépenses"],
+  ["/acteurs", "acteurs du projet"],
+  ["/zones", "zones d’intervention et carte"],
+  ["/beneficiaires", "bénéficiaires"],
 ] as const;
 
 /** Attend la fin du chargement : plus de squelette ni de bouton occupé, titre de page affiché. */
 async function attendreChargement(page: Page) {
-  await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible({ timeout: 20_000 });
   await expect(page.locator("[aria-busy='true']")).toHaveCount(0, { timeout: 20_000 });
   await page.waitForTimeout(700); // transitions d'entrée terminées
 }
@@ -89,6 +94,8 @@ test.describe("accessibilité des écrans de l'application (bureau)", () => {
       for (const [chemin, nom] of [
         ["/app", "liste des projets"],
         ["/app/programmes", "programmes"],
+        ["/app/acteurs", "acteurs"],
+        ["/app/localites", "localités"],
         ["/app/equipe", "équipe"],
         ["/app/parametres", "paramètres"],
       ] as const) {
@@ -105,6 +112,16 @@ test.describe("accessibilité des écrans de l'application (bureau)", () => {
       await attendreChargement(page);
       await avecFormulaire("programmes, nouveau programme", () =>
         page.getByRole("button", { name: "Nouveau programme" }).first().click(),
+      );
+      await page.goto("/app/acteurs");
+      await attendreChargement(page);
+      await avecFormulaire("acteurs, nouvel acteur", () =>
+        page.getByRole("button", { name: "Ajouter un acteur" }).first().click(),
+      );
+      await page.goto("/app/localites");
+      await attendreChargement(page);
+      await avecFormulaire("localités, nouvelle localité", () =>
+        page.getByRole("button", { name: "Ajouter une localité" }).first().click(),
       );
 
       // Pages du projet
@@ -125,6 +142,14 @@ test.describe("accessibilité des écrans de l'application (bureau)", () => {
       await ouvrirFormulaire("/prochaines-etapes", "prochaines étapes, nouvelle action", "Ajouter une prochaine étape");
       await ouvrirFormulaire("/etats-avancement", "états d’avancement, nouvel état", "Rédiger un état d’avancement");
       await ouvrirFormulaire("/documents", "documents, dépôt", "Déposer un document");
+      await ouvrirFormulaire("/composantes", "composantes, nouvelle composante", "Ajouter une composante");
+      await ouvrirFormulaire("/acteurs", "acteurs du projet, nouvel acteur", "Créer un acteur");
+      await ouvrirFormulaire("/acteurs", "acteurs du projet, rattachement", "Rattacher un acteur");
+      await ouvrirFormulaire("/zones", "zones, ajout d’une zone", "Ajouter une zone");
+      await ouvrirFormulaire("/zones", "zones, nouvelle localité", "Créer une localité");
+      await ouvrirFormulaire("/beneficiaires", "bénéficiaires, nouvel effectif", "Ajouter un effectif");
+      await ouvrirFormulaire("/finances", "finances, nouvelle ligne budgétaire", "Ajouter une ligne");
+      await ouvrirFormulaire("/finances", "finances, nouvelle dépense", "Enregistrer une dépense");
       await ouvrirFormulaire("/phases", "phases, nouvelle phase", "Ajouter une phase");
       await ouvrirFormulaire("/phases", "phases, nouvelle étape", "Ajouter une étape");
       await ouvrirFormulaire("/plan-de-travail", "plan de travail, nouvelle activité", "Planifier une activité");
@@ -141,6 +166,11 @@ test.describe("accessibilité des écrans de l'application (bureau)", () => {
       await page.getByRole("button", { name: "Liste" }).click();
       await page.waitForTimeout(500);
       await controler("plan de travail, liste");
+      await page.goto(base + "/composantes");
+      await attendreChargement(page);
+      await page.getByRole("button", { name: "Liste" }).click();
+      await page.waitForTimeout(500);
+      await controler("composantes, liste");
     } finally {
       if (charge) await supprimerExemple(page);
     }
@@ -163,6 +193,8 @@ test.describe("écrans de l'application sur téléphone (375 px)", () => {
       for (const [chemin, nom] of [
         ["/app", "liste des projets"],
         ["/app/programmes", "programmes"],
+        ["/app/acteurs", "acteurs"],
+        ["/app/localites", "localités"],
         ["/app/equipe", "équipe"],
         ["/app/parametres", "paramètres"],
       ] as const) {

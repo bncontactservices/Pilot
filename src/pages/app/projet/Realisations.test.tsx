@@ -164,6 +164,7 @@ describe("Réalisations : écriture et preuves", () => {
         quantite: 120.5,
         unite: "kits",
         lieu: null,
+        localite_id: null,
         noeud_id: null,
         pta_activite_id: null,
       },
@@ -218,5 +219,58 @@ describe("Réalisations : écriture et preuves", () => {
     fireEvent.click(within(seconde).getByRole("button", { name: "Joindre une preuve" }));
     const dialogue = await screen.findByRole("dialog");
     expect(within(dialogue).getByLabelText(/^Preuve de la réalisation/)).toHaveValue("r2");
+  });
+});
+
+describe("Réalisations : localité", () => {
+  const localite = (id: string, nom: string, niveau: string, parent: string | null) => ({
+    id,
+    org_id: null,
+    parent_id: parent,
+    niveau,
+    nom,
+    latitude: null,
+    longitude: null,
+    source: "Test",
+    created_by: null,
+    created_at: "",
+    updated_at: "",
+  });
+
+  it("propose les zones d'intervention du projet, et enregistre la localité choisie", async () => {
+    donnees();
+    base.tables.localites = [
+      localite("y", "Commune de Yoff", "commune", null),
+      localite("l", "Layène", "quartier", "y"),
+      localite("t", "Tonghor", "quartier", "y"),
+    ];
+    base.tables.projet_localites = [
+      { id: "z1", project_id: "p1", org_id: "o1", localite_id: "l", notes: null },
+      { id: "z2", project_id: "p-autre", org_id: "o1", localite_id: "t", notes: null },
+    ];
+    monterProjet(<Realisations />);
+    fireEvent.click(await screen.findByRole("button", { name: "Ajouter une réalisation" }));
+    const tiroir = await screen.findByRole("dialog");
+    const champ = await within(tiroir).findByLabelText(/^Localité/);
+    // Seule la zone de ce projet est proposée, pas celle d'un autre projet.
+    expect(
+      within(champ)
+        .getAllByRole("option")
+        .map((o) => o.textContent),
+    ).toEqual(["Aucune localité précisée", "Layène, Commune de Yoff"]);
+    fireEvent.change(within(tiroir).getByLabelText("Intitulé"), { target: { value: "Forage de Layène" } });
+    fireEvent.change(champ, { target: { value: "l" } });
+    fireEvent.click(within(tiroir).getByRole("button", { name: "Enregistrer la réalisation" }));
+    await waitFor(() => expect(base.appels.some((a) => a.operation === "insert")).toBe(true));
+    expect(base.appels.find((a) => a.operation === "insert")?.valeurs).toMatchObject({ localite_id: "l" });
+  });
+
+  it("ne montre pas le champ tant que le projet n'a aucune zone d'intervention", async () => {
+    donnees();
+    monterProjet(<Realisations />);
+    fireEvent.click(await screen.findByRole("button", { name: "Ajouter une réalisation" }));
+    const tiroir = await screen.findByRole("dialog");
+    await within(tiroir).findByLabelText("Intitulé");
+    expect(within(tiroir).queryByLabelText(/^Localité/)).not.toBeInTheDocument();
   });
 });

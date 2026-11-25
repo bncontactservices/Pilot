@@ -14,6 +14,14 @@ export type EtatAvancement = Tables<"etats_avancement">;
 export type Realisation = Tables<"realisations">;
 export type ProchaineEtape = Tables<"prochaines_etapes">;
 export type DocumentProjet = Tables<"documents">;
+export type LigneBudgetProjet = Tables<"budget_lignes">;
+export type DepenseProjet = Tables<"depenses">;
+export type ComposanteProjet = Tables<"composantes">;
+export type Acteur = Tables<"acteurs">;
+export type RoleActeur = Tables<"projet_acteurs">;
+export type EffectifBeneficiaires = Tables<"beneficiaires_effectifs">;
+export type Localite = Tables<"localites">;
+export type ZoneProjet = Tables<"projet_localites">;
 
 export const clesSe = {
   noeuds: (projetId: string) => ["noeuds", projetId] as const,
@@ -24,6 +32,15 @@ export const clesSe = {
   realisations: (projetId: string) => ["realisations", projetId] as const,
   prochaines: (projetId: string) => ["prochaines-etapes", projetId] as const,
   documents: (projetId: string) => ["documents", projetId] as const,
+  budget: (projetId: string) => ["budget-lignes", projetId] as const,
+  composantes: (projetId: string) => ["composantes", projetId] as const,
+  acteurs: (orgId: string) => ["acteurs", orgId] as const,
+  rolesActeurs: (orgId: string) => ["roles-acteurs", orgId] as const,
+  effectifs: (projetId: string) => ["effectifs", projetId] as const,
+  localites: (orgId: string) => ["localites", orgId] as const,
+  zones: (projetId: string) => ["zones", projetId] as const,
+  projetsNoms: (orgId: string) => ["projets-noms", orgId] as const,
+  depenses: (projetId: string) => ["depenses", projetId] as const,
   etiquettes: (projetId: string) => ["etiquettes", projetId] as const,
   etiquettesOrg: (orgId: string) => ["etiquettes-org", orgId] as const,
   membres: (orgId: string) => ["membres-noms", orgId] as const,
@@ -155,6 +172,141 @@ export function useDocuments(projetId: string) {
   });
 }
 
+/** Annuaire d'acteurs de l'organisation. */
+export function useActeurs(orgId: string) {
+  return useQuery({
+    queryKey: clesSe.acteurs(orgId),
+    queryFn: async (): Promise<Acteur[]> => {
+      const { data, error } = await getSupabase().from("acteurs").select("*").eq("org_id", orgId).order("nom");
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+/** Rôles des acteurs dans les projets de l'organisation (tous projets) : sert à l'annuaire et à la page d'un projet. */
+export function useRolesActeurs(orgId: string) {
+  return useQuery({
+    queryKey: clesSe.rolesActeurs(orgId),
+    queryFn: async (): Promise<RoleActeur[]> => {
+      const { data, error } = await getSupabase()
+        .from("projet_acteurs")
+        .select("*")
+        .eq("org_id", orgId)
+        .order("created_at");
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+/**
+ * Localités visibles : le référentiel de la plateforme (org_id nul) et celles de l'organisation. La base ne renvoie
+ * que celles-là ; l'identifiant de l'organisation sert à séparer les caches entre organisations.
+ */
+export function useLocalites(orgId: string) {
+  return useQuery({
+    queryKey: clesSe.localites(orgId),
+    queryFn: async (): Promise<Localite[]> => {
+      const { data, error } = await getSupabase().from("localites").select("*").order("nom");
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+/** Zones d'intervention d'un projet : les localités où il agit. */
+export function useZonesProjet(projetId: string) {
+  return useQuery({
+    queryKey: clesSe.zones(projetId),
+    queryFn: async (): Promise<ZoneProjet[]> => {
+      const { data, error } = await getSupabase()
+        .from("projet_localites")
+        .select("*")
+        .eq("project_id", projetId)
+        .order("created_at");
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+/** Noms des projets de l'organisation : pour dire dans quels projets intervient un acteur. */
+export function useProjetsNoms(orgId: string) {
+  return useQuery({
+    queryKey: clesSe.projetsNoms(orgId),
+    queryFn: async (): Promise<{ id: string; nom: string }[]> => {
+      const { data, error } = await getSupabase().from("projects").select("id, nom").eq("org_id", orgId).order("nom");
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useEffectifsBeneficiaires(projetId: string) {
+  return useQuery({
+    queryKey: clesSe.effectifs(projetId),
+    queryFn: async (): Promise<EffectifBeneficiaires[]> => {
+      const { data, error } = await getSupabase()
+        .from("beneficiaires_effectifs")
+        .select("*")
+        .eq("project_id", projetId)
+        .order("periode_fin", { ascending: false })
+        .order("categorie");
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useComposantes(projetId: string) {
+  return useQuery({
+    queryKey: clesSe.composantes(projetId),
+    queryFn: async (): Promise<ComposanteProjet[]> => {
+      const { data, error } = await getSupabase()
+        .from("composantes")
+        .select("*")
+        .eq("project_id", projetId)
+        .order("ordre")
+        .order("created_at");
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useBudgetLignes(projetId: string) {
+  return useQuery({
+    queryKey: clesSe.budget(projetId),
+    queryFn: async (): Promise<LigneBudgetProjet[]> => {
+      const { data, error } = await getSupabase()
+        .from("budget_lignes")
+        .select("*")
+        .eq("project_id", projetId)
+        .order("annee", { ascending: false })
+        .order("poste");
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useDepenses(projetId: string) {
+  return useQuery({
+    queryKey: clesSe.depenses(projetId),
+    queryFn: async (): Promise<DepenseProjet[]> => {
+      const { data, error } = await getSupabase()
+        .from("depenses")
+        .select("*")
+        .eq("project_id", projetId)
+        .order("date", { ascending: false })
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
 export function useEtiquettes(projetId: string) {
   return useQuery({
     queryKey: clesSe.etiquettes(projetId),
@@ -199,7 +351,7 @@ export function useNomsMembres(orgId: string) {
   });
 }
 
-/** Les taux d'avancement (vues SQL) dépendent du PTA et des étapes : à rafraîchir après chaque écriture qui les touche. */
+/** Les taux d'avancement (vues SQL) dépendent du PTA, des étapes et du budget : à rafraîchir après chaque écriture qui les touche. */
 export function invaliderAvancement(queryClient: QueryClient, orgId: string) {
   void queryClient.invalidateQueries({ queryKey: cles.avancements(orgId) });
   void queryClient.invalidateQueries({ queryKey: cles.avancementsProgrammes(orgId) });

@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { z } from "zod";
 import { useGestionErreur } from "~/components/app/LimitePlan";
+import { ChampLocalite } from "~/components/app/zones/ChampLocalite";
 import { Button } from "~/components/ui/button";
 import {
   Drawer,
@@ -43,6 +44,7 @@ const schema = z.object({
     }),
   unite: z.string().trim().max(40, { error: "auth.validation.trop_long" }),
   lieu: z.string().trim().max(160, { error: "auth.validation.trop_long" }),
+  localiteId: z.string(),
   noeudId: z.string(),
   ptaId: z.string(),
 });
@@ -100,6 +102,7 @@ function Corps({ onFermer, projetId, realisation, noeuds, activitesPta, unitesEx
       quantite: realisation?.quantite == null ? "" : String(realisation.quantite).replace(".", ","),
       unite: realisation?.unite ?? "",
       lieu: realisation?.lieu ?? "",
+      localiteId: realisation?.localite_id ?? "",
       noeudId: realisation?.noeud_id ?? "",
       ptaId: realisation?.pta_activite_id ?? "",
     },
@@ -114,6 +117,7 @@ function Corps({ onFermer, projetId, realisation, noeuds, activitesPta, unitesEx
         quantite: v.quantite ? versNombre(v.quantite) : null,
         unite: v.unite || null,
         lieu: v.lieu || null,
+        localite_id: v.localiteId || null,
         noeud_id: v.noeudId || null,
         pta_activite_id: v.ptaId || null,
       };
@@ -195,6 +199,15 @@ function Corps({ onFermer, projetId, realisation, noeuds, activitesPta, unitesEx
               ))}
             </datalist>
           )}
+          <ChampLocalite
+            id="realisation-localite"
+            projetId={projetId}
+            libelle={t("realisations.formulaire.localite")}
+            aide={t("realisations.formulaire.localite_aide")}
+            aucune={t("realisations.formulaire.localite_aucune")}
+            inscription={register("localiteId")}
+            courante={realisation?.localite_id}
+          />
           <Champ
             id="realisation-lieu"
             libelle={t("realisations.formulaire.lieu")}

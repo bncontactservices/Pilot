@@ -184,4 +184,29 @@ describe("Plan de travail annuel", () => {
       },
     });
   });
+
+  it("ne propose pas de composante quand le projet n'en a aucune", async () => {
+    monterProjet(<Pta />);
+    await screen.findByText("Formation des artisans");
+    fireEvent.click(screen.getAllByRole("button", { name: "Planifier une activité" })[0]!);
+    const panneau = await screen.findByRole("dialog");
+    expect(within(panneau).queryByLabelText(/^Composante/)).not.toBeInTheDocument();
+  });
+
+  it("rattache l'activité à une composante du projet", async () => {
+    base.tables.composantes = [{ id: "c1", nom: "Accès à l’eau potable" }];
+    monterProjet(<Pta />);
+    await screen.findByText("Formation des artisans");
+    fireEvent.click(screen.getAllByRole("button", { name: "Planifier une activité" })[0]!);
+    const panneau = await screen.findByRole("dialog");
+    fireEvent.change(await within(panneau).findByLabelText(/^Composante/), { target: { value: "c1" } });
+    fireEvent.change(within(panneau).getByLabelText("Intitulé"), { target: { value: "Atelier" } });
+    fireEvent.click(within(panneau).getByRole("button", { name: "Planifier l’activité" }));
+    await vi.waitFor(() => expect(base.appels).toHaveLength(1));
+    expect(base.appels[0]).toMatchObject({
+      table: "pta_activites",
+      operation: "insert",
+      valeurs: { composante_id: "c1" },
+    });
+  });
 });

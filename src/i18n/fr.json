@@ -29,11 +29,13 @@
     "accueil_app": "Pilot M&E, retour aux projets",
     "aller_contenu": "Aller au contenu",
     "ouvrir_menu": "Ouvrir le menu",
-    "description_menu": "Projets, programmes, équipe et paramètres de votre organisation.",
+    "description_menu": "Projets, programmes, acteurs, équipe et paramètres de votre organisation.",
     "projets": "Projets",
     "programmes": "Programmes",
     "equipe": "Équipe",
-    "parametres": "Paramètres"
+    "parametres": "Paramètres",
+    "acteurs": "Acteurs",
+    "localites": "Localités"
   },
   "auth": {
     "non_configure": "Supabase n’est pas encore configuré sur ce poste : les formulaires s’affichent, mais l’inscription et la connexion ne fonctionneront qu’après avoir renseigné VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY (voir le README).",
@@ -156,7 +158,8 @@
     "termine_court": "essai terminé",
     "activer": "Activer un plan",
     "message_contact": "Bonjour, je souhaite activer un plan Pilot M&E pour {{organisation}}.",
-    "sujet_email": "Activation d’un plan — {{organisation}}"
+    "sujet_email": "Activation d’un plan — {{organisation}}",
+    "payer_en_ligne": "Payer en ligne"
   },
   "limite": {
     "titre": "Limite de votre plan atteinte",
@@ -430,21 +433,34 @@
       "trop_de_tentatives": "Trop de tentatives. Patientez quelques minutes avant de réessayer.",
       "inscription_fermee": "Les inscriptions sont momentanément fermées.",
       "lien_expire": "Ce lien a expiré. Demandez-en un nouveau."
-    }
+    },
+    "element_utilise": "Cet élément est utilisé ailleurs et ne peut pas être supprimé. Supprimez d’abord ce qui s’y rattache (par exemple les dépenses d’une ligne du budget).",
+    "LOCALITE_EXISTE": "Cette localité existe déjà dans le référentiel de la plateforme : choisissez-la plutôt que d’en créer une autre.",
+    "LOCALITE_PARENT_INVALIDE": "La localité de rattachement n’existe plus ou ne vous est pas accessible.",
+    "LOCALITE_NIVEAU_INVALIDE": "Le niveau doit être plus fin que celui de la localité de rattachement.",
+    "LOCALITE_INTROUVABLE": "Cette localité n’existe plus ou ne vous est pas accessible.",
+    "LOCALITE_HORS_PROJET": "Cette localité n’est pas une zone d’intervention du projet. Ajoutez-la d’abord à ses zones.",
+    "PAIEMENT_NON_CONFIGURE": "Le paiement en ligne n’est pas encore configuré. Contactez l’équipe pour activer un plan.",
+    "PAIEMENT_INDISPONIBLE": "Le service de paiement ne répond pas. Réessayez dans un instant ; rien n’a été débité.",
+    "ABONNEMENT_EXISTE": "Un abonnement est déjà en cours : utilisez « Gérer l’abonnement » pour le modifier.",
+    "ABONNEMENT_INTROUVABLE": "Aucun abonnement en ligne n’est associé à cette organisation.",
+    "PLAN_ENTERPRISE": "Votre plan Enterprise est géré par l’équipe : le paiement en ligne ne s’applique pas.",
+    "PORTAIL_NON_CONFIGURE": "Le portail de gestion de l’abonnement n’est pas encore réglé. Contactez l’équipe."
   },
   "avancement": {
     "titre": "Avancement",
     "resultats": "Résultats",
     "physique": "Physique",
     "financier": "Financier",
-    "bientot": "Bientôt",
     "aucune_donnee": "Aucune donnée",
     "aucune_activite": "Aucune activité planifiée",
     "resultats_aide": "Moyenne de l’atteinte des cibles des indicateurs qui ont des saisies.",
     "physique_aide": "Moyenne de réalisation des activités du plan de travail annuel, hors activités annulées.",
-    "financier_aide": "Dépenses rapportées au budget : disponible avec le suivi financier.",
+    "financier_aide": "Dépenses rapportées au budget prévu ; au-delà de 100 %, le budget est dépassé.",
     "activites_one": "{{realisees}} terminée sur {{count}} activité",
-    "activites_other": "{{realisees}} terminées sur {{count}} activités"
+    "activites_other": "{{realisees}} terminées sur {{count}} activités",
+    "depasse": "Budget dépassé",
+    "aucun_budget": "Aucun budget défini"
   },
   "programmes": {
     "meta": "Programmes — Pilot M&E",
@@ -497,7 +513,11 @@
       "consolide": "Avancement consolidé",
       "consolide_aide": "Moyenne simple des taux des projets du programme qui en ont un.",
       "projets_avec_taux_one": "{{avec}} sur {{count}} projet a des données",
-      "projets_avec_taux_other": "{{avec}} sur {{count}} projets ont des données"
+      "projets_avec_taux_other": "{{avec}} sur {{count}} projets ont des données",
+      "projets_avec_budget_one": "{{count}} projet sur {{total}} a un budget défini.",
+      "projets_avec_budget_other": "{{count}} projets sur {{total}} ont un budget défini.",
+      "projets_depassement_one": "{{count}} projet dépasse son budget.",
+      "projets_depassement_other": "{{count}} projets dépassent leur budget."
     },
     "champ_projet": "Programme",
     "aucun": "Aucun programme",
@@ -767,7 +787,9 @@
         "dates": "La fin doit être postérieure ou égale au début.",
         "budget": "Saisissez un montant positif, par exemple 1 500 000.",
         "pourcent": "Saisissez un nombre entre 0 et 100."
-      }
+      },
+      "composante": "Composante",
+      "aucune_composante": "Aucune composante"
     },
     "suppression": {
       "titre": "Supprimer l’activité « {{nom}} » ?",
@@ -877,7 +899,10 @@
         "date": "Date invalide.",
         "titre": "Donnez un intitulé de 2 à 200 caractères.",
         "quantite": "Saisissez un nombre positif (deux décimales au plus)."
-      }
+      },
+      "localite": "Localité",
+      "localite_aide": "Parmi les zones d’intervention du projet. Le champ « Lieu » ci-dessous sert à préciser.",
+      "localite_aucune": "Aucune localité précisée"
     },
     "suppression": {
       "titre": "Supprimer la réalisation « {{titre}} » ?",
@@ -1031,7 +1056,12 @@
       "realisations": "Réalisations",
       "prochaines": "Prochaines étapes",
       "etats": "États d’avancement",
-      "documents": "Documents"
+      "documents": "Documents",
+      "finances": "Finances",
+      "composantes": "Composantes",
+      "acteurs": "Acteurs",
+      "beneficiaires": "Bénéficiaires",
+      "zones": "Zones"
     },
     "rubriques": {
       "libelle": "Rubriques du projet",
@@ -1204,7 +1234,8 @@
       "indicateur": "Indicateur",
       "valeur": "Valeur",
       "commentaire": "Commentaire",
-      "actions": "Actions"
+      "actions": "Actions",
+      "localite": "Localité"
     },
     "enregistree": "Valeur enregistrée : {{valeur}}.",
     "remplacee": "Valeur remplacée.",
@@ -1242,7 +1273,10 @@
     "suppression_texte": "La saisie du {{date}} ({{valeur}}) sera supprimée définitivement.",
     "suppression_action": "Supprimer",
     "modification_titre": "Modifier la saisie du {{date}}",
-    "modification_texte": "La date ne change pas : pour la déplacer, supprimez la saisie et recréez-la."
+    "modification_texte": "La date ne change pas : pour la déplacer, supprimez la saisie et recréez-la.",
+    "localite": "Localité",
+    "localite_aide": "Où la valeur a été relevée, parmi les zones d’intervention du projet.",
+    "localite_aucune": "Aucune localité précisée"
   },
   "import": {
     "meta": "Import de saisies – Pilot M&E",
@@ -1432,7 +1466,42 @@
     "periode": "Du {{debut}} au {{fin}}",
     "periode_depuis_debut": "Depuis le début du projet jusqu’au {{fin}}",
     "progression_aucune": "Aucune donnée",
-    "trajectoire_attendue": "Avancement attendu à ce jour : {{pourcent}}"
+    "trajectoire_attendue": "Avancement attendu à ce jour : {{pourcent}}",
+    "programme": {
+      "bouton": "Rapport PDF du programme",
+      "generation": "Génération du PDF…",
+      "titre": "Rapport de programme",
+      "synthese": "Avancement consolidé",
+      "resultats": "Résultats",
+      "physique": "Physique",
+      "financier": "Financier",
+      "projets": "Projets du programme",
+      "col_projet": "Projet",
+      "col_statut": "Statut",
+      "col_periode": "Période",
+      "col_resultats": "Résultats",
+      "col_physique": "Physique",
+      "col_financier": "Financier",
+      "budget_ligne": "{{depense}} sur {{budget}}",
+      "attention_titre": "Points d’attention",
+      "aucune_attention": "Aucun point d’attention : aucun projet n’est en alerte sur ses résultats, en dépassement de budget ou en retard sur ses étapes.",
+      "attention": {
+        "resultats": "« {{nom}} » : les résultats sont en retard sur la trajectoire attendue (statut rouge).",
+        "budget": "« {{nom}} » : le budget est dépassé ({{taux}} du budget prévu).",
+        "etapes_one": "« {{nom}} » : {{count}} étape en retard.",
+        "etapes_other": "« {{nom}} » : {{count}} étapes en retard.",
+        "sans_donnees": "« {{nom}} » : aucune donnée d’indicateur, les résultats ne sont pas évalués."
+      },
+      "note_moyenne": "Les taux du programme sont la moyenne simple des taux de ses projets, sans pondération : un grand projet compte autant qu’un petit. Un tiret signifie qu’aucun projet n’a de donnée pour ce taux.",
+      "note_resultats_one": "Résultats : {{count}} projet sur {{total}} a des données d’indicateur.",
+      "note_resultats_other": "Résultats : {{count}} projets sur {{total}} ont des données d’indicateur.",
+      "note_budget_one": "Financier : {{count}} projet sur {{total}} a un budget défini ; chaque taux est plafonné à 100 % dans la moyenne, et les montants de projets de devises différentes ne sont jamais additionnés.",
+      "note_budget_other": "Financier : {{count}} projets sur {{total}} ont un budget défini ; chaque taux est plafonné à 100 % dans la moyenne, et les montants de projets de devises différentes ne sont jamais additionnés.",
+      "note_depassement_one": "{{count}} projet dépasse son budget.",
+      "note_depassement_other": "{{count}} projets dépassent leur budget.",
+      "pied": "{{produit}} · {{programme}}",
+      "aucun_projet": "Ce programme n’a pas encore de projet."
+    }
   },
   "landing": {
     "meta": {
@@ -1536,15 +1605,19 @@
           "realisations": "Réalisations et preuves jointes",
           "prochaines_etapes": "Prochaines étapes",
           "etats": "États d’avancement",
-          "documents": "Documents du projet"
+          "documents": "Documents du projet",
+          "budget": "Budget, dépenses et taux financier",
+          "composantes": "Composantes et planning en diagramme de Gantt",
+          "acteurs": "Annuaire d’acteurs et rôle par projet",
+          "beneficiaires": "Effectifs de bénéficiaires par sexe et âge",
+          "rapport_programme": "Rapport PDF consolidé d’un programme",
+          "carte": "Localités, zones d’intervention et carte"
         }
       },
       "bientot": {
         "titre": "Bientôt",
         "texte": "Sur la feuille de route, sans date annoncée :",
         "elements": {
-          "carte": "Carte des zones d’intervention",
-          "budget": "Suivi budgétaire",
           "rapports_programmes": "Rapports automatiques programmés",
           "hors_ligne": "Saisie hors ligne"
         }
@@ -1718,5 +1791,538 @@
         "perturbe": "Service perturbé"
       }
     }
+  },
+  "finances": {
+    "meta": "Budget et dépenses — Pilot M&E",
+    "titre": "Budget et dépenses",
+    "description": "Prévoyez le budget par poste et par année, enregistrez les dépenses avec leur justificatif : le taux d’exécution se calcule seul.",
+    "ajouter_ligne": "Ajouter une ligne",
+    "ajouter_depense": "Enregistrer une dépense",
+    "vide": {
+      "titre": "Aucun budget pour ce projet",
+      "texte": "Ajoutez une ligne par poste de dépense et par année (par exemple « Réhabilitation des forages », 2026). Les dépenses s’y rattachent et le taux financier s’en déduit.",
+      "texte_lecteur": "Aucun budget n’a encore été défini pour ce projet."
+    },
+    "synthese": {
+      "titre": "Synthèse financière",
+      "prevu": "Budget prévu",
+      "depense": "Dépensé",
+      "reste": "Reste à dépenser",
+      "depassement": "Dépassement",
+      "taux": "Exécution",
+      "postes_depasses_one": "{{count}} poste dépasse son budget.",
+      "postes_depasses_other": "{{count}} postes dépassent leur budget.",
+      "ecart_projet": "Le budget du projet est de {{budget}} ; les lignes ci-dessous totalisent {{lignes}} ({{ecart}})."
+    },
+    "budget": {
+      "titre": "Budget par poste",
+      "annee": "Exercice {{annee}}",
+      "total_annee": "{{depense}} dépensés sur {{prevu}}",
+      "legende": "Budget par poste, exercice {{annee}} : montants prévus, dépensés, restants et taux d’exécution.",
+      "poste": "Poste",
+      "prevu": "Prévu",
+      "depense": "Dépensé",
+      "reste": "Reste",
+      "execution": "Exécution",
+      "actions": "Actions",
+      "nb_depenses_zero": "Aucune dépense",
+      "nb_depenses_one": "{{count}} dépense",
+      "nb_depenses_other": "{{count}} dépenses",
+      "depasse": "Dépassé"
+    },
+    "depenses": {
+      "titre": "Dépenses",
+      "filtre": "Poste",
+      "toutes": "Tous les postes",
+      "vide": {
+        "titre": "Aucune dépense enregistrée",
+        "texte": "Enregistrez chaque dépense avec sa date, son montant et, si vous l’avez, sa facture : l’exécution du budget se met à jour.",
+        "texte_lecteur": "Aucune dépense n’a encore été enregistrée pour ce projet.",
+        "texte_editeur": "Aucune dépense n’a encore été enregistrée. Les dépenses sont enregistrées par les administrateurs de l’organisation."
+      },
+      "resume_one": "{{count}} dépense · {{total}}",
+      "resume_other": "{{count}} dépenses · {{total}}",
+      "reference": "pièce {{reference}}",
+      "justificatif": "Justificatif",
+      "telecharger_pour": "Télécharger le justificatif : {{nom}}",
+      "sans_justificatif": "Sans justificatif",
+      "reservees": "Les dépenses sont enregistrées par les administrateurs ; vous pouvez les consulter et télécharger leurs justificatifs."
+    },
+    "ligne": {
+      "actions": "Actions pour la ligne {{poste}} ({{annee}})",
+      "suppression": {
+        "titre": "Supprimer la ligne « {{poste}} » ?",
+        "texte": "La ligne budgétaire est supprimée. Une ligne qui a des dépenses ne peut pas l’être : supprimez ou déplacez d’abord ses dépenses.",
+        "action": "Supprimer la ligne",
+        "succes": "Ligne budgétaire supprimée."
+      },
+      "formulaire": {
+        "titre_creer": "Ajouter une ligne budgétaire",
+        "titre_modifier": "Modifier la ligne budgétaire",
+        "description": "Un poste de dépense pour une année, en {{devise}}.",
+        "annee": "Année",
+        "poste": "Poste de dépense",
+        "poste_aide": "Par exemple « Réhabilitation des forages ». Un poste n’existe qu’une fois par année.",
+        "montant": "Montant prévu ({{devise}})",
+        "notes": "Notes",
+        "action_creer": "Ajouter",
+        "action_modifier": "Enregistrer",
+        "creee": "Ligne budgétaire ajoutée.",
+        "modifiee": "Ligne budgétaire mise à jour.",
+        "doublon": "Ce poste existe déjà pour cette année : modifiez la ligne existante."
+      },
+      "validation": {
+        "annee": "Choisissez une année.",
+        "poste": "Donnez un nom de 1 à 160 caractères.",
+        "montant": "Indiquez un montant positif, avec deux décimales au plus (par exemple 1 250 000 ou 12,5)."
+      }
+    },
+    "depense": {
+      "actions": "Actions pour la dépense « {{libelle}} »",
+      "justificatif_nom": "Justificatif",
+      "suppression": {
+        "titre": "Supprimer la dépense « {{libelle}} » ?",
+        "texte": "La dépense est retirée du budget et le taux d’exécution se met à jour. Son justificatif reste dans les documents du projet.",
+        "action": "Supprimer la dépense",
+        "succes": "Dépense supprimée."
+      },
+      "formulaire": {
+        "titre_creer": "Enregistrer une dépense",
+        "titre_modifier": "Modifier la dépense",
+        "description": "Une dépense effectuée, en {{devise}}, rattachée à une ligne du budget.",
+        "date": "Date de la dépense",
+        "libelle": "Libellé",
+        "montant": "Montant ({{devise}})",
+        "ligne": "Ligne du budget",
+        "ligne_aide": "Le poste et l’année auxquels cette dépense s’impute.",
+        "choisir_ligne": "Choisir une ligne",
+        "fournisseur": "Fournisseur",
+        "reference": "Numéro de pièce",
+        "justificatif": "Justificatif",
+        "justificatif_aide": "Facture, reçu ou bon : déposez-le ici ou choisissez un document déjà déposé.",
+        "aucun_justificatif": "Aucun justificatif",
+        "nouveau_justificatif": "Déposer un nouveau fichier…",
+        "documents_existants": "Documents du projet",
+        "fichier": "Fichier du justificatif",
+        "action_creer": "Enregistrer",
+        "action_modifier": "Enregistrer",
+        "creee": "Dépense enregistrée.",
+        "modifiee": "Dépense mise à jour."
+      },
+      "validation": {
+        "date": "Indiquez la date de la dépense (au plus aujourd’hui).",
+        "libelle": "Donnez un libellé de 1 à 200 caractères.",
+        "montant": "Indiquez un montant supérieur à zéro, avec deux décimales au plus (par exemple 250 000 ou 12,5).",
+        "ligne": "Choisissez la ligne du budget."
+      }
+    }
+  },
+  "composantes": {
+    "meta": "Composantes et planning — Pilot M&E",
+    "titre": "Composantes et planning",
+    "description": "Les axes du projet, leurs dates et leur avancement, avec les activités du plan de travail qui leur sont rattachées.",
+    "ajouter": "Ajouter une composante",
+    "vide": {
+      "titre": "Aucune composante pour ce projet",
+      "texte": "Une composante est un axe du projet : un groupe de résultats ou de travaux (par exemple « Accès à l’eau potable »). Donnez-lui des dates, puis rattachez-y des activités du plan de travail : le planning se dessine et son avancement se calcule.",
+      "texte_lecteur": "Aucune composante n’a encore été définie pour ce projet."
+    },
+    "resume_one": "{{count}} composante",
+    "resume_other": "{{count}} composantes",
+    "resume_retard_one": "{{count}} en retard",
+    "resume_retard_other": "{{count}} en retard",
+    "vues": {
+      "libelle": "Affichage des composantes",
+      "planning": "Planning",
+      "liste": "Liste"
+    },
+    "sans_dates": "Aucune composante n’a encore de dates : donnez-leur une date de début et de fin pour les voir sur le planning.",
+    "a_planifier_one": "Sans dates, absente du planning : {{noms}}.",
+    "a_planifier_other": "Sans dates, absentes du planning : {{noms}}.",
+    "aide_planning": "La barre épaisse est la composante, avec son avancement physique ; les barres fines dessous sont ses activités du plan de travail. Le détail est dans la vue Liste.",
+    "periode": "Du {{debut}} au {{fin}}",
+    "sans_dates_ligne": "Sans dates : à planifier",
+    "aucune_activite": "Aucune activité rattachée",
+    "actions": "Actions pour la composante {{nom}}",
+    "activites_aucune": "Aucune activité du plan de travail rattachée. Rattachez-en depuis le plan de travail, champ « Composante ».",
+    "activites_one": "{{count}} activité rattachée",
+    "activites_other": "{{count}} activités rattachées",
+    "sans_composante": "Activités sans composante",
+    "sans_composante_aide": "Ces activités du plan de travail ne sont rattachées à aucune composante.",
+    "suppression": {
+      "titre": "Supprimer la composante « {{nom}} » ?",
+      "texte": "La composante est supprimée. Ses activités du plan de travail ne sont pas supprimées : elles restent, sans composante.",
+      "action": "Supprimer la composante",
+      "succes": "Composante supprimée."
+    },
+    "gantt": {
+      "alt_one": "Planning de {{count}} composante datée, {{retard}} en retard. Le détail est dans la vue Liste.",
+      "alt_other": "Planning de {{count}} composantes datées, {{retard}} en retard. Le détail est dans la vue Liste.",
+      "aujourdhui": "Aujourd’hui",
+      "sans_composante": "Sans composante",
+      "legende": "Légende du planning"
+    },
+    "formulaire": {
+      "titre_creer": "Ajouter une composante",
+      "titre_modifier": "Modifier la composante",
+      "description": "Un axe du projet : son nom, ses dates et son statut.",
+      "nom": "Nom de la composante",
+      "details": "Description",
+      "responsable": "Responsable",
+      "debut": "Début",
+      "fin": "Fin",
+      "dates_aide": "Sans dates, la composante est « à planifier » et n’apparaît pas sur le planning.",
+      "statut": "Statut",
+      "action_creer": "Ajouter",
+      "action_modifier": "Enregistrer",
+      "creee": "Composante ajoutée.",
+      "modifiee": "Composante mise à jour.",
+      "doublon": "Une composante porte déjà ce nom dans ce projet.",
+      "validation": {
+        "nom": "Donnez un nom de 2 à 160 caractères.",
+        "paire": "Indiquez les deux dates, ou aucune.",
+        "date": "Indiquez une date valide.",
+        "dates": "La fin ne peut pas précéder le début."
+      }
+    }
+  },
+  "acteurs": {
+    "meta": "Acteurs — Pilot M&E",
+    "titre": "Acteurs",
+    "description": "L’annuaire des bailleurs, partenaires, prestataires et autorités locales avec lesquels vous travaillez. Leur rôle se précise projet par projet.",
+    "ajouter": "Ajouter un acteur",
+    "recherche": "Rechercher un acteur",
+    "filtre_type": "Type",
+    "tous_types": "Tous les types",
+    "resume_one": "{{count}} acteur",
+    "resume_other": "{{count}} acteurs",
+    "aucun_resultat": "Aucun acteur ne correspond à cette recherche.",
+    "exemple": "Exemple",
+    "actions": "Actions pour l’acteur {{nom}}",
+    "aucun_projet": "Aucun projet pour l’instant",
+    "projets_one": "Intervient dans {{count}} projet",
+    "projets_other": "Intervient dans {{count}} projets",
+    "projet_inconnu": "Projet",
+    "types": {
+      "bailleur": "Bailleur",
+      "partenaire": "Partenaire de mise en œuvre",
+      "prestataire": "Prestataire",
+      "autorite_locale": "Autorité locale",
+      "autre": "Autre"
+    },
+    "vide": {
+      "titre": "Aucun acteur dans l’annuaire",
+      "texte": "Ajoutez les bailleurs, partenaires de mise en œuvre, prestataires et autorités locales avec lesquels vous travaillez, puis précisez leur rôle dans chaque projet.",
+      "texte_lecteur": "Aucun acteur n’a encore été ajouté à l’annuaire de cette organisation."
+    },
+    "suppression": {
+      "titre": "Supprimer l’acteur « {{nom}} » ?",
+      "texte": "L’acteur est retiré de l’annuaire et de tous les projets où il avait un rôle. Cette action ne peut pas être annulée.",
+      "action": "Supprimer l’acteur",
+      "succes": "Acteur supprimé."
+    },
+    "formulaire": {
+      "titre_creer": "Ajouter un acteur",
+      "titre_modifier": "Modifier l’acteur",
+      "description": "Une organisation ou un service avec lequel vous travaillez.",
+      "nom": "Nom de l’acteur",
+      "type": "Type",
+      "details": "Description",
+      "contact": "Personne ou service à contacter",
+      "contact_aide": "Saisissez une fonction ou un service plutôt qu’un nom de personne lorsque c’est possible.",
+      "email": "Adresse e-mail",
+      "telephone": "Téléphone",
+      "notes": "Notes",
+      "action_creer": "Ajouter",
+      "action_modifier": "Enregistrer",
+      "cree": "Acteur ajouté.",
+      "modifie": "Acteur mis à jour.",
+      "doublon": "Un acteur porte déjà ce nom dans l’annuaire.",
+      "validation": {
+        "nom": "Donnez un nom de 2 à 160 caractères.",
+        "email": "Cette adresse e-mail n’est pas valide."
+      }
+    },
+    "role": {
+      "titre_ajouter": "Rattacher un acteur au projet",
+      "titre_modifier": "Modifier le rôle",
+      "description": "Le rôle de l’acteur dans ce projet.",
+      "acteur": "Acteur",
+      "choisir": "Choisir un acteur",
+      "aucun_rattachable": "Tous les acteurs de l’annuaire sont déjà rattachés à ce projet.",
+      "role": "Rôle dans le projet",
+      "role_aide": "Par exemple « Bailleur principal » ou « Partenaire de mise en œuvre ».",
+      "notes": "Notes",
+      "action_ajouter": "Rattacher",
+      "action_modifier": "Enregistrer",
+      "ajoute": "Acteur rattaché au projet.",
+      "modifie": "Rôle mis à jour.",
+      "validation": {
+        "acteur": "Choisissez un acteur.",
+        "role": "Indiquez un rôle de 1 à 120 caractères."
+      }
+    },
+    "projet": {
+      "meta": "Acteurs du projet — Pilot M&E",
+      "titre": "Acteurs du projet",
+      "description": "Qui intervient dans ce projet, et à quel titre.",
+      "vers_annuaire": "Voir l’annuaire complet.",
+      "creer": "Créer un acteur",
+      "rattacher": "Rattacher un acteur",
+      "vide": {
+        "titre": "Aucun acteur rattaché à ce projet",
+        "texte": "Rattachez un acteur de votre annuaire, ou créez-en un, et précisez son rôle : bailleur, partenaire de mise en œuvre, prestataire, autorité locale.",
+        "texte_lecteur": "Aucun acteur n’a encore été rattaché à ce projet."
+      },
+      "resume_one": "{{count}} acteur dans ce projet",
+      "resume_other": "{{count}} acteurs dans ce projet",
+      "actions": "Actions pour l’acteur {{nom}} dans ce projet",
+      "modifier_role": "Modifier le rôle",
+      "retirer": "Retirer du projet",
+      "retire": "Acteur retiré du projet.",
+      "retrait_titre": "Retirer « {{nom}} » du projet ?",
+      "retrait_texte": "L’acteur n’a plus de rôle dans ce projet ; il reste dans l’annuaire de l’organisation.",
+      "retrait_action": "Retirer du projet"
+    }
+  },
+  "beneficiaires": {
+    "meta": "Bénéficiaires — Pilot M&E",
+    "titre": "Bénéficiaires",
+    "description": "Les effectifs atteints par le projet, par période, catégorie, sexe et tranche d’âge. Aucune fiche nominative n’est enregistrée : seulement des nombres.",
+    "ajouter": "Ajouter un effectif",
+    "filtre_periode": "Période",
+    "filtre_categorie": "Catégorie",
+    "toutes_periodes": "Toutes les périodes (cumul)",
+    "toutes_categories": "Toutes les catégories",
+    "avertissement_cumul": "Ce cumul additionne les effectifs de toutes les périodes : une même personne peut y être comptée plusieurs fois. Pour un nombre de personnes distinctes, choisissez une période.",
+    "sexes": {
+      "femme": "Femmes",
+      "homme": "Hommes",
+      "non_precise": "Non précisé"
+    },
+    "tranches": {
+      "0_4": "0 à 4 ans",
+      "5_14": "5 à 14 ans",
+      "15_24": "15 à 24 ans",
+      "25_59": "25 à 59 ans",
+      "60_plus": "60 ans et plus",
+      "non_precise": "Non précisé"
+    },
+    "vide": {
+      "titre": "Aucun effectif enregistré",
+      "texte": "Saisissez le nombre de personnes atteintes par période, par catégorie (par exemple « Usagers des points d’eau »), par sexe et par tranche d’âge. Les ventilations manquantes se saisissent « Non précisé ».",
+      "texte_lecteur": "Aucun effectif de bénéficiaires n’a encore été saisi pour ce projet."
+    },
+    "synthese": {
+      "titre": "Synthèse des effectifs",
+      "total": "Total de la période",
+      "total_cumule": "Cumul des effectifs",
+      "part_femmes": "Part des femmes",
+      "non_ventile": "{{part}} % des effectifs n’ont ni le sexe ni la tranche d’âge précisés : la part des femmes ne porte que sur les sexes connus."
+    },
+    "matrice": {
+      "titre": "Par tranche d’âge et par sexe",
+      "legende": "Effectifs par tranche d’âge et par sexe.",
+      "tranche": "Tranche d’âge",
+      "total": "Total"
+    },
+    "categories": {
+      "titre": "Par catégorie"
+    },
+    "detail": {
+      "titre": "Détail des effectifs saisis",
+      "legende": "Effectifs saisis, une ligne par période, catégorie, sexe, tranche d’âge et lieu.",
+      "periode": "Période",
+      "categorie": "Catégorie",
+      "sexe": "Sexe",
+      "tranche": "Tranche d’âge",
+      "lieu": "Lieu",
+      "effectif": "Effectif",
+      "actions": "Actions",
+      "actions_ligne": "Actions pour l’effectif {{categorie}}, {{sexe}}, {{tranche}}"
+    },
+    "suppression": {
+      "titre": "Supprimer cet effectif de « {{categorie}} » ?",
+      "texte": "La ligne est supprimée des effectifs du projet. Cette action ne peut pas être annulée.",
+      "action": "Supprimer l’effectif",
+      "succes": "Effectif supprimé."
+    },
+    "formulaire": {
+      "titre_creer": "Ajouter un effectif",
+      "titre_modifier": "Modifier l’effectif",
+      "description": "Un nombre de personnes pour une période, une catégorie, un sexe et une tranche d’âge. Jamais de nom.",
+      "debut": "Début de la période",
+      "fin": "Fin de la période",
+      "categorie": "Catégorie de bénéficiaires",
+      "categorie_aide": "Par exemple « Usagers des points d’eau ». Gardez le même intitulé d’une période à l’autre.",
+      "sexe": "Sexe",
+      "tranche": "Tranche d’âge",
+      "effectif": "Effectif (nombre de personnes)",
+      "effectif_aide": "Un nombre entier, 0 si personne n’a été atteint.",
+      "lieu": "Lieu",
+      "lieu_aide": "Village, commune ou zone, en texte libre. Une même combinaison ne se saisit qu’une fois.",
+      "action_creer": "Ajouter",
+      "action_modifier": "Enregistrer",
+      "cree": "Effectif enregistré.",
+      "modifie": "Effectif mis à jour.",
+      "doublon": "Cet effectif existe déjà pour cette période, cette catégorie, ce sexe, cette tranche d’âge et ce lieu : modifiez la ligne existante.",
+      "validation": {
+        "date": "Indiquez une date valide.",
+        "periode": "La fin de la période ne peut pas précéder son début.",
+        "categorie": "Indiquez une catégorie de 1 à 120 caractères.",
+        "effectif": "Indiquez un nombre entier, de 0 à 100 000 000."
+      }
+    }
+  },
+  "localites": {
+    "meta": "Localités — Pilot M&E",
+    "titre": "Localités",
+    "description": "Le référentiel de la plateforme et les localités de votre organisation : régions, communes, villages, quartiers. Chaque projet y choisit ses zones d’intervention.",
+    "niveaux": {
+      "region": "Région",
+      "departement": "Département",
+      "arrondissement": "Arrondissement",
+      "commune": "Commune",
+      "village": "Village",
+      "quartier": "Quartier"
+    },
+    "referentiel": "Référentiel",
+    "referentiel_aide": "Les localités du référentiel viennent de la plateforme, avec leur source : vous pouvez les utiliser, pas les modifier.",
+    "propre": "Votre organisation",
+    "recherche": "Rechercher une localité",
+    "resume_one": "{{count}} localité",
+    "resume_other": "{{count}} localités",
+    "aucun_resultat": "Aucune localité ne correspond à « {{recherche}} ».",
+    "creer": "Ajouter une localité",
+    "sans_coordonnees": "Sans coordonnées : absente de la carte",
+    "source": "Source : {{source}}",
+    "actions": "Actions pour la localité {{nom}}",
+    "modifier": "Modifier",
+    "supprimer": "Supprimer",
+    "suppression_titre": "Supprimer « {{nom}} » ?",
+    "suppression_texte": "La localité est retirée de votre organisation. Si un projet ou une saisie l’utilise, ou si elle contient d’autres localités, la suppression est refusée.",
+    "suppression_action": "Supprimer",
+    "supprimee": "Localité supprimée.",
+    "ajoutee": "Localité ajoutée.",
+    "modifiee": "Localité modifiée.",
+    "formulaire": {
+      "titre_creer": "Ajouter une localité",
+      "titre_modifier": "Modifier la localité",
+      "description": "Une localité de votre organisation, visible de ses seuls membres. Les coordonnées sont facultatives : sans elles, la localité reste utilisable mais n’apparaît pas sur la carte.",
+      "nom": "Nom",
+      "niveau": "Niveau",
+      "parent": "Rattachée à",
+      "parent_aucun": "Aucune (au sommet de la hiérarchie)",
+      "parent_aide": "Une localité plus large qui la contient, du référentiel ou de votre organisation.",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "coordonnees_aide": "En degrés décimaux, par exemple 14,7604 et −17,4681. Une latitude sud ou une longitude ouest est négative. Renseignez les deux, ou aucune.",
+      "source": "Source des coordonnées",
+      "source_aide": "D’où viennent-elles ? Par exemple : relevé GPS du 12 mars.",
+      "ajouter": "Ajouter",
+      "enregistrer": "Enregistrer",
+      "validation": {
+        "nom": "Indiquez un nom de 2 à 160 caractères.",
+        "niveau": "Choisissez un niveau.",
+        "latitude": "La latitude est un nombre entre −90 et 90.",
+        "longitude": "La longitude est un nombre entre −180 et 180.",
+        "paire": "Renseignez la latitude et la longitude, ou aucune des deux."
+      },
+      "doublon": "Une localité de ce nom existe déjà au même endroit."
+    }
+  },
+  "zones": {
+    "meta": "Zones d’intervention — Pilot M&E",
+    "titre": "Zones d’intervention",
+    "description": "Les localités où ce projet agit. Elles s’affichent sur la carte et peuvent être choisies pour une saisie ou une réalisation.",
+    "vers_localites": "Gérer les localités de l’organisation.",
+    "ajouter": "Ajouter une zone",
+    "creer": "Créer une localité",
+    "resume_one": "{{count}} zone d’intervention",
+    "resume_other": "{{count}} zones d’intervention",
+    "exemple": "Ce projet exemple est rattaché à la commune de Yoff pour montrer la carte ; ses données restent fictives.",
+    "vide": {
+      "titre": "Aucune zone d’intervention",
+      "texte": "Choisissez les localités où ce projet agit : elles s’afficheront sur la carte et pourront être précisées dans les saisies et les réalisations.",
+      "texte_lecteur": "Aucune zone n’a encore été désignée pour ce projet."
+    },
+    "liste": "Liste des zones",
+    "coordonnees": "Coordonnées : {{valeur}}",
+    "sans_coordonnees": "Sans coordonnées : absente de la carte",
+    "usage_saisies_one": "{{count}} saisie",
+    "usage_saisies_other": "{{count}} saisies",
+    "usage_realisations_one": "{{count}} réalisation",
+    "usage_realisations_other": "{{count}} réalisations",
+    "actions": "Actions pour la zone {{nom}}",
+    "retirer": "Retirer des zones",
+    "retrait_titre": "Retirer « {{nom}} » des zones ?",
+    "retrait_texte": "Les saisies et les réalisations déjà rattachées à cette localité la gardent. La localité reste disponible pour l’organisation.",
+    "retrait_action": "Retirer",
+    "retiree": "Zone retirée.",
+    "ajoutee": "Zone ajoutée.",
+    "carte": {
+      "titre": "Carte",
+      "etiquette": "Carte des zones d’intervention du projet. La liste des zones, juste au-dessus, donne la même information.",
+      "chargement": "Chargement de la carte…",
+      "indisponible": "Le fond de carte n’a pas pu se charger. La liste des zones reste disponible.",
+      "aucune": "Aucune zone n’a de coordonnées : la carte est vide. Ajoutez des coordonnées à une localité de votre organisation pour la voir ici.",
+      "sans_coordonnees_one": "{{count}} zone sans coordonnées n’apparaît pas sur la carte.",
+      "sans_coordonnees_other": "{{count}} zones sans coordonnées n’apparaissent pas sur la carte.",
+      "confidentialite": "L’affichage de la carte charge des images depuis OpenStreetMap : votre adresse IP lui est visible.",
+      "attribution_lien": "les contributeurs d’OpenStreetMap"
+    },
+    "dialogue": {
+      "titre": "Ajouter une zone d’intervention",
+      "description": "Choisissez une localité du référentiel ou de votre organisation.",
+      "recherche": "Rechercher une localité",
+      "liste": "Localités",
+      "aucun_resultat": "Aucune localité ne correspond à « {{recherche}} ».",
+      "deja": "Déjà une zone",
+      "ajouter": "Ajouter",
+      "creer": "Créer une localité",
+      "tout_ajoute": "Toutes les localités visibles sont déjà des zones de ce projet."
+    }
+  },
+  "abonnement": {
+    "titre": "Abonnement en ligne",
+    "description": "Payez par carte sans passer par l’équipe. Le paiement se fait sur la page sécurisée de Stripe : Pilot M&E ne voit jamais votre numéro de carte.",
+    "mode_test": "Mode test : aucun paiement réel n’est effectué. Utilisez la carte de test 4242 4242 4242 4242, avec une date de fin future et un code quelconque.",
+    "duree": "Durée de facturation",
+    "periodicites": {
+      "mensuelle": "Mensuel",
+      "annuelle": "Annuel"
+    },
+    "par_mois": "{{prix}} par mois",
+    "par_an": "{{prix}} par an",
+    "equivalent": "soit {{prix}} par mois",
+    "projets_one": "{{count}} projet",
+    "projets_other": "{{count}} projets",
+    "indicateurs": "{{count}} indicateurs par projet",
+    "utilisateurs_one": "{{count}} utilisateur",
+    "utilisateurs_other": "{{count}} utilisateurs",
+    "souscrire": "Souscrire à {{plan}}",
+    "redirection": "Redirection vers Stripe…",
+    "titre_actuel": "Abonnement {{plan}} {{periodicite}}",
+    "statut": "Statut : {{statut}}",
+    "statuts": {
+      "active": "actif",
+      "trialing": "actif (période d’essai de Stripe)",
+      "past_due": "paiement en retard",
+      "canceled": "terminé",
+      "unpaid": "impayé",
+      "paused": "en pause",
+      "incomplete": "paiement en attente",
+      "incomplete_expired": "paiement non abouti"
+    },
+    "renouvellement": "Prochain renouvellement le {{date}}.",
+    "fin": "L’abonnement se termine le {{date}} et ne sera pas reconduit.",
+    "termine": "L’abonnement est terminé : l’organisation est en lecture seule, vos données restent consultables et exportables.",
+    "retard": "Le dernier paiement a échoué. Stripe va le retenter ; mettez à jour votre carte dans le portail pour éviter une interruption.",
+    "gerer": "Gérer l’abonnement",
+    "gerer_aide": "Changer de plan, mettre à jour la carte, télécharger les factures ou résilier : sur le portail sécurisé de Stripe.",
+    "retour_succes": "Paiement reçu. Activation de votre plan en cours…",
+    "active": "Votre abonnement est actif.",
+    "lent": "L’activation prend plus de temps que prévu. Actualisez la page dans un instant ; si le plan n’est pas actif, contactez l’équipe.",
+    "retour_annule": "Paiement annulé : rien n’a été débité."
   }
 }

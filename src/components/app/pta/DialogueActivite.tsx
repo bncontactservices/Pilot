@@ -13,7 +13,7 @@ import { Input, NativeSelect, Textarea } from "~/components/ui/input";
 import { useOrg } from "~/hooks/useContexteOrg";
 import { STATUTS_TRAVAIL, type StatutTravail } from "~/lib/avancement";
 import type { Noeud } from "~/lib/cadre-logique";
-import { type ActivitePta, clesSe, invaliderAvancement, type Phase } from "~/lib/donnees-se";
+import { type ActivitePta, clesSe, invaliderAvancement, type Phase, type ComposanteProjet } from "~/lib/donnees-se";
 import { formaterDate } from "~/lib/format";
 import { anneeFiscale, pourcentSelonStatut, trimestresFiscaux } from "~/lib/pta";
 import { getSupabase } from "~/lib/supabase";
@@ -54,6 +54,7 @@ const schema = z
       }),
     noeudId: z.string(),
     phaseId: z.string(),
+    composanteId: z.string(),
   })
   .superRefine((v, ctx) => {
     if (v.mode !== "dates") return;
@@ -87,6 +88,7 @@ function valeursDe(activite: ActivitePta | null, annee: number): Valeurs {
       pourcent: "0",
       noeudId: "",
       phaseId: "",
+      composanteId: "",
     };
   }
   return {
@@ -103,6 +105,7 @@ function valeursDe(activite: ActivitePta | null, annee: number): Valeurs {
     pourcent: String(activite.pct_realisation).replace(".", ","),
     noeudId: activite.noeud_id ?? "",
     phaseId: activite.phase_id ?? "",
+    composanteId: activite.composante_id ?? "",
   };
 }
 
@@ -117,6 +120,7 @@ export function DialogueActivite({
   moisDebut,
   noeuds,
   phases,
+  composantes = [],
   suggestionsResponsables,
 }: {
   ouvert: boolean;
@@ -129,6 +133,8 @@ export function DialogueActivite({
   moisDebut: number;
   noeuds: Noeud[];
   phases: Pick<Phase, "id" | "nom">[];
+  /** Composantes du projet : l'activité peut être rattachée à l'une d'elles. */
+  composantes?: Pick<ComposanteProjet, "id" | "nom">[];
   suggestionsResponsables: string[];
 }) {
   const { t } = useTranslation();
@@ -173,6 +179,7 @@ export function DialogueActivite({
         pct_realisation: pourcentSelonStatut(v.statut as ActivitePta["statut"], versNombre(v.pourcent)),
         noeud_id: v.noeudId || null,
         phase_id: v.phaseId || null,
+        composante_id: v.composanteId || null,
       };
       const requete = activite
         ? getSupabase().from("pta_activites").update(champs).eq("id", activite.id)
@@ -349,6 +356,20 @@ export function DialogueActivite({
                 </NativeSelect>
               )}
             </Champ>
+            {composantes.length > 0 && (
+              <Champ id="activite-composante" libelle={t("pta.formulaire.composante")} optionnel>
+                {(a) => (
+                  <NativeSelect {...a} {...register("composanteId")}>
+                    <option value="">{t("pta.formulaire.aucune_composante")}</option>
+                    {composantes.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.nom}
+                      </option>
+                    ))}
+                  </NativeSelect>
+                )}
+              </Champ>
+            )}
             <Champ id="activite-phase" libelle={t("pta.formulaire.phase")} optionnel>
               {(a) => (
                 <NativeSelect {...a} {...register("phaseId")}>

@@ -8,7 +8,9 @@ import { getSupabase } from "../supabase";
 import { type EntreeRapport, preparerRapport } from "./donnees";
 import { enregistrerPolices } from "./polices";
 import { SOURCES_POLICES } from "./polices-urls";
+import { type EntreeRapportProgramme, preparerRapportProgramme } from "./programme";
 import { RapportPdf } from "./RapportPdf";
+import { RapportProgrammePdf } from "./RapportProgrammePdf";
 
 const LARGEUR_LOGO_MAX = 480;
 
@@ -41,6 +43,20 @@ export async function genererRapportPdf(entree: EntreeRapport): Promise<{ blob: 
   const donnees = preparerRapport(entree);
   // RapportPdf rend un <Document> : le typage de pdf() n'attend que ce type d'élément à la racine.
   const document = createElement(RapportPdf, {
+    donnees,
+    t: entree.t,
+    produit: NOM_PRODUIT,
+  }) as unknown as ReactElement<DocumentProps>;
+  const blob = await pdf(document).toBlob();
+  return { blob, nom: donnees.nomFichier };
+}
+
+/** Rapport PDF consolidé d'un programme : mêmes polices et même mise en page générale que celui d'un projet. */
+export async function genererRapportProgrammePdf(entree: EntreeRapportProgramme): Promise<{ blob: Blob; nom: string }> {
+  const { pdf } = await import("@react-pdf/renderer");
+  enregistrerPolices(SOURCES_POLICES);
+  const donnees = preparerRapportProgramme(entree);
+  const document = createElement(RapportProgrammePdf, {
     donnees,
     t: entree.t,
     produit: NOM_PRODUIT,

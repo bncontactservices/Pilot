@@ -1,4 +1,4 @@
-import { ChevronsUpDown, FolderKanban, Layers, LogOut, Settings, Users } from "lucide-react";
+import { ChevronsUpDown, FolderKanban, Handshake, Layers, LogOut, MapPin, Settings, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link, NavLink, useLocation } from "react-router";
 import { Logo } from "~/components/brand/Logo";
@@ -18,6 +18,8 @@ import { cn } from "~/lib/utils";
 const LIENS = [
   { vers: "/app", cle: "nav.projets", icone: FolderKanban, fin: true },
   { vers: "/app/programmes", cle: "nav.programmes", icone: Layers, fin: false },
+  { vers: "/app/acteurs", cle: "nav.acteurs", icone: Handshake, fin: false },
+  { vers: "/app/localites", cle: "nav.localites", icone: MapPin, fin: false },
   { vers: "/app/equipe", cle: "nav.equipe", icone: Users, fin: false },
   { vers: "/app/parametres", cle: "nav.parametres", icone: Settings, fin: false },
 ] as const;

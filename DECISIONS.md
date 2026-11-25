@@ -555,3 +555,271 @@ Les deux points proposés à la fin du §17 (« Vas-y ») : une preuve d'accepta
 - **Vérifié** : 477 assertions pgTAP passent en local (442 → 477 : 14 pour l'acceptation, 21 pour la file, dont la suppression d'une organisation à l'essai terminé) ; 425 tests Vitest ; types et lint propres. Sur le vrai Supabase : colonnes, droits (le client ne peut ni écrire ni insérer les colonnes, `anon` ne les lit pas), fonction d'inscription à jour, déclencheur et fonctions présents, droits d'exécution (`anon` refusé), table de file illisible, aucune donnée modifiée. Les conseillers de sécurité ne signalent rien de nouveau, hormis les deux fonctions exécutables par `authenticated` (voulu : elles vérifient le rôle elles-mêmes) et la table de file sans règle (voulu : tout refus).
 - **Vérifié en réel (même jour, comptes de test avec votre accord, tous supprimés ensuite)** : `e2e/fichiers-acceptation.spec.ts`, 5 tests, avec de vraies sessions sur le vrai Supabase. (1) Le déclencheur d'inscription réel, sur la vraie table des comptes, enregistre la version et une date de la base pour l'administrateur (inscription directe) et pour l'éditeur (inscription sur invitation), et rien pour le lecteur sans version. (2) Un membre ne peut ni modifier ni forger son acceptation (refus 403, code 42501, valeurs intactes), mais modifie toujours ses autres champs. (3) Le lecteur ne voit rien dans la file et ne peut rien en retirer ; l'anonyme est refusé. (4) Supprimer un projet **dans l'application** retire son fichier du bucket réel et vide la file. (5) Supprimer un projet par l'API seule, sans nettoyage, laisse le fichier et son chemin en file ; l'éditeur qui ouvre l'application le retire tout seul. Les parcours existants (`coeur-se`, `api` : 16 réussis, 3 ignorés car hors phase) passent toujours, dont la suppression d'un document puis celle du projet avec ses fichiers. Après suppression des comptes, la base est identique à son état de départ, table par table (1 utilisateur, 1 organisation, 2 projets, 0 document, 0 fichier, file vide).
 - **Toujours non vérifié** : l'inscription **par le formulaire** (la confirmation d'e-mail exige un SMTP : Resend sans domaine, voir `PLACEHOLDERS.md`) ; le chemin réel du formulaire jusqu'aux métadonnées est couvert par un test d'écran, et le déclencheur par le test réel ci-dessus, mais pas bout en bout. La phase 2 (fin d'essai) n'a pas été rejouée pour la file (couverte en pgTAP). Lighthouse et les autres points du §16 restent ouverts.
+
+## 19. Lot 3a : finances et budgets (25 novembre 2026)
+
+Sur « Commit et poursuis » : le commit `65e16bb` contient tout le travail précédent ; le Lot 3 est démarré, par sous-lots, dans l'ordre ci-dessous. Chaque sous-lot suit le même rituel que le Lot 2 (migration, tests de base, écrans, états vides, point de contrôle).
+
+### Découpage du Lot 3
+
+| Sous-lot | Contenu | État |
+|---|---|---|
+| **3a** | Budgets par poste et par année, dépenses avec justificatif, taux financier | Construit (ce §) ; parcours réel à rejouer |
+| 3b | Composantes et planning (Gantt en SVG maison) | Non commencé |
+| 3c | Annuaire d'acteurs ; bénéficiaires (effectifs agrégés, jamais de fiches nominatives par défaut) | Non commencé |
+| 3d | Localités (région, département, commune, village) et carte | Non commencé. **Demande des données géographiques réelles et sourcées** (référentiel des localités du Sénégal, fonds de carte) : je n'inventerai ni noms ni coordonnées |
+| 3e | Rapport consolidé de programme ; rapports programmés | Non commencé. Le programmé exige un domaine d'envoi vérifié (Resend, voir `PLACEHOLDERS.md`) |
+| 3f | Paiement en ligne | Non commencé. Exige un compte chez un prestataire de paiement : à votre initiative, pas la mienne (règle d'or 7) |
+
+### Modèle de données (migration `20261126130000_lot3a_finances.sql`, appliquée : version distante `20261125105250`)
+
+- **`budget_lignes`** : un poste de dépense pour une année (`annee`, `poste`, `montant_prevu`, `notes`). Unique par projet, année et poste sans tenir compte de la casse. **`depenses`** : date, libellé, montant strictement positif, fournisseur, numéro de pièce, ligne du budget, justificatif facultatif (un document du même projet).
+- Mêmes règles que les lots précédents : RLS (lecture par les membres, écriture par admin et éditeur), `org_id` dérivé du projet et immuable, droits par colonne, `ESSAI_EXPIRE` après la fin d'essai, `created_by` forcé.
+- **Une ligne qui a des dépenses ne se supprime pas** (clé étrangère sans action : erreur 23503, traduite par l'application « élément utilisé ailleurs »). Choix de la clé « sans action » plutôt que « restreindre » : la suppression d'un projet efface lignes et dépenses dans la même instruction et doit aboutir, ce que « restreindre » aurait empêché selon l'ordre des cascades.
+- **Un justificatif supprimé laisse la dépense**, sans pièce (« sans justificatif » est dit à l'écran). Le fichier d'un justificatif part avec son document, par la file du §18.
+- **Aucune conversion de devise.** Les sommes d'un projet sont dans sa devise.
+
+### Taux financier
+
+- **Projet** : dépenses / somme des lignes budgétaires, en %, **sans plafond** : 130 % est une information (dépassement), pas une erreur. Sans ligne budgétaire, ou avec un budget total nul, il n'y a **pas de taux** (jamais de division par zéro, jamais un 0 % trompeur). Un budget sans dépense donne 0 %.
+- **Programme** : moyenne simple des taux des projets qui ont un budget, **chacun plafonné à 100** (comme le taux de résultats), avec le nombre de projets en dépassement. On ne somme jamais les montants d'un programme.
+- **État d'avancement** : le taux financier est figé à la rédaction, comme les deux autres (colonne `taux_financier`, déclencheur existant). Les états déjà rédigés gardent NULL.
+- Affiché partout où l'étaient les deux autres taux (en-tête du projet, listes de programmes, détail d'un programme, états d'avancement) ; le « Bientôt » qui tenait la place du financier est remplacé. Un dépassement est dit en toutes lettres (« Budget dépassé »), pas seulement par la valeur ni par la couleur.
+- **Défaut trouvé par les tests de base** : `least(100, NULL)` vaut 100 en SQL ; sans filtre, un projet sans budget comptait pour 100 % dans la moyenne du programme (73 % au lieu de 60 % sur le cas de test). Corrigé avant l'application de la migration, avec le cas dans les tests.
+
+### Écrans
+
+- Une page **Finances** dans la rubrique « Mise en œuvre » : synthèse (prévu, dépensé, reste ou dépassement, taux), budget par poste et par année (tableau accessible, badge « Dépassé » avec icône et texte), liste des dépenses filtrable par ligne, avec téléchargement du justificatif ; formulaires de ligne et de dépense. Le formulaire de dépense propose « Déposer un nouveau fichier » (déposé comme document de catégorie justificatif, retiré si la dépense n'est pas enregistrée), ou un document déjà déposé.
+- Un écart entre le budget saisi à la création du projet et la somme des lignes est signalé, jamais corrigé.
+- Les dépenses futures sont refusées par l'écran (une dépense enregistrée est une dépense effectuée) ; la base n'impose que des bornes plausibles (2000 à 2100).
+- **Projet exemple** : budget et dépenses fictifs (15 lignes, 15 dépenses, 250 000 000 FCFA, 24,8 % d'exécution à la date du chargement), dont un poste en dépassement pour montrer l'alerte ; ajoutés par un déclencheur sur la création du projet exemple et au projet exemple déjà chargé.
+
+### Limites
+
+- Pas d'export PDF ou Excel du budget et des dépenses, pas d'import de budget par fichier, pas de partie financière dans le rapport PDF du projet.
+- « Année » suit la convention du plan de travail (l'année où l'exercice commence) mais la base ne vérifie pas qu'une dépense tombe dans l'exercice de sa ligne ; le mois de début d'exercice des paramètres S&E n'est pas encore utilisé ici.
+- Les dépenses ne sont pas réservées aux admins : tout éditeur peut en enregistrer (à valider, voir `PLACEHOLDERS.md`).
+
+### Vérifié et non vérifié
+
+- **Vérifié** : 544 assertions pgTAP (dont 67 pour ce lot : isolation, rôles, règles, fin d'essai, vues, programme, états figés, projet exemple) ; 473 tests Vitest (dont 25 pour la page Finances, la synthèse et les formulaires) ; types et lint propres. Sur le vrai Supabase : migration appliquée, projet exemple rempli (15 et 15, 250 000 000 prévus, 62 100 000 dépensés, 24,8 %), droits et RLS vérifiés, aucune alerte de sécurité nouvelle.
+- **Vérifié en réel (même jour, comptes de test avec votre accord, tous supprimés ensuite)** : `e2e/finances.spec.ts`, 5 tests sur le vrai Supabase. Un éditeur crée deux lignes de budget (un doublon est refusé en le disant), enregistre une dépense avec un vrai PDF comme justificatif (téléchargé, il commence par `%PDF-`) puis une dépense sans justificatif qui dépasse son poste (centimes conservés, « Dépassé » à 130 %), et le taux financier de 70 % apparaît dans la synthèse et dans l'en-tête du projet. Un état d'avancement fige ce 70 % : après une dépense de plus, l'en-tête passe à 77 % et l'état reste à 70 %. Le lecteur consulte et télécharge, sans aucun bouton d'écriture ; l'API lui refuse l'écriture. La base refuse la suppression d'une ligne qui a des dépenses (409, code 23503), un montant nul ou négatif et une date de 1999 (400, code 23514). Supprimer le projet retire ses dépenses, ses lignes et le fichier du justificatif du stockage.
+- **Accessibilité (axe) et débordement sur téléphone** : la page Finances et ses deux formulaires ont été ajoutés à `accessibilite-app.spec.ts`. **Défaut trouvé et corrigé** : sur téléphone (375 px), la page débordait de 348 px, car les libellés masqués du tableau (`sr-only`, positionnés en absolu) échappaient au conteneur défilant ; le conteneur est maintenant le bloc de référence (`relative overflow-x-auto`), le même motif que les autres tableaux, et la page tient dans l'écran (largeur du document = 375 px). Plus aucune violation axe.
+- **Suite complète rejouée** (bureau et téléphone) : 72 réussis, 62 ignorés (phase 2 et cas propres à un seul format), 0 échec ; elle comprend les parcours des Lots 1 et 2 (états d'avancement, programmes, documents, rôles, temps réel). **Intermittence constatée** : le contrôle d'accessibilité des écrans a échoué deux fois sur environ neuf passages (page encore blanche après 10 s, puis une fenêtre non ouverte), sans violation ; il a ensuite passé cinq fois de suite. Je l'attribue à la lenteur du chargement depuis ce poste et j'ai porté l'attente du titre de page de 10 à 20 s ; je ne peux pas exclure une cause dans l'application.
+- Après suppression des comptes de test, la base est **identique à son état de départ**, table par table (1 utilisateur, 1 organisation, 2 projets, 15 lignes et 15 dépenses du projet exemple, 0 document, 0 fichier, file vide).
+- **La landing** annonce maintenant « Budget, dépenses et taux financier » dans « Disponible » (il était dans « Bientôt »), puisque c'est livré et exercé.
+- **Toujours non vérifié** : Safari et téléphones réels ; l'export PDF des états d'avancement et la partie financière du rapport PDF n'existent pas.
+
+## 20. Dépenses réservées aux administrateurs, et Lot 3b : composantes et planning (25 novembre 2026)
+
+Sur « Oui, poursuis » (réponse à la question du point de contrôle 3a, puis suite du Lot 3).
+
+### Dépenses réservées aux administrateurs
+
+- **Choix de l'utilisateur** : enregistrer, modifier ou supprimer une dépense est réservé aux administrateurs. Les lignes budgétaires restent gérées par les admins et les éditeurs (c'est de la planification) ; éditeurs et lecteurs lisent les dépenses et téléchargent les justificatifs. La question ne portait que sur les dépenses : je n'ai pas restreint les lignes budgétaires.
+- Migration `20261126140000_depenses_reservees_aux_admins.sql` (appliquée, version distante `20261125120102`) : trois règles de sécurité par ligne remplacées (`est_admin` au lieu de `peut_editer`). La fin d'essai reste appliquée par le déclencheur existant ; le projet exemple, rempli par une fonction de la base, n'est pas concerné.
+- Écran : un éditeur voit le budget et les dépenses, peut gérer les lignes, n'a ni bouton « Enregistrer une dépense » ni menu d'actions sur les dépenses, et une phrase lui dit que les dépenses sont enregistrées par les administrateurs. Le menu d'une ligne du budget ne propose plus d'enregistrer une dépense qu'à un admin.
+- Tests : 72 assertions pgTAP pour le lot 3a (dont l'éditeur refusé à l'insertion et sans effet sur la modification ou la suppression) ; 2 tests d'écran de plus ; `e2e/finances.spec.ts` réécrit par rôle (l'éditeur crée les lignes, l'administrateur enregistre les dépenses) mais **pas encore rejoué en réel** depuis ce changement.
+
+### Lot 3b : composantes et planning
+
+- **Définition** (brief, vocabulaire de référence) : une composante est un **axe** du projet, distinct d'une phase (macro-période), d'une étape (jalon daté) et d'une prochaine étape (action de court terme). Elle a un nom, une description, un responsable, un statut, des dates (la paire entière ou aucune) et un ordre.
+- **Modèle** (migration `20261126150000_lot3b_composantes.sql`, appliquée, version distante `20261125121653`) : table `composantes` (mêmes règles de sécurité que les lots précédents : lecture par les membres, écriture par admin et éditeur, `org_id` dérivé du projet, `ESSAI_EXPIRE`) ; nom unique par projet sans tenir compte de la casse ; `pta_activites.composante_id` (une activité appartient à une composante au plus, du même projet, `RATTACHEMENT_INVALIDE` sinon) ; supprimer une composante **détache** ses activités sans les supprimer.
+- **Sans dates, une composante est « à planifier »** : listée, jamais dessinée. Un statut saisi (même énumération que les activités) ; « en retard » se calcule (fin passée, ni terminée ni annulée), comme pour les prochaines étapes.
+- **Avancement d'une composante** = moyenne de l'avancement de ses activités (hors annulées), même formule que le taux physique du projet ; sans activité, pas de taux plutôt qu'un 0 % trompeur.
+- **Diagramme de Gantt en SVG maison** (brief 11) : une barre par composante datée avec son avancement, ses activités en barres fines dessous, les activités sans composante à part, la date du jour en pointillés, l'axe en mois. Le statut se lit par la forme autant que par la couleur (contour pour « à faire », hachures pour « reporté », mot « En retard » dans la légende) ; le diagramme porte un résumé accessible et la **vue Liste est son équivalent accessible** (statut, période, responsable, avancement, activités). L'échelle de temps est partagée avec la chronologie des phases (`src/lib/gantt.ts`).
+- **Écran** : page « Composantes et planning » dans la rubrique Planification (bascule Planning / Liste, comme le plan de travail) ; le formulaire du plan de travail propose « Composante » quand le projet en a.
+- **Projet exemple** : quatre composantes fictives (eau potable, gouvernance des points d'eau, hygiène et assainissement, suivi-évaluation) dont les dates (activités les plus tôt et les plus tard, marge de deux semaines) et le statut se déduisent des neuf activités de l'exemple, toutes rattachées. Le contenu est ajouté par un déclencheur **différé jusqu'à la fin de la transaction** : les activités de l'exemple sont créées après le projet, il faut attendre qu'elles existent. Le projet exemple déjà chargé les a reçues.
+- **Non fait** : les composantes ne sont pas reliées au cadre logique, aux réalisations ni au budget ; pas d'export du planning ; pas de glisser-déposer des barres (les dates se modifient dans le formulaire).
+
+### Vérifié et non vérifié
+
+- **Vérifié** : 590 assertions pgTAP (dont 41 pour les composantes : isolation, rôles, règles, rattachement, fin d'essai, projet exemple, dont le déclencheur différé) ; 503 tests Vitest ; types et lint propres. Sur le vrai Supabase : migrations appliquées, projet exemple rempli (quatre composantes, neuf activités rattachées), droits et RLS vérifiés, aucune alerte de sécurité nouvelle.
+- **Vérifié en réel (même jour, comptes de test avec votre accord, tous supprimés ensuite)** :
+  - `e2e/finances.spec.ts` (5 tests), réécrit par rôle : l'éditeur crée les lignes du budget et n'a ni bouton ni menu de dépense, avec la phrase qui explique pourquoi ; l'administrateur enregistre les dépenses (avec un vrai PDF comme justificatif) ; la base refuse l'écriture d'un lecteur.
+  - `e2e/composantes.spec.ts` (3 tests) : une composante datée et une à planifier, un doublon de nom et une date seule refusés en le disant, le diagramme (« Planning de 1 composante datée »), une activité rattachée depuis le plan de travail (la liste montre « 1 activité rattachée »), lecture seule du lecteur, refus de la base (lecteur 403, rattachement à un autre projet 400, doublon 409), et suppression d'une composante qui détache ses deux activités sans les supprimer.
+  - **Suite Playwright complète** (bureau et téléphone) : 75 réussis, 65 ignorés (phase 2 et cas propres à un seul format), 0 échec. Elle comprend l'accessibilité (axe) de la page Composantes, de ses deux vues et de son formulaire, de la page Finances et de ses formulaires, et le contrôle de débordement horizontal sur téléphone (375 px) de ces deux pages.
+  - Après suppression des comptes de test, la base est **identique à son état de départ**, table par table (dont les 4 composantes, 15 lignes de budget et 15 dépenses du projet exemple).
+- **Honnêteté sur le parcours** : les deux premiers passages ont échoué à cause de **mes tests**, pas du produit (un sélecteur qui visait le mauvais projet de test, un lien resté sur la page de l'éditeur après le changement de rôle, un nom de bouton de menu mal écrit). Aucun défaut du produit n'a été trouvé dans cette série.
+- **La landing** annonce aussi « Composantes et planning en diagramme de Gantt » dans « Disponible ».
+- **Toujours non vérifié** : Safari et téléphones réels ; l'aspect visuel du diagramme n'a été regardé que par ses contrôles automatiques (axe, débordement), pas par une personne.
+
+## 21. Lot 3c : acteurs et bénéficiaires (25 novembre 2026)
+
+Sur « Poursuis » : le sous-lot suivant du §19.
+
+### Acteurs
+
+- **Annuaire de l'organisation** (`acteurs`) : nom, type (bailleur, partenaire de mise en œuvre, prestataire, autorité locale, autre), description, personne ou service à contacter, e-mail, téléphone, notes. Le nom est unique dans l'organisation sans tenir compte de la casse. Un acteur peut intervenir dans plusieurs projets.
+- **Rôle par projet** (`projet_acteurs`) : un rôle en texte libre (« Bailleur principal », « Partenaire de mise en œuvre »…) par acteur et par projet. L'acteur doit appartenir à l'organisation du projet (`RATTACHEMENT_INVALIDE` sinon) ; son identité ne se change pas (on retire et on rajoute).
+- **Droits** : lecture par les membres ; créer et modifier par admin et éditeur ; **supprimer un acteur : admins seulement**, car cela retire ses rôles dans tous les projets (comme les programmes, qui sont aussi propres à l'organisation). Retirer un acteur d'un projet : admin et éditeur.
+- **Données personnelles** : l'annuaire contient des coordonnées d'une personne à contacter, **saisies par l'organisation** (qui en est responsable ; Pilot M&E est son sous-traitant). Le formulaire invite à saisir une fonction ou un service plutôt qu'un nom. La page de confidentialité le mentionne désormais, sans changer la date de version : elle reste provisoire et à faire relire.
+- **Projet exemple** : quatre acteurs fictifs avec leur rôle. Comme l'annuaire appartient à l'organisation et non au projet, ces acteurs sont marqués (`acteurs.exemple`, que le client ne peut ni écrire ni modifier : refus 42501) et un déclencheur les **retire de l'annuaire quand le projet exemple est supprimé** ; sinon des données fictives resteraient dans l'annuaire réel de l'organisation. Un acteur de même nom déjà saisi par l'organisation n'est pas touché.
+
+### Bénéficiaires : des effectifs, pas des personnes
+
+- **Aucune fiche nominative.** Le brief ne les admet que si elles sont nécessaires, avec une base légale et des permissions renforcées (loi sénégalaise 2008-12). On ne stocke que des **effectifs agrégés** : une ligne = un nombre de personnes pour une période, une catégorie, un sexe, une tranche d'âge et un lieu (texte libre jusqu'au sous-lot 3d). Cela évite de traiter des données personnelles de bénéficiaires, et donc d'ajouter une déclaration à la CDP à ce titre.
+- **Une combinaison n'existe qu'une fois** (index unique sur le projet, la période, la catégorie, le sexe, la tranche et le lieu, sans tenir compte de la casse) : pas de double saisie qui gonflerait les totaux. Un effectif est un entier de 0 à 100 000 000 ; la fin de période ne précède pas le début.
+- **Pas d'additions trompeuses.** Des effectifs de périodes différentes ne s'additionnent pas toujours (une personne peut être comptée à chaque période). La synthèse porte donc par défaut sur **une seule période** (la plus récente) ; le cumul de toutes les périodes est un autre choix, étiqueté « Cumul des effectifs », avec un bandeau qui le dit.
+- **Synthèse** : total, femmes, hommes, part des femmes **parmi les sexes connus seulement** (aucune part, pas un 0 % trompeur, quand aucun sexe n'est précisé), part des effectifs sans sexe ou sans tranche d'âge (qui dit la qualité de la ventilation), tableau tranche d'âge × sexe (les tranches vides ne sont pas montrées), totaux par catégorie, détail éditable.
+- **Tranches d'âge fixes** pour que les ventilations soient comparables d'un projet à l'autre ; « non précisé » pour ce qui n'a pas été ventilé.
+- **Projet exemple** : vingt effectifs fictifs sur deux semestres glissants, aucune période dans le futur.
+
+### Écrans
+
+- Page **Acteurs** de l'organisation (menu principal) : recherche sans tenir compte des accents, filtre par type, et pour chaque acteur les projets où il intervient avec son rôle (liens vers le projet).
+- Dans un projet : **Acteurs** (rubrique Planification : rattacher un acteur de l'annuaire, en créer un qui s'ouvre aussitôt sur son rôle, modifier le rôle, retirer du projet) et **Bénéficiaires** (rubrique Mise en œuvre).
+
+### Vérifié et non vérifié
+
+- **Vérifié** : 646 assertions pgTAP (dont 56 pour ce lot : isolation, rôles, règles, rattachement, doublons, fin d'essai, projet exemple, retrait des acteurs fictifs) ; 549 tests Vitest ; types et lint propres. Sur le vrai Supabase : migration appliquée (version distante `20261125125152`), projet exemple rempli (4 acteurs, 4 rôles, 20 effectifs), droits et RLS vérifiés.
+- **Vérifié en réel (même jour, comptes de test avec votre accord, tous supprimés ensuite)** :
+  - `e2e/acteurs-beneficiaires.spec.ts` (5 tests, passés du premier coup) : l'éditeur ajoute un acteur à l'annuaire, un doublon de nom (casse différente) et une adresse mal formée sont refusés en le disant ; il le rattache à un projet avec son rôle, crée un second acteur **depuis le projet** (le rôle s'ouvre aussitôt avec l'acteur présélectionné) ; l'annuaire dit dans quels projets chacun intervient ; l'éditeur n'a pas de menu « Supprimer » ; il saisit des effectifs (1 800 femmes + 1 200 hommes = 3 000, part des femmes 60 %), le doublon est refusé, un second semestre fait apparaître le cumul (5 000) avec son avertissement ; le lecteur consulte sans rien écrire ; la base refuse le lecteur (403), le marquage « exemple » (403, 42501), un effectif négatif et une période à l'envers (400, 23514) ; seul l'administrateur supprime un acteur, ses rôles partent avec lui ; supprimer le projet retire ses rôles et ses effectifs mais pas l'annuaire.
+  - **Suite Playwright complète** (bureau et téléphone) : 79 réussis, 69 ignorés, avec l'accessibilité (axe) des pages Acteurs (annuaire et projet), Bénéficiaires et de leurs formulaires, et le contrôle de débordement sur téléphone.
+  - **Défaut de conception trouvé par la suite complète et corrigé** : sur le projet exemple, tous les acteurs de l'annuaire sont déjà rattachés, donc le bouton « Rattacher un acteur » était **grisé sans explication**. Il ne l'est plus : il ouvre le formulaire, qui dit « Tous les acteurs de l'annuaire sont déjà rattachés à ce projet. » (test ajouté).
+  - Après suppression des comptes de test, la base est **identique à son état de départ**, table par table (dont 4 acteurs, 4 rôles et 20 effectifs du projet exemple).
+- **La landing** annonce « Annuaire d'acteurs et rôle par projet » et « Effectifs de bénéficiaires par sexe et âge » dans « Disponible ».
+- **Toujours non vérifié** : Safari et téléphones réels.
+- **Non fait** : pas d'export des acteurs ni des effectifs ; pas de lien entre un effectif et un indicateur du projet ; pas de saisie par lot (un effectif à la fois) ; le lieu est un texte libre.
+
+## 22. Lot 3e (première moitié) : rapport PDF consolidé d'un programme (25 novembre 2026)
+
+Sur « Poursuis ». Le sous-lot 3d (localités et carte) reste bloqué faute de données géographiques réelles et sourcées ; le 3f (paiement en ligne) exige un compte chez un prestataire. Le 3e se coupe en deux : le **rapport consolidé** (construit ici) et l'**envoi automatique programmé** (non construit, voir plus bas).
+
+### Ce qui est construit
+
+- **Un bouton « Rapport PDF du programme »** sur la page d'un programme (visible quand il a au moins un projet et que les taux sont chargés). Disponible pour **tous les rôles, y compris après la fin d'essai** : c'est une lecture, comme le rapport PDF d'un projet. Le PDF se génère dans le navigateur, avec les mêmes polices et la même identité que le rapport de projet (logo de l'organisation ou, à défaut, son nom).
+- **Contenu** : le nom, la période et la description du programme ; l'avancement consolidé (résultats, physique, financier) en trois grands chiffres ; des notes qui disent **comment la consolidation est faite** ; le tableau des projets (statut, période, trois taux, et pour le financier le dépensé sur le budget dans la devise du projet) ; les **points d'attention**.
+- **Une seule source de calcul** : tous les chiffres viennent des vues SQL `v_avancement` et `v_avancement_programme`, les mêmes que la page du programme. Le rapport ne recalcule rien : il dit exactement ce que dit l'écran. Un tiret signifie « aucune donnée », jamais un 0 % inventé.
+- **Points d'attention** (chacun vient d'une colonne des vues) : résultats en alerte sur la trajectoire (statut rouge), budget dépassé (avec son taux, non plafonné), étapes en retard (avec leur nombre), projet sans donnée d'indicateur. Sans alerte, le rapport le dit en une phrase.
+- **Honnêteté de la consolidation** : le rapport écrit que le taux d'un programme est une **moyenne simple, sans pondération** (un grand projet compte autant qu'un petit), combien de projets ont des données, combien ont un budget, que chaque taux financier est plafonné à 100 % dans la moyenne et que les montants de devises différentes ne sont jamais additionnés.
+- Le fichier se nomme `Programme_<nom sans accents>_<date>.pdf`.
+
+### Ce qui n'est pas construit : les rapports programmés
+
+L'envoi automatique d'un rapport à intervalle régulier exige trois choses qui n'existent pas : un **domaine d'envoi vérifié** chez Resend (aucun domaine n'est enregistré), un **planificateur** côté Supabase (tâche planifiée ou fonction déclenchée), et le **consentement des destinataires** (loi 2008-12 : pas de prospection ni d'envoi récurrent sans base légale). Construire la table et l'écran sans pouvoir envoyer donnerait une fonction visible qui ne marche pas, ce que la règle d'or interdit. Ils restent annoncés « Bientôt » sur la landing.
+
+### Vérifié et non vérifié
+
+- **Vérifié** : 14 tests pour les données du rapport (les chiffres de la vue repris tels quels, tirets sans donnée, notes de consolidation, tri des projets, points d'attention, nom du fichier, période) et le rendu du PDF (programme complet, programme sans projet, quarante projets sur plusieurs pages) ; 3 tests pour le bouton de la page du programme (transmission des données, rôles et fin d'essai, programme vide). J'ai **rendu le PDF et regardé la première page en image** : mise en page propre ; cela a fait trouver et corriger un défaut (les espaces fines insécables des montants n'étaient pas converties, les nombres se coupaient mal en fin de ligne). Types et lint propres.
+- **Vérifié en réel** (voir plus bas) : `e2e/rapport-programme.spec.ts` a été joué avec de vrais comptes de test.
+- **Non fait** : pas de choix de période (le rapport porte sur la situation du jour) ; pas de détail par indicateur ni de graphique par projet (le rapport d'un projet les contient) ; pas d'envoi par e-mail.
+
+### Vérification réelle (25 novembre 2026)
+
+Sur la consigne « Vérifie en réel le e2e/rapport-programme.spec.ts », avec trois comptes de test aléatoires créés par SQL puis supprimés (même protocole que les lots précédents).
+
+- **Scénario `rapport-programme.spec.ts`** : un administrateur puis un lecteur ouvrent la page d'un programme de deux projets (l'un avec un indicateur à 50 % et la moitié de son budget dépensé, l'autre sans donnée), téléchargent le rapport (un vrai PDF, `Programme_Programme-E2E-rapport_<date>.pdf`) ; l'accessibilité de la page (axe-core) est sans violation ; sur téléphone (375 px), la page ne déborde pas. Réussi sur ordinateur et sur téléphone.
+- **Contenu du PDF réel regardé en image** (rendu de la première page) : 50 % de résultats, 50 % de financier (« 500 000 F CFA sur 1 000 000 F CFA »), un tiret pour le physique (aucune activité), des tirets pour le projet sans donnée, et son point d'attention. Les notes de consolidation y figurent.
+- **Défaut trouvé par ce contrôle et corrigé** : les notes écrivaient « 1 projets sur 2 ont des données » (le pluriel suivait le total des projets au lieu du nombre de projets concernés). Même défaut sur la page du programme (« 1 projets sur 2 ont un budget défini »). Les libellés accordent maintenant avec le nombre concerné (« 1 projet sur 2 a un budget défini »), avec un test pour le PDF et un pour l'écran.
+- **Fin d'essai** : après avoir fait expirer l'essai de l'organisation de test, l'administrateur et le lecteur peuvent toujours ouvrir la page du programme et télécharger le rapport (c'est une lecture). Contrôle ponctuel, non conservé comme test : il exige de créer les données par SQL avant l'expiration.
+- **Suite complète** (156 tests, ordinateur et téléphone) : 80 réussis, 76 ignorés par conception (autre projet Playwright, autre phase), 0 échec. Dans la suite complète, les trois tests du rapport sont ignorés d'office : le parcours du Lot 1 laisse trois projets de test, donc plus de place (cas prévu, voir `e2e/README.md`). Ils ont été joués seuls, avant la suite.
+- **Landing** : « Rapport PDF consolidé d'un programme » passe dans « Disponible », livré et exercé. « Rapports automatiques programmés » reste « Bientôt ».
+- **Nettoyage** : organisation et comptes de test supprimés, `.env.e2e` retiré ; la base est revenue compte pour compte à son état initial.
+- **Reste non vérifié** : Safari et vrais téléphones ; le rapport n'a pas de test de rendu automatisé sur des données réelles au-delà de ce scénario (la mise en page de longs programmes n'est vérifiée que par le test à quarante projets).
+
+## 23. Lot 3d : localités, zones d'intervention et carte (25 novembre 2026)
+
+Sur « La localité pourra être Yoff, à Dakar, fais les recherches pour les informations qu'il te manquent », puis sur vos réponses à mes questions : fond de carte **OpenStreetMap** ; quartiers de Yoff **sans coordonnées** ; localités **propres à l'organisation** autorisées.
+
+### Ce que la recherche a établi, et d'où cela vient
+
+| Fait | Source | Réserve |
+|---|---|---|
+| Yoff est une commune de l'arrondissement des Almadies, département de Dakar, région de Dakar | Vie-publique.sn (fiche de la commune) ; OpenStreetMap, relation 12988608 (« Commune de Yoff, Arrondissement des Almadies, Dakar, Région de Dakar ») ; plan de développement communal durable de Yoff (PDC-D, 2023), qui place la commune sous la sous-préfecture des Almadies | Vie-publique.sn n'emploie pas « commune d'arrondissement » : j'ai gardé « Commune de Yoff », le nom d'OpenStreetMap et du PDC-D |
+| Position : 14,760358 N, 17,468149 O | Point de référence d'OpenStreetMap (licence ODbL), recoupé avec le PDC-D § 5.1 (14°46' N, 17°29' O) | Les deux sources s'écartent d'environ 1,7 km : le PDC-D arrondit à la minute |
+| Sept quartiers du village traditionnel : Tonghor, Ndénatte, Dagoudane, N’Deungagne, Ngaparou, M’Benguène, Layène | PDC-D § 5.3.3 | La liste des zones du diagnostic (§ 4.2.1) cite aussi « Guintha Ndioufféne » dans le village traditionnel : non retenu, le § 5.3.3 en compte sept |
+| Superficie 14,65 km², dont 3,28 km² pour l'aéroport | PDC-D § 5.1 | Non stockée |
+| Population : 119 351 (recensement du 18 août 2023) | citypopulation.de, qui cite l'ANSD, et Vie-publique.sn. Le PDC-D donne 118 220 : c'est une projection du recensement de 2013 | **Non stockée** : je n'ai pas pu lire le rapport RGPH-5 de l'ANSD (le certificat du site est refusé depuis ce poste), donc je n'ai pas vérifié ce chiffre à la source |
+
+**Non chargés, faute de source nette** : les cités nouvelles (Apecsy, Nord Foire, Ouest Foire, Diamalaye, Terme Nord) : le PDC-D annonce sept zones et n'en liste que six, je ne reconstruis pas ce qui manque. Les coordonnées de chaque quartier : le PDC-D n'a qu'une figure sans coordonnées, et vous avez choisi de ne pas les chercher dans OpenStreetMap. Le reste du Sénégal : aucun jeu de données complet, daté et sourcé n'a été fourni.
+
+### Modèle de données (migration `20261126170000_lot3d_localites.sql`, appliquée : `lot3d_localites`)
+
+- **`localites`** : deux sortes de lignes dans une table. **Référentiel de la plateforme** (`org_id` nul) : lisible par tout utilisateur connecté, **aucun droit d'écriture pour le client**, écrit par la migration ou la clé de service, source obligatoire sur chaque ligne. **Localités de l'organisation** (`org_id` renseigné) : lues par ses membres, écrites par ses admins et éditeurs. Six niveaux ordonnés (région, département, arrondissement, commune, village, quartier) ; un enfant a un niveau strictement plus fin que son parent (aucun cycle possible), un niveau peut être sauté. Niveau et parent ne changent plus après création (droits par colonne). Coordonnées par paire, bornées. Un nom est unique sous un même parent sans tenir compte de la casse, et une organisation ne recrée pas une localité du référentiel de même nom et de même parent.
+- **`projet_localites`** : les zones d'intervention d'un projet (unique par projet et localité). **`kpi_entries.localite_id`** et **`realisations.localite_id`** : rattachement facultatif, accepté seulement pour une zone du projet. **Retirer une zone ne modifie pas les saisies ni les réalisations déjà rattachées** ; une localité qui sert (zone, saisie, réalisation) ou qui a des enfants ne se supprime pas (clé étrangère sans action, erreur 23503). Pas de « restreindre », pour la même raison qu'au 3a : supprimer une organisation ou un projet efface localités et zones dans la même instruction.
+- **Projet exemple** : rattaché à la commune de Yoff, à titre d'illustration (ses données restent fictives, la page le dit).
+- **Correction d'une fonction partagée** : `private.verifier_ecriture_essai()` ignore désormais une ligne sans organisation. Sans cela, une insertion dans le référentiel par un client aurait répondu « essai terminé » au lieu d'un refus de droit. Aucune autre table n'a d'`org_id` nul ; les 646 assertions précédentes passent toujours.
+
+### Écrans
+
+- **Zones d'intervention** (rubrique Planification) : liste des zones (niveau, origine « Référentiel » ou « Votre organisation », contexte administratif, coordonnées ou « Sans coordonnées : absente de la carte », nombre de saisies et de réalisations rattachées), ajout depuis le référentiel avec recherche sans accents, création d'une localité de l'organisation qui devient aussitôt une zone, retrait avec confirmation, et la **carte**.
+- **Localités** (navigation de l'organisation) : tout ce que l'organisation voit, en arbre, avec la source de chaque ligne ; modifier et supprimer les seules localités de l'organisation.
+- **Saisie et Réalisations** : un champ « Localité » parmi les zones du projet, absent tant que le projet n'en a pas. L'historique des saisies gagne une colonne « Localité » quand l'une d'elles en a une.
+- **Carte** : Leaflet 1.9.4, chargé uniquement sur la page des zones (150 ko, 44 ko compressés, plus 6 ko de style). Un repère par zone avec coordonnées, atteignable au clavier, avec une fenêtre en **texte** (un nom saisi n'est jamais lu comme du HTML : testé avec une balise piégée). La liste des zones, juste au-dessus, donne la même information : la carte est un complément, pas le seul moyen d'accès. Mouvement réduit respecté. Le fond vient d'OpenStreetMap par défaut ; `VITE_CARTE_TUILES_URL` le change sans toucher au code, mais le fournisseur doit aussi être ajouté à `img-src` dans `vercel.json`.
+- **Confidentialité** : la page dit que l'affichage de la carte charge des images depuis OpenStreetMap, qui voit alors l'adresse IP et le navigateur, et qu'aucune donnée de pilotage ne lui est transmise (seule la zone de carte affichée l'est, par le découpage en tuiles).
+
+### Limites
+
+- **Une saisie reste une valeur par indicateur et par date** (contrainte unique existante) : la localité d'une saisie dit où la valeur a été relevée, elle ne ventile pas un indicateur par localité. Le faire exigerait de changer l'unicité et les calculs d'indicateurs : non fait.
+- Points seulement : pas de contours de zones, pas de choix d'une position en cliquant sur la carte (les coordonnées se saisissent en degrés décimaux, avec la virgule acceptée), pas de géocodage ni d'import d'un référentiel national.
+- **OpenStreetMap** : sa politique d'usage des tuiles demande un usage raisonnable et n'offre aucune garantie de service. Elle convient à des débuts ; avec du trafic, il faudra un fournisseur sous contrat (c'est un réglage, voir ci-dessus).
+- Les bénéficiaires gardent leur champ « lieu » en texte libre : le brief ne rattache à une localité que les saisies et les réalisations.
+- Deux organisations qui créent la même localité ne la partagent pas.
+
+### Vérifié et non vérifié
+
+- **Vérifié, base** : 73 assertions pgTAP pour ce lot (719 au total, 0 échec) : référentiel (douze lignes, hiérarchie, coordonnées de Yoff, aucune coordonnée de quartier, une source par ligne), isolation entre organisations, rôles (lecteur, éditeur, anonyme), écriture du référentiel refusée au client (création, modification, suppression), niveaux et parents, doublons (dont celui d'une localité du référentiel), coordonnées par paire et bornées, zones, saisies et réalisations rattachées seulement à une zone du projet, retrait d'une zone qui laisse les rattachements, suppression d'une localité refusée si elle sert ou a des enfants, suppression d'un projet et d'une organisation, fin d'essai, projet exemple. Migration appliquée sur le vrai Supabase : douze localités, projet exemple de l'utilisateur rattaché à Yoff, aucune alerte de sécurité nouvelle.
+- **Vérifié, application** : 613 tests Vitest au total (dont 13 pour la bibliothèque des localités, 6 pour la carte réelle dans jsdom, 18 pour les deux pages, 5 pour la saisie, 2 pour les réalisations), types et lint propres.
+- **Vérifié en réel (comptes de test avec votre accord, tous supprimés ensuite)** : `e2e/zones.spec.ts`, 5 tests sur 5, passés deux fois de suite après la correction de deux attentes de mon scénario (le libellé de la commune montre deux niveaux de contexte, et deux boutons « Fermer » se partagent la fenêtre). Un éditeur ajoute Yoff et Layène depuis le référentiel (recherche sans accents), la page affiche coordonnées, contexte et « Sans coordonnées » ; la carte montre un seul repère (Yoff), atteignable au clavier, avec une fenêtre de texte, les images viennent bien de tile.openstreetmap.org, l'attribution et son lien sont là et **la politique de sécurité ne bloque rien**. Il crée une localité de l'organisation (coordonnées avec virgule et vrai signe moins acceptées) : elle devient une zone, la carte compte deux repères ; recréer « Layène » sous le même parent est refusé en le disant, une latitude de 95 aussi. Une réalisation et une saisie rattachées à Layène, usage par zone (« 1 saisie · 1 réalisation »), retrait de la zone sans perdre les rattachements. La page des localités : modifier une localité, suppression refusée tant qu'une zone s'en sert, puis acceptée. Le lecteur consulte sans rien pouvoir écrire. La base refuse : création par un lecteur, écriture du référentiel par un éditeur (403, modification et suppression sans effet), changement de niveau ou de parent, enfant plus large que son parent, réalisation rattachée à une localité hors zone. Page des zones avec la carte : aucune violation axe.
+- **Accessibilité et téléphone** : les pages Zones et Localités, et leurs trois formulaires (ajouter une zone, créer une localité, ajouter une localité), sont dans `accessibilite-app.spec.ts` : aucune violation, et aucune page ne déborde à 375 px. Je les ai regardées en image (ordinateur).
+- **Suite complète** (166 tests) : 74 réussis, 2 échecs. **Intermittence** : le contrôle d'accessibilité a échoué sur un chargement de page trop lent (20 s), puis a passé deux fois de suite sans changement. **Résidu de mon contrôle** : le scénario des acteurs a échoué parce que mon script de captures avait chargé le projet exemple (quatre acteurs fictifs dans l'annuaire) et ne l'avait pas retiré ; rejoué sur une organisation propre, 5 tests sur 5. Les trois scénarios qui créent des projets (acteurs, rapport de programme, zones) sont ignorés dans la suite complète quand le parcours du Lot 1 a rempli le quota ; ils se rejouent seuls. La machine tournait à une charge de 32 pendant ces passages : le téléchargement du PDF du rapport de programme a dépassé une fois 20 s (13 s d'ordinaire) ; l'attente du test est portée à 60 s.
+- Après suppression des comptes de test, la base est **identique à son état de départ**, table par table (douze localités du référentiel et le rattachement du projet exemple compris).
+- **La landing** annonce « Localités, zones d'intervention et carte » dans « Disponible » (il était dans « Bientôt »).
+- **Non vérifié** : Safari et téléphones réels (la carte n'a été vue en image que sur ordinateur) ; la charge d'OpenStreetMap avec du trafic réel ; l'exactitude du rapport ANSD (population non stockée).
+
+## 24. Paiement en ligne et rapports programmés : réponses et prérequis (25 novembre 2026)
+
+Sur « qu'est-ce qu'il te faut pour poursuivre ? » pour Resend et Stripe. Rien n'est construit ici : ce paragraphe fixe les décisions prises et ce qui manque.
+
+### Rapports programmés (Resend) : reportés sur votre décision
+
+Resend ne contient aucun domaine, et vous n'en avez pas encore choisi. **Reportés.** Décisions déjà prises pour quand ils reprendront : les destinataires sont les **membres de l'organisation, par choix** (chacun active la réception dans son profil et peut l'arrêter), aucune adresse externe. Il faudra alors : un **domaine** dont vous gérez les enregistrements DNS (je conseille un sous-domaine dédié à l'envoi), que j'ajouterai dans Resend avec votre accord, une **clé d'API** que vous poserez vous-même comme secret Supabase, et l'activation de `pg_cron` et `pg_net`, disponibles mais non activées sur le projet.
+
+### Paiement en ligne (Stripe) : ce qui est décidé et ce qui manque
+
+Décidé : compte Stripe **en France**, facturation en **euros**, **abonnement avec reconduction** (page de paiement hébergée par Stripe, donc aucune donnée de carte chez nous ; mensuel ou annuel à −20 % ; portail client pour changer de plan, mettre à jour la carte et résilier ; le plan de l'organisation suit les événements Stripe).
+
+À savoir : **Stripe n'ouvre pas de compte pour une entreprise au Sénégal**, et ne couvre ni Wave ni Orange Money. Pour les clients qui paient par mobile money ou par virement, la facturation manuelle doit rester possible : je ne la retirerai pas. Je n'ai pas pu confirmer qu'une devise XOF est acceptée pour un compte français.
+
+Ce que vous devez fournir ou faire : voir la section 25, qui remplace la première liste que j'avais donnée (elle prévoyait cinq événements et des identifiants à me remettre ; la construction en a besoin de moins).
+
+## 25. Lot 3f : paiement Stripe, construit et en attente de vos clés (25 novembre 2026)
+
+Sur « Poursuis sur les autres étapes, je te donnerai les secret keys après ». Tout est construit et testé **sans clé** ; rien n'est visible dans l'application tant que Stripe n'est pas configuré. Le test de bout en bout avec Stripe en mode test attend les clés.
+
+### Ce qui est construit
+
+- **Base** (migration `20261126180000_lot3f_abonnements.sql`, appliquée : `lot3f_abonnements`) : `abonnements` (plan payé, périodicité, statut, fin de période, annulation en fin de période ; identifiants Stripe illisibles par le client, droits par colonne ; lue par les admins de l'organisation seulement ; **aucune écriture du client**) et `evenements_stripe` (journal anti-rejeu, fermé au client). Deux fonctions **réservées à la clé de service** (l'exécution est retirée à `anon` et `authenticated`, vérifié sur le vrai projet) : `stripe_lier_client` et `stripe_appliquer_abonnement`.
+- **Règles de plan** : `active`, `trialing`, `past_due` donnent le plan payé (en `past_due`, Stripe retente le paiement et l'accès est maintenu, l'écran le dit) ; `canceled`, `unpaid`, `paused` remettent l'organisation en **lecture seule** (données consultables et exportables) si elle avait un plan payé ; `incomplete` et `incomplete_expired` ne changent rien (un paiement abandonné ne retire pas un essai en cours). Un plan **enterprise** n'est jamais modifié. Un événement n'est appliqué qu'une fois, un événement plus ancien que le dernier appliqué est ignoré, et un autre abonnement est ignoré tant que le courant n'est pas terminé.
+- **Trois fonctions Edge, déployées et actives** : `stripe-checkout` (état du paiement en ligne, puis création de la session de paiement), `stripe-portal` (portail client de Stripe) et `stripe-webhook` (événements d'abonnement, **signature vérifiée sur le corps brut**, tolérance de 5 minutes contre le rejeu, comparaison en temps constant). Appels à l'API REST de Stripe sans SDK. Seul un administrateur peut souscrire ou ouvrir le portail ; les adresses de retour viennent de `APP_URL`, jamais de la requête (pas de redirection ouverte) ; l'adresse de paiement renvoyée n'est acceptée que si elle est sur `stripe.com` ; la clé n'apparaît jamais dans un message ni dans le journal.
+- **Application** : une carte « Abonnement en ligne » dans Paramètres, **réservée aux administrateurs et absente tant que le serveur ne confirme pas que le paiement est configuré** (clé valide, `APP_URL`, au moins un prix que Stripe confirme actif, récurrent, de la bonne période). Les prix affichés sont **ceux de Stripe** (aucun montant recopié dans le code), avec leur devise et, pour l'annuel, l'équivalent mensuel. Un bandeau « Mode test » apparaît tant que la clé est une clé de test. Pour un abonné : plan, statut, prochain renouvellement ou fin sans reconduction, alerte en cas de paiement en retard, bouton « Gérer l'abonnement » vers le portail. Au retour de la page de paiement, l'écran attend l'activation du plan (40 s au plus) et dit si elle tarde. Le bandeau de fin d'essai propose « Payer en ligne » aux administrateurs, aux mêmes conditions. La facturation manuelle reste décrite et possible.
+- **La landing** continue de dire que le paiement en ligne n'existe pas encore : elle ne changera qu'après un vrai paiement de test qui aura activé un plan.
+
+### Ce que vous avez à faire quand vous voulez activer le paiement (en mode test d'abord)
+
+Ne m'envoyez aucune clé dans la conversation : posez-les vous-même dans le tableau de bord Supabase, **Edge Functions, Secrets**. Si vous en avez déjà collé une quelque part, régénérez-la dans Stripe.
+
+1. **Dans Stripe (mode test)** : créez deux produits, « Pilot M&E Starter » et « Pilot M&E Pro », chacun avec **un prix récurrent mensuel et un prix récurrent annuel en euros** (quatre prix). Les montants sont les vôtres : ceux de la landing (25 et 50 dollars) sont provisoires.
+2. **Secrets à poser** (chacun se règle sans modifier le code) :
+
+| Secret | Valeur |
+|---|---|
+| `STRIPE_SECRET_KEY` | Une clé **restreinte** `rk_test_…` (Développeurs, Clés API) avec les droits : Sessions Checkout en écriture, Clients en écriture, Portail client en écriture, Prix en lecture. Une clé secrète `sk_test_…` marche aussi ; une clé publique `pk_…` est refusée |
+| `STRIPE_PRICE_STARTER_MENSUELLE`, `STRIPE_PRICE_STARTER_ANNUELLE`, `STRIPE_PRICE_PRO_MENSUELLE`, `STRIPE_PRICE_PRO_ANNUELLE` | Les identifiants `price_…` des quatre prix (non secrets) |
+| `APP_URL` | L'adresse publique de l'application, en https, sans barre finale. Déjà demandée pour les invitations par e-mail |
+| `STRIPE_WEBHOOK_SECRET` | `whsec_…`, obtenu à l'étape suivante |
+
+3. **Le point d'entrée des événements** : dans Stripe (Développeurs, Webhooks), ajoutez un point d'entrée à l'adresse `https://rdhjfdfbtopkgamaifda.supabase.co/functions/v1/stripe-webhook` pour **trois événements seulement** : `customer.subscription.created`, `customer.subscription.updated` et `customer.subscription.deleted`. Copiez son secret de signature dans `STRIPE_WEBHOOK_SECRET`.
+4. **Le portail client** : dans Stripe (Paramètres, Facturation, Portail client), enregistrez ses réglages (changement de plan, mise à jour de la carte, résiliation). Sans cela, le bouton « Gérer l'abonnement » répond « portail non réglé ».
+5. **Le côté commercial et juridique** (à vous et à votre comptable, je ne donne pas de conseil fiscal) : conditions de vente, politique de remboursement, mentions de facturation (raison sociale, adresse, numéro de TVA), traitement de la TVA, et Stripe comme sous-traitant dans la politique de confidentialité.
+
+### Vérification réelle, quand les clés seront posées
+
+Ce sera, avec des comptes de test et Stripe en mode test : l'écran passe de « rien » à « Abonnement en ligne » avec vos prix ; « Souscrire » mène à la page de paiement de Stripe avec le bon prix ; un abonnement de test (carte de test de Stripe, saisie par vous dans la page de Stripe, ou créé depuis votre tableau de bord de test) envoie ses événements au vrai point d'entrée, le plan de l'organisation passe à Starter ou Pro, le portail s'ouvre, une résiliation de test remet l'organisation en lecture seule. Je ne saisirai pas de numéro de carte sur une page de Stripe à votre place.
+
+### Vérifié, non vérifié
+
+- **Vérifié** : 65 assertions pgTAP pour ce lot (784 au total, 0 échec) : droits (le client ne lit que l'état, jamais les identifiants, n'écrit rien, n'appelle pas les fonctions), idempotence, désordre des événements, autre abonnement, plan payant, lecture seule après résiliation (écritures refusées par la base, données conservées), réabonnement, paiement abandonné sans effet sur l'essai, plan enterprise intact. 17 tests pour les outils Stripe (signature : bon secret, corps modifié, horodatage ancien ou futur, plusieurs signatures ; encodage des paramètres ; lecture des événements des deux formes de l'API) et 34 pour les trois fonctions avec une **fausse API Stripe** (droits, état, souscription aux paramètres exacts, réutilisation du client, abonnement déjà en cours, plan enterprise, adresse hors Stripe refusée, origine de la requête ignorée, panne de base distinguée d'un refus de droits, clé absente des journaux, webhook sans signature valide, corps brut avec caractères non ASCII). 21 tests pour l'écran et le bandeau. Fonctions déployées sur le vrai projet : le webhook répond « non configuré » sans secret, les deux autres exigent une session, CORS en place.
+- **Non vérifié** : tout ce qui touche le vrai Stripe (les prix lus, la session créée, la signature d'un vrai événement, le portail) ; la forme exacte des événements selon la version d'API de votre compte (les deux formes de la fin de période sont gérées, mais je ne l'ai vue que dans la documentation) ; l'écran n'a pas de contrôle d'accessibilité automatique, car il n'apparaît que lorsque Stripe est configuré.
+- **Limites** : une seule organisation par utilisateur et un seul abonnement par organisation ; pas de bons de réduction ni d'essai Stripe ; changer de plan se fait dans le portail ; passer de Pro à Starter ne supprime rien (les limites ne jouent qu'à la création) ; la TVA n'est pas gérée par l'application.

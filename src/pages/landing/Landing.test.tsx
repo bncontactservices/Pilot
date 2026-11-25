@@ -85,20 +85,26 @@ describe("Landing : contenu et structure", () => {
       "Prochaines étapes",
       "États d’avancement",
       "Documents du projet",
+      "Budget, dépenses et taux financier",
+      "Composantes et planning en diagramme de Gantt",
+      "Annuaire d’acteurs et rôle par projet",
+      "Effectifs de bénéficiaires par sexe et âge",
+      "Rapport PDF consolidé d’un programme",
+      "Localités, zones d’intervention et carte",
     ]) {
       expect(livre.getByText(item)).toBeInTheDocument();
     }
     const bientot = bloc("Bientôt");
-    for (const item of [
-      "Carte des zones d’intervention",
-      "Suivi budgétaire",
-      "Rapports automatiques programmés",
-      "Saisie hors ligne",
-    ]) {
+    for (const item of ["Rapports automatiques programmés", "Saisie hors ligne"]) {
       expect(bientot.getByText(item)).toBeInTheDocument();
     }
     expect(bientot.queryByText("Cadre logique")).not.toBeInTheDocument();
     expect(bientot.queryByText("Plan de travail annuel")).not.toBeInTheDocument();
+    expect(bientot.queryByText("Budget, dépenses et taux financier")).not.toBeInTheDocument();
+    // Le rapport PDF d'un programme est livré ; l'envoi automatique programmé, lui, ne l'est pas.
+    expect(bientot.queryByText("Rapport PDF consolidé d’un programme")).not.toBeInTheDocument();
+    // La carte des zones d'intervention est livrée : elle n'est plus annoncée « Bientôt ».
+    expect(bientot.queryByText(/carte/i)).not.toBeInTheDocument();
   });
 
   it("les données de démonstration sont étiquetées comme telles, partout où elles apparaissent", async () => {

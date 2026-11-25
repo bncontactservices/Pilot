@@ -54,9 +54,14 @@ export default function Confidentialite() {
           <li>
             <strong>Données de pilotage</strong> : programmes, projets, indicateurs, valeurs et commentaires, cadre
             logique, plan de travail, phases et étapes, réalisations, prochaines étapes, états d’avancement, étiquettes,
-            et les documents déposés (avec nom, catégorie, taille et auteur du dépôt). Un « responsable » désigné dans
-            ces écrans est un simple nom saisi librement : ce n’est pas nécessairement un utilisateur. Finalité :
-            fournir le service (exécution du contrat).
+            et les documents déposés (avec nom, catégorie, taille et auteur du dépôt), l’annuaire d’acteurs (nom d’une
+            organisation et, si l’organisation les saisit, la fonction, l’adresse e-mail et le téléphone d’une personne
+            à contacter) et, pour les bénéficiaires, des <strong>effectifs agrégés</strong> (nombre de personnes par
+            période, catégorie, sexe et tranche d’âge) : Pilot M&amp;E n’enregistre aucune fiche nominative de
+            bénéficiaire. Les <strong>localités</strong> (nom, niveau, rattachement et, facultativement, coordonnées
+            d’un lieu : village, quartier, commune) désignent des lieux d’intervention, pas des personnes. Un «
+            responsable » désigné dans ces écrans est un simple nom saisi librement : ce n’est pas nécessairement un
+            utilisateur. Finalité : fournir le service (exécution du contrat).
           </li>
           <li>
             <strong>Historique des modifications</strong> : qui a modifié quoi, et quand. Finalité : assurer la sécurité
@@ -94,6 +99,13 @@ export default function Confidentialite() {
             est activée.
           </li>
           <li>Cloudflare Turnstile : vérification anti-robot du formulaire de contact, si elle est activée.</li>
+          <li>
+            OpenStreetMap (fondation OpenStreetMap) : images du fond de carte, chargées seulement lorsque la carte des
+            zones d’intervention d’un projet est affichée. Votre navigateur les demande directement à ses serveurs :
+            votre adresse IP et les caractéristiques de votre navigateur lui sont visibles, mais ni vos données de
+            pilotage ni les coordonnées de vos localités ne lui sont transmises, à l’exception de la zone de carte
+            affichée.
+          </li>
         </ul>
         <p>Les données peuvent aussi être communiquées à une autorité, sur réquisition légale.</p>
       </section>

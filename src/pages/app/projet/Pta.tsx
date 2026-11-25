@@ -25,7 +25,15 @@ import { useOrg } from "~/hooks/useContexteOrg";
 import i18n from "~/i18n";
 import { arrondirTaux, enRetard, STATUTS_TRAVAIL, type StatutTravail, tauxPhysique } from "~/lib/avancement";
 import { useParametresSe } from "~/lib/donnees";
-import { type ActivitePta, clesSe, invaliderAvancement, useNoeuds, usePhases, usePta } from "~/lib/donnees-se";
+import {
+  type ActivitePta,
+  clesSe,
+  invaliderAvancement,
+  useNoeuds,
+  usePhases,
+  usePta,
+  useComposantes,
+} from "~/lib/donnees-se";
 import { formaterDate, formaterMontant } from "~/lib/format";
 import { aujourdhuiIso } from "~/lib/kpi";
 import { anneeParDefaut, anneesProposees, periodeActivite, pourcentSelonStatut } from "~/lib/pta";
@@ -46,6 +54,7 @@ export default function Pta() {
   const activites = usePta(projet.id);
   const noeuds = useNoeuds(projet.id);
   const phases = usePhases(projet.id);
+  const composantes = useComposantes(projet.id);
   const parametres = useParametresSe(org.organisation.id);
   const aujourdhui = aujourdhuiIso();
   const moisDebut = parametres.data?.mois_debut_annee_fiscale ?? 1;
@@ -379,6 +388,7 @@ export default function Pta() {
         moisDebut={moisDebut}
         noeuds={noeuds.data ?? []}
         phases={phases.data ?? []}
+        composantes={composantes.data ?? []}
         suggestionsResponsables={responsables}
       />
       <DialogueConfirmation

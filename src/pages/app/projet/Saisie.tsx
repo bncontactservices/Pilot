@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { EtatVide, JaugeVide } from "~/components/app/Etats";
 import { useGestionErreur } from "~/components/app/LimitePlan";
+import { ChampLocalite } from "~/components/app/zones/ChampLocalite";
 import { Bandeau } from "~/components/ui/banner";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
@@ -25,9 +26,11 @@ import { Input, NativeSelect, Textarea } from "~/components/ui/input";
 import { useOrg } from "~/hooks/useContexteOrg";
 import i18n from "~/i18n";
 import { cles, type SaisieLigne } from "~/lib/donnees";
+import { useLocalites } from "~/lib/donnees-se";
 import { analyserErreur } from "~/lib/errors";
 import { formaterDate, formaterValeur } from "~/lib/format";
 import { aujourdhuiIso, detecterAberrant } from "~/lib/kpi";
+import { indexer, libelleLieu } from "~/lib/localites";
 import { getSupabase } from "~/lib/supabase";
 import { useContexteProjet } from "../ProjetLayout";
 
@@ -40,7 +43,7 @@ const nombre = z
 const versNombre = (texte: string) => Number(texte.replace(",", "."));
 const versTexte = (valeur: number) => String(valeur).replace(".", ",");
 
-const COLONNES = "id, kpi_id, date, valeur, commentaire, created_at, updated_at";
+const COLONNES = "id, kpi_id, date, valeur, commentaire, localite_id, created_at, updated_at";
 const PAGE = 25;
 
 type Etape = { type: "aberrant" | "remplacer"; valeurs: Valeurs } | null;
@@ -50,6 +53,7 @@ const schema = z.object({
   date: z.iso.date({ error: "saisie.validation.date" }),
   valeur: nombre,
   commentaire: z.string().trim().max(2000, { error: "auth.validation.trop_long" }),
+  localiteId: z.string(),
 });
 type Valeurs = z.infer<typeof schema>;
 
@@ -76,10 +80,13 @@ export default function Saisie() {
     formState: { errors },
   } = useForm<Valeurs>({
     resolver: zodResolver(schema),
-    defaultValues: { kpiId: kpiInitial, date: aujourdhui, valeur: "", commentaire: "" },
+    defaultValues: { kpiId: kpiInitial, date: aujourdhui, valeur: "", commentaire: "", localiteId: "" },
   });
   const kpiId = useWatch({ control, name: "kpiId" });
   const date = useWatch({ control, name: "date" });
+  const localiteId = useWatch({ control, name: "localiteId" });
+  const localites = useLocalites(org.organisation.id);
+  const indexLocalites = useMemo(() => indexer(localites.data ?? []), [localites.data]);
   const kpi = kpis.find((k) => k.id === kpiId);
 
   const historique = useMemo(
@@ -112,7 +119,13 @@ export default function Saisie() {
     mutationFn: async (v: Valeurs) => {
       const { data, error } = await getSupabase()
         .from("kpi_entries")
-        .insert({ kpi_id: v.kpiId, date: v.date, valeur: versNombre(v.valeur), commentaire: v.commentaire || null })
+        .insert({
+          kpi_id: v.kpiId,
+          date: v.date,
+          valeur: versNombre(v.valeur),
+          commentaire: v.commentaire || null,
+          localite_id: v.localiteId || null,
+        })
         .select(COLONNES)
         .single();
       if (error) throw error;
@@ -127,6 +140,7 @@ export default function Saisie() {
           date: v.date,
           valeur: versNombre(v.valeur),
           commentaire: v.commentaire || null,
+          localite_id: v.localiteId || null,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         },
@@ -137,7 +151,7 @@ export default function Saisie() {
     },
     onSuccess: (_d, v) => {
       toast.success(t("saisie.enregistree", { valeur: formaterValeur(versNombre(v.valeur), kpi?.unite ?? "") }));
-      reset({ kpiId: v.kpiId, date: v.date, valeur: "", commentaire: "" });
+      reset({ kpiId: v.kpiId, date: v.date, valeur: "", commentaire: "", localiteId: v.localiteId });
       setTimeout(() => setFocus("valeur"), 0);
     },
     onSettled: rafraichir,
@@ -145,12 +159,30 @@ export default function Saisie() {
 
   const remplacement = useMutation({
     retry: reessayerSiReseau,
-    mutationFn: async ({ id, valeur, commentaire }: { id: string; valeur: number; commentaire: string | null }) => {
-      const { error } = await getSupabase().from("kpi_entries").update({ valeur, commentaire }).eq("id", id);
+    // La localité n'est transmise que par le formulaire rapide : corriger une valeur dans l'historique ne la touche pas.
+    mutationFn: async ({
+      id,
+      valeur,
+      commentaire,
+      localite_id,
+    }: {
+      id: string;
+      valeur: number;
+      commentaire: string | null;
+      localite_id?: string | null;
+    }) => {
+      const { error } = await getSupabase()
+        .from("kpi_entries")
+        .update({ valeur, commentaire, ...(localite_id !== undefined ? { localite_id } : {}) })
+        .eq("id", id);
       if (error) throw error;
     },
-    onMutate: ({ id, valeur, commentaire }) =>
-      optimiste((lignes) => lignes.map((l) => (l.id === id ? { ...l, valeur, commentaire } : l))),
+    onMutate: ({ id, valeur, commentaire, localite_id }) =>
+      optimiste((lignes) =>
+        lignes.map((l) =>
+          l.id === id ? { ...l, valeur, commentaire, ...(localite_id !== undefined ? { localite_id } : {}) } : l,
+        ),
+      ),
     onError: (erreur, v, contexte) => {
       annuler(erreur, v, contexte);
       gererErreur(erreur);
@@ -158,7 +190,7 @@ export default function Saisie() {
     onSuccess: () => {
       toast.success(t("saisie.remplacee"));
       // Le formulaire rapide n'est vidé que si c'est lui qui a déclenché le remplacement.
-      if (etape?.type === "remplacer") reset({ kpiId, date, valeur: "", commentaire: "" });
+      if (etape?.type === "remplacer") reset({ kpiId, date, valeur: "", commentaire: "", localiteId });
       setEtape(null);
       setAModifier(null);
     },
@@ -205,6 +237,8 @@ export default function Saisie() {
   const enFutur = date > aujourdhui;
   const avantProjet = kpi?.type_agregation === "cumul" && date < projet.date_debut;
   const visibles = historique.slice(0, affichees);
+  // La colonne « Localité » n'apparaît que si au moins une saisie affichée en a une.
+  const avecLocalites = visibles.some((s) => s.localite_id);
 
   return (
     <div className="grid grid-cols-1 gap-6">
@@ -294,6 +328,15 @@ export default function Saisie() {
                 </Champ>
               </div>
 
+              <ChampLocalite
+                id="saisie-localite"
+                projetId={projet.id}
+                libelle={t("saisie.localite")}
+                aide={t("saisie.localite_aide")}
+                aucune={t("saisie.localite_aucune")}
+                inscription={register("localiteId")}
+              />
+
               <Champ
                 id="saisie-commentaire"
                 libelle={t("saisie.colonnes.commentaire")}
@@ -378,6 +421,11 @@ export default function Saisie() {
                       <th scope="col" className="py-2 pr-4 text-right font-semibold">
                         {t("saisie.colonnes.valeur")}
                       </th>
+                      {avecLocalites && (
+                        <th scope="col" className="py-2 pr-4 font-semibold">
+                          {t("saisie.colonnes.localite")}
+                        </th>
+                      )}
                       <th scope="col" className="py-2 pr-4 font-semibold">
                         {t("saisie.colonnes.commentaire")}
                       </th>
@@ -397,6 +445,11 @@ export default function Saisie() {
                         <td className="py-2.5 pr-4 text-right font-mono whitespace-nowrap tabular">
                           {formaterValeur(s.valeur, kpi?.unite ?? "")}
                         </td>
+                        {avecLocalites && (
+                          <td className="py-2.5 pr-4">
+                            {s.localite_id ? libelleLieu(indexLocalites, s.localite_id, 1) : ""}
+                          </td>
+                        )}
                         <td className="py-2.5 pr-4 text-muted-foreground">{s.commentaire}</td>
                         {org.peutEditer && (
                           <td className="py-1.5 text-right whitespace-nowrap">
@@ -458,6 +511,7 @@ export default function Saisie() {
                   id: existante.id,
                   valeur: versNombre(etape.valeurs.valeur),
                   commentaire: etape.valeurs.commentaire || null,
+                  localite_id: etape.valeurs.localiteId || null,
                 })
               }
               chargement={remplacement.isPending}

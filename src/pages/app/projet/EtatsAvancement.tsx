@@ -63,8 +63,12 @@ export default function EtatsAvancement() {
       aujourdhui,
       seuils,
     });
-    const physique = avancements.data?.get(projet.id)?.taux_physique;
-    return { resultats: global.progression, physique: physique == null ? null : Number(physique) };
+    const taux = avancements.data?.get(projet.id);
+    return {
+      resultats: global.progression,
+      physique: taux?.taux_physique == null ? null : Number(taux.taux_physique),
+      financier: taux?.taux_financier == null ? null : Number(taux.taux_financier),
+    };
   }, [kpis, saisies, projet, aujourdhui, seuils, avancements.data]);
 
   const depart = useMemo(() => {
@@ -174,6 +178,7 @@ export default function EtatsAvancement() {
                 <TauxAvancement
                   resultats={etat.taux_resultats === null ? null : Number(etat.taux_resultats)}
                   physique={etat.taux_physique === null ? null : Number(etat.taux_physique)}
+                  financier={etat.taux_financier === null ? null : Number(etat.taux_financier)}
                   className="rounded-xl bg-subtle p-4"
                 />
 

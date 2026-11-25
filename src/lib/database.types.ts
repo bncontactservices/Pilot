@@ -17,6 +17,12 @@ type Enums_ = {
   type_noeud: "objectif_global" | "objectif_specifique" | "resultat" | "activite";
   type_etape: "jalon" | "livrable";
   categorie_document: "rapport" | "contrat" | "justificatif" | "autre";
+  type_acteur: "bailleur" | "partenaire" | "prestataire" | "autorite_locale" | "autre";
+  sexe_beneficiaire: "femme" | "homme" | "non_precise";
+  tranche_age: "0_4" | "5_14" | "15_24" | "25_59" | "60_plus" | "non_precise";
+  niveau_localite: "region" | "departement" | "arrondissement" | "commune" | "village" | "quartier";
+  statut_abonnement:
+    "incomplete" | "incomplete_expired" | "trialing" | "active" | "past_due" | "canceled" | "unpaid" | "paused";
 };
 
 export type Database = {
@@ -240,12 +246,19 @@ export type Database = {
           date: string;
           valeur: number;
           commentaire: string | null;
+          localite_id: string | null;
           created_by: string | null;
           created_at: string;
           updated_at: string;
         };
-        Insert: { kpi_id: string; date: string; valeur: number; commentaire?: string | null };
-        Update: { date?: string; valeur?: number; commentaire?: string | null };
+        Insert: {
+          kpi_id: string;
+          date: string;
+          valeur: number;
+          commentaire?: string | null;
+          localite_id?: string | null;
+        };
+        Update: { date?: string; valeur?: number; commentaire?: string | null; localite_id?: string | null };
         Relationships: [
           {
             foreignKeyName: "kpi_entries_kpi_id_fkey";
@@ -430,6 +443,7 @@ export type Database = {
           pct_realisation: number;
           noeud_id: string | null;
           phase_id: string | null;
+          composante_id: string | null;
           created_by: string | null;
           created_at: string;
           updated_at: string;
@@ -448,6 +462,7 @@ export type Database = {
           pct_realisation?: number;
           noeud_id?: string | null;
           phase_id?: string | null;
+          composante_id?: string | null;
         };
         Update: {
           annee?: number;
@@ -462,6 +477,7 @@ export type Database = {
           pct_realisation?: number;
           noeud_id?: string | null;
           phase_id?: string | null;
+          composante_id?: string | null;
         };
         Relationships: [];
       };
@@ -478,6 +494,7 @@ export type Database = {
           risques: string | null;
           taux_resultats: number | null;
           taux_physique: number | null;
+          taux_financier: number | null;
           created_by: string | null;
           created_at: string;
           updated_at: string;
@@ -501,6 +518,253 @@ export type Database = {
         };
         Relationships: [];
       };
+      acteurs: {
+        Row: {
+          id: string;
+          org_id: string;
+          nom: string;
+          type: Enums_["type_acteur"];
+          description: string | null;
+          contact: string | null;
+          email: string | null;
+          telephone: string | null;
+          notes: string | null;
+          exemple: boolean;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          org_id: string;
+          nom: string;
+          type: Enums_["type_acteur"];
+          description?: string | null;
+          contact?: string | null;
+          email?: string | null;
+          telephone?: string | null;
+          notes?: string | null;
+        };
+        Update: {
+          nom?: string;
+          type?: Enums_["type_acteur"];
+          description?: string | null;
+          contact?: string | null;
+          email?: string | null;
+          telephone?: string | null;
+          notes?: string | null;
+        };
+        Relationships: [];
+      };
+      projet_acteurs: {
+        Row: {
+          id: string;
+          project_id: string;
+          org_id: string;
+          acteur_id: string;
+          role: string;
+          notes: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: { project_id: string; acteur_id: string; role: string; notes?: string | null };
+        Update: { role?: string; notes?: string | null };
+        Relationships: [];
+      };
+      localites: {
+        Row: {
+          id: string;
+          /** Nul : référentiel de la plateforme (lecture seule). Renseigné : localité de l'organisation. */
+          org_id: string | null;
+          parent_id: string | null;
+          niveau: Enums_["niveau_localite"];
+          nom: string;
+          latitude: number | null;
+          longitude: number | null;
+          source: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          org_id: string;
+          parent_id?: string | null;
+          niveau: Enums_["niveau_localite"];
+          nom: string;
+          latitude?: number | null;
+          longitude?: number | null;
+          source?: string | null;
+        };
+        Update: { nom?: string; latitude?: number | null; longitude?: number | null; source?: string | null };
+        Relationships: [];
+      };
+      /**
+       * Abonnement Stripe de l'organisation, lisible par ses admins seulement. Le client ne lit ni l'identifiant du client
+       * Stripe ni celui de l'abonnement (droits par colonne) et n'écrit rien : on sélectionne les colonnes une à une.
+       */
+      abonnements: {
+        Row: {
+          org_id: string;
+          plan: Enums_["plan_choisi"] | null;
+          periodicite: "mensuelle" | "annuelle" | null;
+          statut: Enums_["statut_abonnement"];
+          periode_fin: string | null;
+          annule_en_fin_de_periode: boolean;
+          updated_at: string;
+        };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+      projet_localites: {
+        Row: {
+          id: string;
+          project_id: string;
+          org_id: string;
+          localite_id: string;
+          notes: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: { project_id: string; localite_id: string; notes?: string | null };
+        Update: { notes?: string | null };
+        Relationships: [];
+      };
+      beneficiaires_effectifs: {
+        Row: {
+          id: string;
+          project_id: string;
+          org_id: string;
+          periode_debut: string;
+          periode_fin: string;
+          categorie: string;
+          sexe: Enums_["sexe_beneficiaire"];
+          tranche_age: Enums_["tranche_age"];
+          effectif: number;
+          lieu: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          project_id: string;
+          periode_debut: string;
+          periode_fin: string;
+          categorie: string;
+          sexe?: Enums_["sexe_beneficiaire"];
+          tranche_age?: Enums_["tranche_age"];
+          effectif: number;
+          lieu?: string | null;
+        };
+        Update: {
+          periode_debut?: string;
+          periode_fin?: string;
+          categorie?: string;
+          sexe?: Enums_["sexe_beneficiaire"];
+          tranche_age?: Enums_["tranche_age"];
+          effectif?: number;
+          lieu?: string | null;
+        };
+        Relationships: [];
+      };
+      composantes: {
+        Row: {
+          id: string;
+          project_id: string;
+          org_id: string;
+          nom: string;
+          description: string | null;
+          responsable: string | null;
+          date_debut: string | null;
+          date_fin: string | null;
+          statut: Enums_["statut_travail"];
+          ordre: number;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          project_id: string;
+          nom: string;
+          description?: string | null;
+          responsable?: string | null;
+          date_debut?: string | null;
+          date_fin?: string | null;
+          statut?: Enums_["statut_travail"];
+          ordre?: number;
+        };
+        Update: {
+          nom?: string;
+          description?: string | null;
+          responsable?: string | null;
+          date_debut?: string | null;
+          date_fin?: string | null;
+          statut?: Enums_["statut_travail"];
+          ordre?: number;
+        };
+        Relationships: [];
+      };
+      budget_lignes: {
+        Row: {
+          id: string;
+          project_id: string;
+          org_id: string;
+          annee: number;
+          poste: string;
+          montant_prevu: number;
+          notes: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          project_id: string;
+          annee: number;
+          poste: string;
+          montant_prevu: number;
+          notes?: string | null;
+        };
+        Update: { annee?: number; poste?: string; montant_prevu?: number; notes?: string | null };
+        Relationships: [];
+      };
+      depenses: {
+        Row: {
+          id: string;
+          project_id: string;
+          org_id: string;
+          budget_ligne_id: string;
+          date: string;
+          libelle: string;
+          montant: number;
+          fournisseur: string | null;
+          reference: string | null;
+          document_id: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          project_id: string;
+          budget_ligne_id: string;
+          date: string;
+          libelle: string;
+          montant: number;
+          fournisseur?: string | null;
+          reference?: string | null;
+          document_id?: string | null;
+        };
+        Update: {
+          budget_ligne_id?: string;
+          date?: string;
+          libelle?: string;
+          montant?: number;
+          fournisseur?: string | null;
+          reference?: string | null;
+          document_id?: string | null;
+        };
+        Relationships: [];
+      };
       realisations: {
         Row: {
           id: string;
@@ -514,6 +778,7 @@ export type Database = {
           lieu: string | null;
           noeud_id: string | null;
           pta_activite_id: string | null;
+          localite_id: string | null;
           created_by: string | null;
           created_at: string;
           updated_at: string;
@@ -528,6 +793,7 @@ export type Database = {
           lieu?: string | null;
           noeud_id?: string | null;
           pta_activite_id?: string | null;
+          localite_id?: string | null;
         };
         Update: {
           date?: string;
@@ -538,6 +804,7 @@ export type Database = {
           lieu?: string | null;
           noeud_id?: string | null;
           pta_activite_id?: string | null;
+          localite_id?: string | null;
         };
         Relationships: [];
       };
@@ -658,6 +925,9 @@ export type Database = {
           nb_etapes: number;
           nb_etapes_terminees: number;
           nb_etapes_en_retard: number;
+          budget_total: number | null;
+          depenses_total: number | null;
+          taux_financier: number | null;
         };
         Relationships: [];
       };
@@ -670,6 +940,9 @@ export type Database = {
           taux_resultats: number | null;
           nb_projets_avec_pta: number;
           taux_physique: number | null;
+          nb_projets_avec_budget: number;
+          taux_financier: number | null;
+          nb_projets_depassement: number;
         };
         Relationships: [];
       };

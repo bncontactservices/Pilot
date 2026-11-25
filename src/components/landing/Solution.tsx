@@ -10,7 +10,7 @@ const FONCTIONS = [
   { cle: "temps_reel", Visuel: VisuelTempsReel },
   { cle: "rapports", Visuel: VisuelRapport },
 ] as const;
-// Ce qui est déjà dans l'application (Lot 2) et ce qui est annoncé sans date : une fonction passe de la seconde liste
+// Ce qui est déjà dans l'application (Lots 2 et 3) et ce qui est annoncé sans date : une fonction passe de la seconde liste
 // à la première quand elle est livrée ET exercée dans l'application, pas avant.
 const LIVRE = [
   "programmes",
@@ -21,8 +21,14 @@ const LIVRE = [
   "prochaines_etapes",
   "etats",
   "documents",
+  "budget",
+  "composantes",
+  "acteurs",
+  "beneficiaires",
+  "rapport_programme",
+  "carte",
 ] as const;
-const BIENTOT = ["carte", "budget", "rapports_programmes", "hors_ligne"] as const;
+const BIENTOT = ["rapports_programmes", "hors_ligne"] as const;
 
 export function Solution() {
   const { t } = useTranslation();

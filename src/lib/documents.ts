@@ -21,29 +21,35 @@ export type DepotDocument = {
 
 /**
  * Dépose le fichier puis enregistre sa ligne. Si l'enregistrement échoue, le fichier déposé est retiré :
- * pas de fichier orphelin du fait d'un échec.
+ * pas de fichier orphelin du fait d'un échec. Retourne l'identifiant du document et le chemin du fichier
+ * (pour le rattacher, par exemple, comme justificatif d'une dépense).
  */
-export async function deposerDocument(d: DepotDocument): Promise<void> {
+export async function deposerDocument(d: DepotDocument): Promise<{ id: string; storage_path: string }> {
   const supabase = getSupabase();
   const type = typeDocument(d.fichier);
   if (type === null) throw new Error("mime type not supported");
   const chemin = cheminDocument(d.orgId, d.projetId, d.fichier.name, crypto.randomUUID());
   const depot = await supabase.storage.from(BUCKET).upload(chemin, d.fichier, { contentType: type, upsert: false });
   if (depot.error) throw depot.error;
-  const { error } = await supabase.from("documents").insert({
-    project_id: d.projetId,
-    nom: d.nom,
-    categorie: d.categorie,
-    description: d.description,
-    storage_path: chemin,
-    mime_type: type,
-    taille_octets: d.fichier.size,
-    realisation_id: d.realisationId,
-  });
+  const { data, error } = await supabase
+    .from("documents")
+    .insert({
+      project_id: d.projetId,
+      nom: d.nom,
+      categorie: d.categorie,
+      description: d.description,
+      storage_path: chemin,
+      mime_type: type,
+      taille_octets: d.fichier.size,
+      realisation_id: d.realisationId,
+    })
+    .select("id")
+    .single();
   if (error) {
     await supabase.storage.from(BUCKET).remove([chemin]);
     throw error;
   }
+  return { id: data.id, storage_path: chemin };
 }
 
 /**

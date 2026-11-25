@@ -20,6 +20,17 @@ export function formaterMontant(valeur: number, devise: string): string {
   );
 }
 
+/** Montant avec ses centimes seulement s'il en a : « 12,5 FCFA » mais « 12 000 FCFA ». Pour les dépenses saisies à la main. */
+export function formaterMontantExact(valeur: number, devise: string): string {
+  const entier = Number.isInteger(valeur);
+  return new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: devise,
+    minimumFractionDigits: entier ? 0 : 2,
+    maximumFractionDigits: entier ? 0 : 2,
+  }).format(valeur);
+}
+
 export function initiales(nom: string | null | undefined, email?: string | null): string {
   const source = (nom || email || "?").trim();
   const mots = source.split(/[\s@._-]+/).filter(Boolean);

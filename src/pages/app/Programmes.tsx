@@ -83,7 +83,12 @@ function CarteProgramme({
   chargement,
 }: {
   programme: Programme;
-  avancement?: { nb_projets: number; taux_resultats: number | null; taux_physique: number | null };
+  avancement?: {
+    nb_projets: number;
+    taux_resultats: number | null;
+    taux_physique: number | null;
+    taux_financier: number | null;
+  };
   chargement: boolean;
 }) {
   const { t } = useTranslation();
@@ -153,6 +158,7 @@ function CarteProgramme({
               <TauxAvancement
                 resultats={avancement?.taux_resultats ?? null}
                 physique={avancement?.taux_physique ?? null}
+                financier={avancement?.taux_financier ?? null}
               />
             )}
           </>

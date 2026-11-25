@@ -24,6 +24,17 @@ const CODES_METIER = new Set([
   "PROGRAMME_INTROUVABLE",
   "ETIQUETTES_MAX",
   "DOCUMENT_CHEMIN_INVALIDE",
+  "LOCALITE_EXISTE",
+  "LOCALITE_PARENT_INVALIDE",
+  "LOCALITE_NIVEAU_INVALIDE",
+  "LOCALITE_INTROUVABLE",
+  "LOCALITE_HORS_PROJET",
+  "PAIEMENT_NON_CONFIGURE",
+  "PAIEMENT_INDISPONIBLE",
+  "ABONNEMENT_EXISTE",
+  "ABONNEMENT_INTROUVABLE",
+  "PLAN_ENTERPRISE",
+  "PORTAIL_NON_CONFIGURE",
 ]);
 
 const CODES_AUTH: Record<string, string> = {
@@ -42,6 +53,7 @@ const CODES_AUTH: Record<string, string> = {
 };
 
 const CODES_POSTGRES: Record<string, string> = {
+  "23503": "erreurs.element_utilise",
   "23505": "erreurs.doublon",
   "23514": "erreurs.donnees_invalides",
   "42501": "erreurs.acces_refuse",

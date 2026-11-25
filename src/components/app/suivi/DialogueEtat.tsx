@@ -50,7 +50,7 @@ type Props = {
   /** Période et titre proposés pour un nouvel état. */
   depart: { debut: string; fin: string; titre: string };
   /** Taux affichés aujourd'hui : ceux que la base enregistrera avec le nouvel état. */
-  tauxActuels: { resultats: number | null; physique: number | null };
+  tauxActuels: { resultats: number | null; physique: number | null; financier: number | null };
   realisations: Pick<Realisation, "date">[];
 };
 
@@ -136,12 +136,17 @@ function Corps({ onFermer, projetId, etat, depart, tauxActuels, realisations }: 
                 <TauxAvancement
                   resultats={etat.taux_resultats === null ? null : Number(etat.taux_resultats)}
                   physique={etat.taux_physique === null ? null : Number(etat.taux_physique)}
+                  financier={etat.taux_financier === null ? null : Number(etat.taux_financier)}
                 />
               </>
             ) : (
               <>
                 <p className="text-sm font-semibold text-navy">{t("etatsAvancement.formulaire.taux_actuels")}</p>
-                <TauxAvancement resultats={tauxActuels.resultats} physique={tauxActuels.physique} />
+                <TauxAvancement
+                  resultats={tauxActuels.resultats}
+                  physique={tauxActuels.physique}
+                  financier={tauxActuels.financier}
+                />
                 <p className="text-xs text-muted-foreground">{t("etatsAvancement.formulaire.taux_aide")}</p>
               </>
             )}

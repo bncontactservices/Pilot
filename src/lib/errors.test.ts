@@ -27,6 +27,14 @@ describe("analyserErreur", () => {
       "erreurs.acces_refuse",
     );
   });
+  it("traduit une suppression refusée parce que l'élément est utilisé ailleurs", () => {
+    expect(
+      analyserErreur({
+        code: "23503",
+        message: 'update or delete on table "budget_lignes" violates foreign key constraint',
+      }).cle,
+    ).toBe("erreurs.element_utilise");
+  });
   it("traduit les refus du stockage de fichiers", () => {
     expect(analyserErreur({ message: "The object exceeded the maximum allowed size", statusCode: "413" }).cle).toBe(
       "erreurs.stockage_trop_gros",

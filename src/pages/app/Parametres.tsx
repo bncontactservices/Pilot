@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { DEVISES } from "~/components/app/DialogueNouveauProjet";
 import { EntetePage } from "~/components/app/EntetePage";
+import { CarteAbonnement } from "~/components/app/abonnement/CarteAbonnement";
 import { CarteSuiviEvaluation } from "~/components/app/CarteSuiviEvaluation";
 import { useGestionErreur } from "~/components/app/LimitePlan";
 import { Badge } from "~/components/ui/badge";
@@ -38,6 +39,7 @@ export default function Parametres() {
         <CarteSuiviEvaluation />
         <CarteLogo />
         <CartePlan />
+        <CarteAbonnement />
         <CarteProfil />
         <Card>
           <CardHeader>

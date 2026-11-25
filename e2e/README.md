@@ -50,3 +50,31 @@ Mêmes comptes de test que ci-dessus.
   (suppression dans l'application, puis suppression par l'API seule rattrapée à l'ouverture de l'application). Il crée deux
   projets de test avec un fichier chacun et les supprime à la fin ; il demande de la place pour deux projets. **Les comptes
   doivent avoir été créés avec la version à jour de `supabase/e2e/creer_comptes.sql`** (métadonnée `conditions_version`).
+- `finances.spec.ts` (Lot 3a) : un budget par poste et par année, des dépenses (dont une avec un vrai PDF comme
+  justificatif, téléchargé), un dépassement signalé, le taux financier dans l'en-tête du projet, le taux figé dans
+  un état d'avancement, le refus de supprimer une ligne qui a des dépenses, la lecture seule du lecteur, puis la
+  suppression du projet (dépenses et fichier du justificatif compris). Il crée « Projet E2E finances » et demande une
+  place libre dans le quota de trois projets.
+- `composantes.spec.ts` (Lot 3b) : créer des composantes (une datée, une à planifier), refus d'un doublon de nom et d'une
+  seule date, planning en diagramme de Gantt, rattachement d'une activité du plan de travail, lecture seule du lecteur,
+  refus de la base (lecteur, rattachement à un autre projet, doublon) et suppression d'une composante qui garde ses
+  activités. Il crée deux projets de test (« Projet E2E composantes » et un second) : il demande de la place pour deux
+  projets dans le quota de trois.
+- `acteurs-beneficiaires.spec.ts` (Lot 3c) : l'annuaire d'acteurs de l'organisation (doublon de nom et adresse mal formée refusés,
+  suppression réservée aux admins), le rôle d'un acteur dans un projet (dont la création d'un acteur depuis le projet, qui
+  ouvre aussitôt le rôle), les effectifs de bénéficiaires (synthèse, part des femmes, cumul de plusieurs périodes avec son
+  avertissement, doublon refusé), la lecture seule du lecteur, les refus de la base (lecteur, marquage « exemple »,
+  effectif négatif, période à l'envers) et la suppression du projet (rôles et effectifs partent, l'annuaire reste). Il crée
+  « Projet E2E acteurs » et deux acteurs, qu'il supprime à la fin ; il demande une place libre dans le quota de trois projets.
+- `rapport-programme.spec.ts` (Lot 3e) : la page d'un programme de deux projets (l'un avec un indicateur, une saisie et la moitié de
+  son budget dépensé, l'autre sans donnée) et le téléchargement du rapport PDF consolidé par un administrateur et par un
+  lecteur (un vrai PDF, nommé d'après le programme et la date), plus l'accessibilité de la page et, sur téléphone (375 px), l'absence de débordement. Il crée un programme et
+  deux projets de test, qu'il supprime à la fin ; il demande de la place pour deux projets dans le quota de trois.
+- `zones.spec.ts` (Lot 3d) : les zones d'intervention d'un projet, choisies dans le référentiel de Yoff (la commune a des coordonnées
+  sourcées, ses quartiers n'en ont pas), la création d'une localité de l'organisation (refusée si elle recrée une localité du
+  référentiel, ou avec une latitude hors limites), la carte (un repère par zone avec coordonnées, repère atteignable au clavier,
+  images de fond OpenStreetMap, aucune violation de la politique de sécurité), une réalisation et une saisie rattachées à une
+  localité, le retrait d'une zone qui laisse les rattachements, la suppression d'une localité refusée tant qu'une zone s'en sert,
+  la lecture seule du lecteur, et les refus de la base (lecteur, écriture du référentiel, niveau figé, localité hors zone). **Il
+  charge des images depuis tile.openstreetmap.org : il exige un accès au réseau.** Il crée « Projet E2E zones » et des localités
+  « … E2E », qu'il supprime à la fin ; il demande une place libre dans le quota de trois projets.

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Layers, Pencil, Trash2 } from "lucide-react";
+import { ArrowLeft, FileDown, Layers, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router";
@@ -13,6 +13,7 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { useOrg } from "~/hooks/useContexteOrg";
+import { useExportRapportProgramme } from "~/hooks/useExportRapportProgramme";
 import i18n from "~/i18n";
 import { useAvancements, useAvancementsProgrammes, useProgrammes } from "~/lib/donnees";
 import { formaterPeriode } from "~/lib/format";
@@ -31,12 +32,13 @@ export default function ProgrammeDetail() {
   const programmes = useProgrammes(org.organisation.id);
   const consolidations = useAvancementsProgrammes(org.organisation.id);
   const avancements = useAvancements(org.organisation.id);
+  const { exporter, enCours } = useExportRapportProgramme();
   const projets = useQuery({
     queryKey: ["projets", org.organisation.id, "programme", programmeId],
     queryFn: async () => {
       const { data, error } = await getSupabase()
         .from("projects")
-        .select("id, nom, statut, date_debut, date_fin")
+        .select("id, nom, statut, date_debut, date_fin, devise")
         .eq("programme_id", programmeId)
         .order("nom");
       if (error) throw error;
@@ -102,6 +104,26 @@ export default function ProgrammeDetail() {
           }
           actions={
             <>
+              {(projets.data?.length ?? 0) > 0 && !avancements.isPending && !consolidations.isPending && (
+                <Button
+                  chargement={enCours}
+                  onClick={() =>
+                    void exporter({
+                      programme: {
+                        nom: programme.nom,
+                        description: programme.description,
+                        date_debut: programme.date_debut,
+                        date_fin: programme.date_fin,
+                      },
+                      consolide: consolide ?? null,
+                      projets: (projets.data ?? []).map((p) => ({ ...p, avancement: avancements.data?.get(p.id) })),
+                    })
+                  }
+                >
+                  <FileDown aria-hidden />
+                  {enCours ? t("rapport.programme.generation") : t("rapport.programme.bouton")}
+                </Button>
+              )}
               {org.peutEditer && (
                 <Button variante="contour" onClick={() => setEdition(true)}>
                   <Pencil aria-hidden />
@@ -132,6 +154,7 @@ export default function ProgrammeDetail() {
               <TauxAvancement
                 resultats={consolide?.taux_resultats ?? null}
                 physique={consolide?.taux_physique ?? null}
+                financier={consolide?.taux_financier ?? null}
                 avecAide
               />
               <p className="text-sm text-muted-foreground">
@@ -139,6 +162,20 @@ export default function ProgrammeDetail() {
                   avec: consolide?.nb_projets_avec_resultats ?? 0,
                   count: consolide?.nb_projets ?? 0,
                 })}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {t("programmes.detail.projets_avec_budget", {
+                  count: consolide?.nb_projets_avec_budget ?? 0,
+                  total: consolide?.nb_projets ?? 0,
+                })}
+                {(consolide?.nb_projets_depassement ?? 0) > 0 && (
+                  <>
+                    {" "}
+                    <strong className="font-semibold text-status-alert-ink">
+                      {t("programmes.detail.projets_depassement", { count: consolide?.nb_projets_depassement ?? 0 })}
+                    </strong>
+                  </>
+                )}
               </p>
             </>
           )}
@@ -187,6 +224,7 @@ export default function ProgrammeDetail() {
                     <TauxAvancement
                       resultats={avancement?.taux_resultats ?? null}
                       physique={avancement?.taux_physique ?? null}
+                      financier={avancement?.taux_financier ?? null}
                     />
                   )}
                 </li>

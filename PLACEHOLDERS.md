@@ -136,6 +136,67 @@ Sauvegardez ou remettez d'abord à l'administrateur l'export de ses données si 
 | Quota de stockage de fichiers par plan | Aucun : seule la limite de 20 Mo par fichier existe |
 | Nettoyage des fichiers d'un projet supprimé | Fait (file en base, vidée par l'application) ; la fermeture d'un compte reste manuelle (voir ci-dessus) |
 
+## Finances et budgets (Lot 3a)
+
+| Élément | État |
+|---|---|
+| Budget et dépenses du projet exemple | Données **fictives** (250 000 000 FCFA sur trois exercices, fournisseurs suivis de « (fictif) »), comme le reste de l'exemple |
+| Devise | Celle du projet ; aucune conversion entre devises. Un programme ne somme jamais les montants de ses projets (ils peuvent avoir des devises différentes) : il consolide les taux |
+| Qui écrit | **Les dépenses sont réservées aux administrateurs** (votre choix du 25 novembre) ; le budget (lignes par poste et par année) reste géré par les admins et les éditeurs ; éditeurs et lecteurs consultent et téléchargent les justificatifs |
+| Postes de dépense | Texte libre, avec suggestion des postes déjà utilisés. Pas de plan comptable ni de catégories de bailleur : à décider avec les clients pilotes |
+| Export | Non fait : pas d'export PDF ni Excel du budget et des dépenses, ni d'import de budget par fichier |
+| Rapport PDF du projet | Ne contient pas encore la partie financière |
+
+## Composantes et planning (Lot 3b)
+
+| Élément | État |
+|---|---|
+| Composantes du projet exemple | Quatre composantes **fictives** dont les dates et le statut se déduisent des activités de l'exemple |
+| Définition | Une composante est un axe du projet (un groupe de résultats ou de travaux), distinct d'une phase (macro-période), d'une étape (jalon daté) et d'une prochaine étape (action de court terme) |
+| Avancement d'une composante | Moyenne de l'avancement de ses activités du plan de travail (hors annulées) ; sans activité, pas de taux |
+| Rattachement | Une activité appartient à une composante au plus, choisie dans le formulaire du plan de travail ; le cadre logique et les réalisations ne sont pas reliés aux composantes |
+| Export | Pas d'export du planning (image ou PDF) : à décider avec les clients pilotes |
+
+## Acteurs et bénéficiaires (Lot 3c)
+
+| Élément | État |
+|---|---|
+| Acteurs du projet exemple | Quatre acteurs **fictifs** (leur nom dit « fictif »), marqués « Exemple » et **retirés de l'annuaire** quand le projet exemple est supprimé |
+| Annuaire | Propre à l'organisation ; un acteur peut intervenir dans plusieurs projets, avec un rôle par projet. Créer et modifier : admins et éditeurs ; **supprimer : admins** (cela retire aussi ses rôles) |
+| Coordonnées d'un acteur | Nom, fonction ou service à contacter, e-mail et téléphone, **saisis par l'organisation** : ce sont des données personnelles de tiers si une personne est nommée. La page « Confidentialité » le dit ; elle reste provisoire (à faire relire par un juriste) |
+| **Bénéficiaires** | **Aucune fiche nominative** : seulement des effectifs agrégés par période, catégorie, sexe et tranche d'âge. Si un client demande des fiches nominatives, c'est une décision à part : base légale, permissions renforcées, déclaration à la CDP |
+| Tranches d'âge | Fixes (0-4, 5-14, 15-24, 25-59, 60 et plus, non précisé) pour que les ventilations restent comparables d'un projet à l'autre : à valider avec les clients pilotes |
+| Lieu | Texte libre en attendant le référentiel de localités du sous-lot 3d |
+| Cumul des effectifs | Présenté comme tel, avec l'avertissement qu'une même personne peut être comptée à chaque période ; la synthèse par défaut porte sur une seule période |
+| Export | Pas d'export des acteurs ni des effectifs |
+
+## Rapport de programme (Lot 3e)
+
+| Élément | État |
+|---|---|
+| Rapport PDF consolidé d'un programme | Construit : avancement consolidé (résultats, physique, financier), tableau des projets, points d'attention. Reste disponible pour tous les rôles, y compris après la fin d'essai |
+| Consolidation | **Moyenne simple** des taux des projets, sans pondération, comme sur la page du programme ; le rapport le dit. Les montants de projets de devises différentes ne sont jamais additionnés |
+| **Rapports automatiques programmés** | **Non construits.** Ils exigent un domaine d'envoi vérifié chez Resend (aucun domaine n'est enregistré, voir plus haut), un planificateur côté Supabase et un consentement des destinataires. Ils restent annoncés « Bientôt » sur la landing |
+| Vérification réelle | Jouée le 25 novembre 2026 avec de vrais comptes (administrateur et lecteur) : téléchargement d'un vrai PDF, contenu regardé, accessibilité de la page, téléphone 375 px, et après la fin d'essai. Annoncé « Disponible » sur la landing |
+
+## Localités, zones et carte (Lot 3d)
+
+| Élément | État |
+|---|---|
+| Référentiel de la plateforme | **Yoff seulement** : région, département, arrondissement, commune, village traditionnel et ses sept quartiers (12 lignes, chacune avec sa source). Le reste du Sénégal n'est pas chargé : il faudra un jeu de données complet, daté et sourcé |
+| Coordonnées | Seule la commune de Yoff en a (OpenStreetMap, recoupé avec le plan communal). Les quartiers n'en ont pas, aucune n'est inventée |
+| Population de Yoff | Non stockée : 119 351 (recensement 2023, via citypopulation.de qui cite l'ANSD) contre 118 220 (projection du plan communal) ; le rapport ANSD n'a pas pu être lu |
+| Localités de l'organisation | Autorisées (admins et éditeurs) : c'est ce qui rend la fonction utile hors de Yoff |
+| Fond de carte | OpenStreetMap (gratuit, usage raisonnable, sans garantie). Pour un fournisseur sous contrat : `VITE_CARTE_TUILES_URL` **et** `img-src` dans `vercel.json` |
+| Politique de confidentialité | Dit que la carte charge des images depuis OpenStreetMap (adresse IP visible). À faire relire avec le reste par un juriste |
+
+## Paiement en ligne et rapports programmés (décisions du 25 novembre 2026)
+
+| Élément | État |
+|---|---|
+| Rapports automatiques programmés | **Reportés.** Resend n'a aucun domaine ; il faut un domaine dont vous gérez le DNS, une clé d'API posée par vous en secret Supabase, et `pg_cron` + `pg_net` à activer. Destinataires prévus : les membres de l'organisation, par choix |
+| Paiement en ligne Stripe | **Construit, en attente de vos clés** (compte en France, euros, abonnement avec reconduction ; `DECISIONS.md`, section 25). Rien n'est visible dans l'application tant que Stripe n'est pas configuré. Il manque, de votre part : les quatre prix en euros créés en mode test dans Stripe, les secrets `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `APP_URL` et les quatre `STRIPE_PRICE_…` posés par vous dans Supabase, le point d'entrée des événements déclaré chez Stripe, le portail client réglé, les conditions de vente et le traitement de la TVA. Stripe n'accepte pas d'entreprise au Sénégal et ne couvre pas le mobile money : la facturation manuelle reste. La landing dit encore que le paiement en ligne n'existe pas : elle changera après un vrai paiement de test |
+
 ## Page d’accueil
 
 La landing complète est en place (Lot 1c) et distingue désormais ce qui est disponible de ce qui est annoncé « Bientôt » (Lot 2d). Restent à fournir pour l'améliorer : adresse publique, témoignages et chiffres sourcés des pilotes, vidéo, logo définitif.

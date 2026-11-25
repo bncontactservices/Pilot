@@ -39,11 +39,13 @@ import {
   type DocumentProjet,
   type Realisation,
   useDocuments,
+  useLocalites,
   useNoeuds,
   usePta,
   useRealisations,
 } from "~/lib/donnees-se";
 import { formaterDate, formaterNombre, formaterTaille } from "~/lib/format";
+import { indexer, libelleLieu } from "~/lib/localites";
 import { getSupabase } from "~/lib/supabase";
 import { useContexteProjet } from "../ProjetLayout";
 
@@ -59,6 +61,8 @@ export default function Realisations() {
   const documents = useDocuments(projet.id);
   const noeuds = useNoeuds(projet.id);
   const pta = usePta(projet.id);
+  const localites = useLocalites(org.organisation.id);
+  const indexLocalites = useMemo(() => indexer(localites.data ?? []), [localites.data]);
   const { telecharger, enCours } = useTelechargement();
   const peutModifier = org.peutEditer;
 
@@ -149,7 +153,7 @@ export default function Realisations() {
                     <div className="grid min-w-0 gap-1">
                       <p className="font-mono text-xs text-muted-foreground tabular">{formaterDate(r.date)}</p>
                       <h2 className="text-lg leading-snug font-bold text-navy">{r.titre}</h2>
-                      {(r.quantite !== null || r.lieu) && (
+                      {(r.quantite !== null || r.lieu || r.localite_id) && (
                         <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-foreground">
                           {r.quantite !== null && (
                             <span className="font-mono font-semibold tabular">
@@ -157,10 +161,12 @@ export default function Realisations() {
                               {r.unite && <span className="ml-1 font-sans font-medium">{r.unite}</span>}
                             </span>
                           )}
-                          {r.lieu && (
+                          {(r.lieu || r.localite_id) && (
                             <span className="inline-flex items-center gap-1 text-muted-foreground">
                               <MapPin className="size-3.5" aria-hidden />
-                              {r.lieu}
+                              {[r.localite_id ? libelleLieu(indexLocalites, r.localite_id, 1) : "", r.lieu]
+                                .filter(Boolean)
+                                .join(" — ")}
                             </span>
                           )}
                         </p>

@@ -435,3 +435,14 @@ verify_jwt = false
 # Formulaire public de la landing : aucun jeton de session à vérifier.
 [functions.submit-lead]
 verify_jwt = false
+
+# Lot 3f : paiement en ligne (Stripe). Les trois fonctions authentifient elles-mêmes l'appelant :
+# jeton de session et rôle administrateur pour stripe-checkout et stripe-portal, signature de l'événement pour stripe-webhook.
+[functions.stripe-checkout]
+verify_jwt = false
+
+[functions.stripe-portal]
+verify_jwt = false
+
+[functions.stripe-webhook]
+verify_jwt = false

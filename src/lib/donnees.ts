@@ -11,7 +11,10 @@ export type Kpi = Tables<"kpis">;
 export type SaisieLigne = Pick<
   Tables<"kpi_entries">,
   "id" | "kpi_id" | "date" | "valeur" | "commentaire" | "created_at" | "updated_at"
->;
+> & {
+  /** Localité (zone d'intervention) où la valeur a été relevée ; absente des lignes qui n'en ont pas. */
+  localite_id?: string | null;
+};
 export type Projet = Tables<"projects"> & { secteur: { libelle: string } | null };
 export type Programme = Tables<"programmes">;
 export type ParametresSe = Tables<"parametres_se">;
@@ -76,7 +79,7 @@ async function chargerSaisies(projetId: string): Promise<SaisieLigne[]> {
   const lignes = await toutesLesPages((debut, fin) =>
     getSupabase()
       .from("kpi_entries")
-      .select("id, kpi_id, date, valeur, commentaire, created_at, updated_at, kpis!inner(project_id)")
+      .select("id, kpi_id, date, valeur, commentaire, localite_id, created_at, updated_at, kpis!inner(project_id)")
       .eq("kpis.project_id", projetId)
       .order("date")
       .order("id")

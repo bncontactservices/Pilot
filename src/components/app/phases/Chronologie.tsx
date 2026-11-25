@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { enRetard } from "~/lib/avancement";
 import type { Etape, Phase } from "~/lib/donnees-se";
 import { formaterDate } from "~/lib/format";
+import { graduations } from "~/lib/gantt";
 import { numeroJour } from "~/lib/kpi";
 
 const LARGEUR = 800;
@@ -9,32 +10,6 @@ const MARGE = 12;
 const HAUTEUR_AXE = 26;
 const HAUTEUR_LIGNE = 38;
 const HAUTEUR_ETAPES = 44;
-
-/** Mois de départ des graduations : au plus huit repères sur l'axe. */
-function graduations(debut: number, fin: number): { jour: number; iso: string }[] {
-  const d = new Date(debut * 86_400_000);
-  const nbMois =
-    (new Date(fin * 86_400_000).getUTCFullYear() - d.getUTCFullYear()) * 12 +
-    new Date(fin * 86_400_000).getUTCMonth() -
-    d.getUTCMonth() +
-    1;
-  const pas = [1, 2, 3, 6, 12, 24].find((p) => nbMois / p <= 8) ?? 24;
-  const sortie: { jour: number; iso: string }[] = [];
-  let annee = d.getUTCFullYear();
-  let mois = d.getUTCMonth();
-  for (let i = 0; i < 400; i += 1) {
-    const iso = `${annee}-${String(mois + 1).padStart(2, "0")}-01`;
-    const jour = numeroJour(iso);
-    if (jour > fin) break;
-    if (jour >= debut && (annee * 12 + mois) % pas === 0) sortie.push({ jour, iso });
-    mois += 1;
-    if (mois > 11) {
-      mois = 0;
-      annee += 1;
-    }
-  }
-  return sortie;
-}
 
 /** Le nom d'une phase qui commencerait trop près du bord droit est aligné sur la fin de sa barre. */
 const debordeADroite = (gauche: number, nom: string) => gauche + nom.length * 7.8 > LARGEUR - MARGE;

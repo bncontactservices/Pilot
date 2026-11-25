@@ -68,17 +68,31 @@ describe("Navigation du projet : trois rubriques, puis les pages de la rubrique 
   it("ouvre Planification sur le cadre logique, le plan de travail ou les phases", async () => {
     afficher("/plan-de-travail");
     const pages = await screen.findByRole("navigation", { name: "Sections du projet" });
-    expect(liens(pages)).toEqual(["Cadre logique", "Plan de travail", "Phases et étapes"]);
+    expect(liens(pages)).toEqual([
+      "Cadre logique",
+      "Composantes",
+      "Plan de travail",
+      "Phases et étapes",
+      "Acteurs",
+      "Zones",
+    ]);
     expect(within(pages).getByRole("link", { name: "Plan de travail" })).toHaveAttribute("aria-current", "page");
     const rubriques = screen.getByRole("navigation", { name: "Rubriques du projet" });
     expect(within(rubriques).getByRole("link", { name: "Planification" })).toHaveAttribute("aria-current", "true");
     expect(within(rubriques).getByRole("link", { name: "Pilotage" })).not.toHaveAttribute("aria-current");
   });
 
-  it("ouvre Mise en œuvre sur les quatre pages du suivi de terrain", async () => {
+  it("ouvre Mise en œuvre sur les six pages du suivi de terrain", async () => {
     afficher("/documents");
     const pages = await screen.findByRole("navigation", { name: "Sections du projet" });
-    expect(liens(pages)).toEqual(["Réalisations", "Prochaines étapes", "États d’avancement", "Documents"]);
+    expect(liens(pages)).toEqual([
+      "Réalisations",
+      "Prochaines étapes",
+      "États d’avancement",
+      "Documents",
+      "Finances",
+      "Bénéficiaires",
+    ]);
     expect(within(pages).getByRole("link", { name: "Documents" })).toHaveAttribute("aria-current", "page");
   });
 

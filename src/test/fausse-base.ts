@@ -27,7 +27,7 @@ export function creerFausseBase() {
       };
       return suite;
     };
-    for (const nom of ["select", "order", "eq", "in", "limit", "range"]) q[nom] = () => q;
+    for (const nom of ["select", "order", "eq", "in", "limit", "range", "not", "is"]) q[nom] = () => q;
     q.maybeSingle = () => Promise.resolve({ data: (tables[table] ?? [])[0] ?? null, error: null });
     q.insert = (valeurs: unknown) => ecrire("insert", valeurs);
     q.update = (valeurs: unknown) => ecrire("update", valeurs);

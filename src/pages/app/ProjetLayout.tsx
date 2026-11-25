@@ -133,7 +133,7 @@ function ProjetCharge({ projet, kpis, saisies }: ContexteProjet) {
       ?.scrollIntoView({ inline: "center", block: "nearest" });
   }, [pathname]);
 
-  // Douze pages : trop pour une seule barre. Trois rubriques (une barre), puis les pages de la rubrique ouverte (l'autre).
+  // Dix-sept pages : trop pour une seule barre. Trois rubriques (une barre), puis les pages de la rubrique ouverte (l'autre).
   const racine = `/app/projets/${projet.id}`;
   const page = (chemin: string, cle: string) => ({
     vers: chemin ? `${racine}/${chemin}` : racine,
@@ -153,7 +153,14 @@ function ProjetCharge({ projet, kpis, saisies }: ContexteProjet) {
     },
     {
       cle: "planification",
-      pages: [page("cadre-logique", "cadre"), page("plan-de-travail", "pta"), page("phases", "phases")],
+      pages: [
+        page("cadre-logique", "cadre"),
+        page("composantes", "composantes"),
+        page("plan-de-travail", "pta"),
+        page("phases", "phases"),
+        page("acteurs", "acteurs"),
+        page("zones", "zones"),
+      ],
     },
     {
       cle: "mise_en_oeuvre",
@@ -162,6 +169,8 @@ function ProjetCharge({ projet, kpis, saisies }: ContexteProjet) {
         page("prochaines-etapes", "prochaines"),
         page("etats-avancement", "etats"),
         page("documents", "documents"),
+        page("finances", "finances"),
+        page("beneficiaires", "beneficiaires"),
       ],
     },
   ];
@@ -220,6 +229,7 @@ function ProjetCharge({ projet, kpis, saisies }: ContexteProjet) {
             <TauxAvancement
               resultats={global.progression}
               physique={avancement?.taux_physique ?? null}
+              financier={avancement?.taux_financier ?? null}
               className="mt-1 border-t border-border pt-3"
             />
             {modifiable && programmes.data && (programmes.data.length > 0 || projet.programme_id) && (

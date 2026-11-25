@@ -72,6 +72,9 @@ describe("Programmes : liste", () => {
         taux_resultats: 72.25,
         nb_projets_avec_pta: 1,
         taux_physique: 37.5,
+        nb_projets_avec_budget: 2,
+        taux_financier: 41.6,
+        nb_projets_depassement: 0,
       },
       {
         programme_id: "g2",
@@ -81,6 +84,9 @@ describe("Programmes : liste", () => {
         taux_resultats: null,
         nb_projets_avec_pta: 0,
         taux_physique: null,
+        nb_projets_avec_budget: 0,
+        taux_financier: null,
+        nb_projets_depassement: 0,
       },
     ];
     monter();
@@ -88,7 +94,7 @@ describe("Programmes : liste", () => {
     expect(await within(carteEau).findByText("2 projets")).toBeInTheDocument();
     expect(within(carteEau).getByText("72 %")).toBeInTheDocument();
     expect(within(carteEau).getByText("38 %")).toBeInTheDocument();
-    expect(within(carteEau).getByText("Bientôt")).toBeInTheDocument();
+    expect(within(carteEau).getByText("42 %")).toBeInTheDocument();
 
     const carteSante = screen.getByRole("link", { name: "Santé communautaire" }).closest("article")!;
     expect(await within(carteSante).findByText("0 projet")).toBeInTheDocument();
