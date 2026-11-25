@@ -1276,7 +1276,11 @@
     "modification_texte": "La date ne change pas : pour la déplacer, supprimez la saisie et recréez-la.",
     "localite": "Localité",
     "localite_aide": "Où la valeur a été relevée, parmi les zones d’intervention du projet.",
-    "localite_aucune": "Aucune localité précisée"
+    "localite_aucune": "Aucune localité précisée",
+    "necessite_connexion": "Modifier ou supprimer une valeur déjà envoyée demande une connexion.",
+    "en_attente_meme_date": "Une saisie est déjà en attente d’envoi pour cette date ({{valeur}}) : en enregistrer une autre la remplacera.",
+    "remplacer_en_attente_texte": "Une saisie en attente d’envoi existe déjà au {{date}} : {{valeur}}. Voulez-vous la remplacer ?",
+    "remplacer_hors_ligne": "Une valeur déjà envoyée existe à cette date : la remplacer demande une connexion."
   },
   "import": {
     "meta": "Import de saisies – Pilot M&E",
@@ -1611,15 +1615,15 @@
           "acteurs": "Annuaire d’acteurs et rôle par projet",
           "beneficiaires": "Effectifs de bénéficiaires par sexe et âge",
           "rapport_programme": "Rapport PDF consolidé d’un programme",
-          "carte": "Localités, zones d’intervention et carte"
+          "carte": "Localités, zones d’intervention et carte",
+          "hors_ligne": "Saisie d’indicateurs hors ligne, envoyée au retour du réseau"
         }
       },
       "bientot": {
         "titre": "Bientôt",
         "texte": "Sur la feuille de route, sans date annoncée :",
         "elements": {
-          "rapports_programmes": "Rapports automatiques programmés",
-          "hors_ligne": "Saisie hors ligne"
+          "rapports_programmes": "Rapports automatiques programmés"
         }
       }
     },
@@ -2324,5 +2328,62 @@
     "active": "Votre abonnement est actif.",
     "lent": "L’activation prend plus de temps que prévu. Actualisez la page dans un instant ; si le plan n’est pas actif, contactez l’équipe.",
     "retour_annule": "Paiement annulé : rien n’a été débité."
+  },
+  "horsligne": {
+    "envoyer_maintenant": "Envoyer maintenant",
+    "envoyees_one": "{{count}} saisie envoyée.",
+    "envoyees_other": "{{count}} saisies envoyées.",
+    "enregistree_sur_appareil": "Valeur enregistrée sur cet appareil : {{valeur}}. Elle sera envoyée dès que la connexion le permettra.",
+    "stockage": "Cet appareil ne permet pas de garder la saisie hors ligne (stockage bloqué ou plein). Rien n’a été enregistré : réessayez avec une connexion.",
+    "conflit": "Une autre valeur existe déjà à cette date ({{valeur}}). Elle n’a pas été remplacée : corrigez la date, ou remplacez-la depuis l’historique.",
+    "refus": {
+      "reference": "Un élément lié à cette saisie (indicateur ou localité) n’existe plus."
+    },
+    "bandeau": {
+      "hors_ligne": "Vous êtes hors ligne. Vous pouvez continuer à saisir des valeurs : elles restent sur cet appareil et partent dès que la connexion revient.",
+      "hors_ligne_attente_one": "{{count}} saisie attend d’être envoyée.",
+      "hors_ligne_attente_other": "{{count}} saisies attendent d’être envoyées.",
+      "en_attente_one": "{{count}} saisie enregistrée sur cet appareil attend d’être envoyée.",
+      "en_attente_other": "{{count}} saisies enregistrées sur cet appareil attendent d’être envoyées.",
+      "session": "Reconnectez-vous pour l’envoyer.",
+      "instable": "La connexion est instable : l’envoi sera retenté.",
+      "serveur": "Le serveur ne répond pas comme prévu : l’envoi sera retenté.",
+      "a_traiter_one": "{{count}} saisie demande votre attention.",
+      "a_traiter_other": "{{count}} saisies demandent votre attention.",
+      "voir": "Voir"
+    },
+    "liste": {
+      "titre": "En attente d’envoi",
+      "description": "Valeurs enregistrées sur cet appareil. Le tableau de bord ne les compte pas tant qu’elles ne sont pas envoyées.",
+      "statut": {
+        "attente": "En attente d’envoi",
+        "retentee_one": "En attente d’envoi · {{count}} essai sans succès",
+        "retentee_other": "En attente d’envoi · {{count}} essais sans succès",
+        "refusee": "Refusée : {{motif}}",
+        "conflit": "Une autre valeur existe déjà à cette date : {{valeur}}."
+      },
+      "remplacer": "Remplacer par ma valeur",
+      "garder": "Garder la valeur en place",
+      "supprimer": "Supprimer la saisie du {{date}} en attente d’envoi",
+      "supprimee": "Saisie en attente supprimée.",
+      "remplacee": "Valeur remplacée par la vôtre.",
+      "necessite_connexion": "Demande une connexion."
+    },
+    "deconnexion": {
+      "titre": "Des saisies n’ont pas été envoyées",
+      "texte_one": "{{count}} saisie est enregistrée sur cet appareil sans avoir été envoyée. Envoyez-la, ou supprimez-la : se déconnecter la laisserait sur l’appareil, lisible par la personne qui s’en sert ensuite.",
+      "texte_other": "{{count}} saisies sont enregistrées sur cet appareil sans avoir été envoyées. Envoyez-les, ou supprimez-les : se déconnecter les laisserait sur l’appareil, lisibles par la personne qui s’en sert ensuite.",
+      "hors_ligne": "Vous êtes hors ligne : l’envoi demande une connexion.",
+      "a_traiter_one": "{{count}} saisie est refusée ou en conflit : traitez-la depuis la page de saisie de son projet, ou supprimez-la.",
+      "a_traiter_other": "{{count}} saisies sont refusées ou en conflit : traitez-les depuis la page de saisie de leur projet, ou supprimez-les.",
+      "rester": "Rester connecté",
+      "supprimer": "Supprimer ces saisies et me déconnecter",
+      "confirmer_texte_one": "{{count}} saisie sera supprimée de cet appareil sans avoir été envoyée. Cette action est définitive.",
+      "confirmer_texte_other": "{{count}} saisies seront supprimées de cet appareil sans avoir été envoyées. Cette action est définitive.",
+      "confirmer_action_one": "Supprimer {{count}} saisie et me déconnecter",
+      "confirmer_action_other": "Supprimer {{count}} saisies et me déconnecter",
+      "tout_envoye": "Tout est envoyé",
+      "tout_envoye_texte": "Aucune saisie ne reste sur cet appareil : vous pouvez vous déconnecter."
+    }
   }
 }

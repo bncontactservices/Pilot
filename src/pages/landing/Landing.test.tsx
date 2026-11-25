@@ -91,13 +91,14 @@ describe("Landing : contenu et structure", () => {
       "Effectifs de bénéficiaires par sexe et âge",
       "Rapport PDF consolidé d’un programme",
       "Localités, zones d’intervention et carte",
+      "Saisie d’indicateurs hors ligne, envoyée au retour du réseau",
     ]) {
       expect(livre.getByText(item)).toBeInTheDocument();
     }
     const bientot = bloc("Bientôt");
-    for (const item of ["Rapports automatiques programmés", "Saisie hors ligne"]) {
-      expect(bientot.getByText(item)).toBeInTheDocument();
-    }
+    expect(bientot.getByText("Rapports automatiques programmés")).toBeInTheDocument();
+    // La saisie hors ligne est livrée et jouée en réel : elle n'est plus annoncée « Bientôt ».
+    expect(bientot.queryByText(/hors ligne/i)).not.toBeInTheDocument();
     expect(bientot.queryByText("Cadre logique")).not.toBeInTheDocument();
     expect(bientot.queryByText("Plan de travail annuel")).not.toBeInTheDocument();
     expect(bientot.queryByText("Budget, dépenses et taux financier")).not.toBeInTheDocument();

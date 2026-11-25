@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { useOrg } from "~/hooks/useContexteOrg";
-import { useAuth } from "~/lib/auth";
+import { useFileSaisies } from "~/hooks/useFileSaisies";
 import { initiales } from "~/lib/format";
 import { cn } from "~/lib/utils";
 
@@ -88,7 +88,7 @@ function CarteOrganisation() {
 
 function MenuUtilisateur() {
   const { t } = useTranslation();
-  const { seDeconnecter } = useAuth();
+  const { demanderDeconnexion } = useFileSaisies();
   const org = useOrg();
   const nom = org.profil.nom || org.profil.email || "";
   return (
@@ -115,7 +115,7 @@ function MenuUtilisateur() {
             {t("nav.parametres")}
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => void seDeconnecter()}>
+        <DropdownMenuItem onSelect={() => demanderDeconnexion()}>
           <LogOut aria-hidden />
           {t("auth.deconnexion")}
         </DropdownMenuItem>

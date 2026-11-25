@@ -51,7 +51,8 @@ export default function ProjetLayout() {
   useSaisiesTempsReel(org.organisation.id);
 
   const requetes = [projet, kpis, saisies];
-  const erreur = requetes.find((r) => r.isError)?.error;
+  // Des données gardées sur l'appareil (ouverture sans réseau) priment sur l'échec d'une actualisation.
+  const erreur = requetes.find((r) => r.isError && r.data === undefined)?.error;
   if (erreur) {
     return <EtatErreur erreur={erreur} onReessayer={() => requetes.forEach((r) => void r.refetch())} />;
   }

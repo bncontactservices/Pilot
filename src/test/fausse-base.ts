@@ -21,13 +21,14 @@ export function creerFausseBase() {
       appels.push({ table, operation, valeurs });
       const suite: Record<string, unknown> = {
         eq: () => suite,
+        abortSignal: () => suite,
         select: () => suite,
         single: () => Promise.resolve({ data: { id: "nouveau" }, error: null }),
         then: (resolve: (v: unknown) => unknown) => Promise.resolve({ data: null, error: null }).then(resolve),
       };
       return suite;
     };
-    for (const nom of ["select", "order", "eq", "in", "limit", "range", "not", "is"]) q[nom] = () => q;
+    for (const nom of ["select", "order", "eq", "in", "limit", "range", "not", "is", "abortSignal"]) q[nom] = () => q;
     q.maybeSingle = () => Promise.resolve({ data: (tables[table] ?? [])[0] ?? null, error: null });
     q.insert = (valeurs: unknown) => ecrire("insert", valeurs);
     q.update = (valeurs: unknown) => ecrire("update", valeurs);
@@ -66,6 +67,8 @@ export function creerFausseBase() {
         return Promise.resolve({ data: reponsesRpc[nom] ?? null, error: null });
       },
       storage: stockage,
+      // Session : toujours valide (l'envoi des saisies hors ligne la vérifie avant d'écrire).
+      auth: { getSession: () => Promise.resolve({ data: { session: { user: { id: "u" } } }, error: null }) },
       // Temps réel : aucun événement n'est émis dans les tests.
       channel: () => ({ on: () => ({ subscribe: () => ({}) }) }),
       removeChannel: () => Promise.resolve("ok"),

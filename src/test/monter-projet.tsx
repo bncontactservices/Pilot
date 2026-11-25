@@ -3,8 +3,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { MemoryRouter, Outlet, Route, Routes } from "react-router";
+import type { User } from "@supabase/supabase-js";
+import { vi } from "vitest";
 import { ContexteOrgProvider, construireContexte } from "~/hooks/useContexteOrg";
+import { FileSaisiesProvider } from "~/hooks/useFileSaisies";
+import { ContexteAuth } from "~/lib/auth";
 import type { Kpi, Projet, SaisieLigne } from "~/lib/donnees";
+import { MagasinFile } from "~/lib/hors-ligne/file";
+import type { ClientSaisies } from "~/lib/hors-ligne/synchro";
+import { creerStockageMemoire } from "./stockage-memoire";
 
 export const PROJET = {
   id: "p1",
@@ -39,23 +46,44 @@ export function creerContexteOrg(role: "admin" | "editeur" | "lecteur" = "editeu
   });
 }
 
+/** Compte factice sous lequel montent les écrans (la file de saisies hors ligne en a besoin). */
+export const COMPTE_DE_TEST = {
+  statut: "connecte" as const,
+  session: null,
+  utilisateur: { id: "u" } as User,
+  seDeconnecter: vi.fn(() => Promise.resolve()),
+};
+
 export function monterProjet(
   page: ReactElement,
-  options: { role?: "admin" | "editeur" | "lecteur"; essaiFini?: boolean; kpis?: Kpi[]; saisies?: SaisieLigne[] } = {},
+  options: {
+    role?: "admin" | "editeur" | "lecteur";
+    essaiFini?: boolean;
+    kpis?: Kpi[];
+    saisies?: SaisieLigne[];
+    /** File de saisies hors ligne et base d'envoi ; par défaut : une file vide en mémoire et la base du test. */
+    magasin?: MagasinFile;
+    client?: ClientSaisies;
+  } = {},
 ) {
-  const { role = "editeur", essaiFini = false, kpis = [], saisies = [] } = options;
+  const { role = "editeur", essaiFini = false, kpis = [], saisies = [], client } = options;
+  const magasin = options.magasin ?? new MagasinFile(creerStockageMemoire(), "u");
   const contexte = creerContexteOrg(role, essaiFini);
   return render(
     <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
-      <ContexteOrgProvider valeur={contexte}>
-        <MemoryRouter initialEntries={["/"]}>
-          <Routes>
-            <Route element={<Outlet context={{ projet: PROJET, kpis, saisies }} />}>
-              <Route index element={page} />
-            </Route>
-          </Routes>
-        </MemoryRouter>
-      </ContexteOrgProvider>
+      <ContexteAuth.Provider value={COMPTE_DE_TEST}>
+        <ContexteOrgProvider valeur={contexte}>
+          <FileSaisiesProvider magasin={magasin} client={client}>
+            <MemoryRouter initialEntries={["/"]}>
+              <Routes>
+                <Route element={<Outlet context={{ projet: PROJET, kpis, saisies }} />}>
+                  <Route index element={page} />
+                </Route>
+              </Routes>
+            </MemoryRouter>
+          </FileSaisiesProvider>
+        </ContexteOrgProvider>
+      </ContexteAuth.Provider>
     </QueryClientProvider>,
   );
 }

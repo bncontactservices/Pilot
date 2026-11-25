@@ -311,7 +311,9 @@ test.describe("rôles", () => {
     const { contexte, page } = await ouvrirSession(browser, "admin");
     await page.goto("/app/equipe");
     await expect(page.getByRole("button", { name: "Inviter", exact: true })).toBeVisible();
-    await expect(page.getByText("Invitations en attente")).toBeVisible();
+    // Le texte figure deux fois quand une invitation attend (le titre de la liste et la ligne de quota,
+    // « …, invitations en attente comprises ») : on désigne le premier.
+    await expect(page.getByText("Invitations en attente").first()).toBeVisible();
     await page.goto("/app");
     await expect(page.getByRole("button", { name: /^Actions pour/ }).first()).toBeVisible();
     await contexte.close();

@@ -27,8 +27,9 @@ const LIVRE = [
   "beneficiaires",
   "rapport_programme",
   "carte",
+  "hors_ligne",
 ] as const;
-const BIENTOT = ["rapports_programmes", "hors_ligne"] as const;
+const BIENTOT = ["rapports_programmes"] as const;
 
 export function Solution() {
   const { t } = useTranslation();

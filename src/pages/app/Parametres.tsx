@@ -17,8 +17,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import { Champ } from "~/components/ui/field";
 import { Input, NativeSelect } from "~/components/ui/input";
 import { useOrg } from "~/hooks/useContexteOrg";
+import { useFileSaisies } from "~/hooks/useFileSaisies";
 import i18n from "~/i18n";
-import { useAuth } from "~/lib/auth";
 import { lienEmailEquipe, lienWhatsAppEquipe } from "~/lib/contact";
 import { formaterDate } from "~/lib/format";
 import { getSupabase } from "~/lib/supabase";
@@ -29,7 +29,7 @@ const PAYS = ["SN", "CI", "ML", "BF", "NE", "GN", "TG", "BJ", "CM", "MR", "GM", 
 
 export default function Parametres() {
   const { t } = useTranslation();
-  const { seDeconnecter } = useAuth();
+  const { demanderDeconnexion } = useFileSaisies();
   const org = useOrg();
   return (
     <>
@@ -47,7 +47,7 @@ export default function Parametres() {
             <CardDescription>{t("parametres.compte.description", { email: org.profil.email })}</CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variante="contour" onClick={() => void seDeconnecter()}>
+            <Button variante="contour" onClick={() => demanderDeconnexion()}>
               <LogOut aria-hidden />
               {t("auth.deconnexion")}
             </Button>

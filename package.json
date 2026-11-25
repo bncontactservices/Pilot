@@ -15,7 +15,7 @@
     "format": "prettier --write .",
     "db:test:local": "node scripts/db-test-local.mjs",
     "db:types": "supabase gen types typescript --local > src/lib/database.types.ts",
-    "postbuild": "node scripts/generer-sitemap.mjs",
+    "postbuild": "node scripts/generer-sitemap.mjs && node scripts/generer-sw.mjs",
     "apercu": "node scripts/apercu-build.mjs",
     "e2e": "playwright test",
     "lighthouse": "node scripts/lighthouse.mjs"

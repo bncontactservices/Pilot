@@ -24,6 +24,8 @@ import type { Route } from "./+types/root";
 export const links: Route.LinksFunction = () => [
   { rel: "preload", href: jakarta800, as: "font", type: "font/woff2", crossOrigin: "anonymous" },
   { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+  { rel: "manifest", href: "/manifest.webmanifest" },
+  { rel: "apple-touch-icon", href: "/icons/icon-192.png" },
 ];
 
 export const meta: Route.MetaFunction = () => [

@@ -14,7 +14,7 @@ const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DOSSIER = path.join(RACINE, "build", "client");
 const PORT = Number(process.argv[2] ?? 4173);
 const config = JSON.parse(readFileSync(path.join(RACINE, "vercel.json"), "utf8"));
-const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".woff": "font/woff", ".woff2": "font/woff2", ".json": "application/json", ".xml": "application/xml", ".txt": "text/plain" };
+const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".woff": "font/woff", ".woff2": "font/woff2", ".json": "application/json", ".webmanifest": "application/manifest+json", ".xml": "application/xml", ".txt": "text/plain" };
 
 // Les motifs de vercel.json sont de la forme « /prefixe/(.*) » ou un chemin exact.
 const correspond = (source, chemin) => new RegExp(`^${source.replace("(.*)", ".*")}$`).test(chemin);

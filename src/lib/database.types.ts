@@ -252,6 +252,8 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
+          /** Posé par l'appareil pour une saisie hors ligne (Lot 4a) ; sinon la base en tire un. */
+          id?: string;
           kpi_id: string;
           date: string;
           valeur: number;

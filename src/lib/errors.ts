@@ -67,7 +67,12 @@ export function analyserErreur(erreur: unknown): ErreurApp {
     erreur instanceof TypeError ||
     e.name === "AuthRetryableFetchError" ||
     e.name === "FunctionsFetchError" ||
-    /failed to fetch|networkerror|load failed/i.test(message)
+    // Délai dépassé (AbortSignal.timeout) : pour la saisie hors ligne, une requête sans réponse vaut une connexion perdue.
+    e.name === "AbortError" ||
+    e.name === "TimeoutError" ||
+    /failed to fetch|networkerror|load failed|aborterror|timeouterror|signal timed out|fetch failed|network request failed/i.test(
+      message,
+    )
   ) {
     return { cle: "erreurs.reseau" };
   }

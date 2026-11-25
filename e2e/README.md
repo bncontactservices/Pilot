@@ -78,3 +78,12 @@ Mêmes comptes de test que ci-dessus.
   la lecture seule du lecteur, et les refus de la base (lecteur, écriture du référentiel, niveau figé, localité hors zone). **Il
   charge des images depuis tile.openstreetmap.org : il exige un accès au réseau.** Il crée « Projet E2E zones » et des localités
   « … E2E », qu'il supprime à la fin ; il demande une place libre dans le quota de trois projets.
+- `hors-ligne.spec.ts` (Lot 4a) : la saisie hors ligne, contre le build et le vrai Supabase. (1) Le serveur de l'application est ARRÊTÉ (le test lance
+  son propre serveur sur le port 4191 et le tue), le navigateur est hors ligne et le jeton d'accès est rendu périmé : l'application s'ouvre depuis le
+  cache du service worker, reprend la session gardée, affiche les données gardées ; une valeur saisie sans réseau reste dans la file et survit à un
+  rechargement ; au retour du réseau elle part, et la ligne de la base porte l'identifiant tiré sur l'appareil (**ce scénario dure deux minutes** :
+  supabase-js garde un renouvellement de jeton échoué pendant une minute, même après le retour du réseau). (2) Rejeu : la requête atteint la base, sa
+  réponse est coupée, l'appareil renvoie, une seule ligne. (3) Conflit réel avec la valeur d'un autre compte, résolu en remplaçant. (4) Déconnexion
+  bloquée tant que des saisies attendent, puis envoyées ou supprimées avec confirmation. (5) Téléphone (375 px) sans débordement. Axe sur le bandeau
+  hors ligne, la carte d'attente, le conflit et la fenêtre de déconnexion. Il crée « Projet E2E hors ligne », qu'il supprime à la fin ; il demande une
+  place libre dans le quota de trois projets. Le port 4191 doit être libre.

@@ -1,18 +1,21 @@
 import { LogOut, Menu } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Navigate, Outlet, useLocation } from "react-router";
 import { BandeauEssai } from "~/components/app/BandeauEssai";
 import { EtatErreur } from "~/components/app/Etats";
 import { LimitePlanProvider } from "~/components/app/LimitePlan";
+import { BandeauReseau } from "~/components/app/hors-ligne/BandeauReseau";
 import { Navigation } from "~/components/app/Navigation";
 import { Logo } from "~/components/brand/Logo";
 import { Button } from "~/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "~/components/ui/sheet";
 import { Skeleton } from "~/components/ui/skeleton";
 import { ContexteOrgProvider, useRequeteContexteOrg } from "~/hooks/useContexteOrg";
+import { FileSaisiesProvider } from "~/hooks/useFileSaisies";
 import { useNettoyageFichiers } from "~/hooks/useNettoyageFichiers";
 import { useAuth } from "~/lib/auth";
+import { enregistrerServiceWorker } from "~/lib/hors-ligne/service-worker";
 
 export default function AppLayout() {
   const { statut } = useAuth();
@@ -28,7 +31,8 @@ export default function AppLayout() {
 function AppAvecOrganisation() {
   const requete = useRequeteContexteOrg();
   if (requete.isPending) return <SqueletteApp />;
-  if (requete.isError) {
+  // Des données gardées sur l'appareil (ouverture sans réseau) priment sur l'échec d'une actualisation.
+  if (requete.isError && requete.data === undefined) {
     return (
       <div className="grid min-h-dvh place-items-center p-4">
         <EtatErreur erreur={requete.error} onReessayer={() => void requete.refetch()} className="max-w-md" />
@@ -38,9 +42,11 @@ function AppAvecOrganisation() {
   if (!requete.data) return <SansOrganisation />;
   return (
     <ContexteOrgProvider valeur={requete.data}>
-      <LimitePlanProvider>
-        <Coquille />
-      </LimitePlanProvider>
+      <FileSaisiesProvider>
+        <LimitePlanProvider>
+          <Coquille />
+        </LimitePlanProvider>
+      </FileSaisiesProvider>
     </ContexteOrgProvider>
   );
 }
@@ -49,6 +55,10 @@ function Coquille() {
   const { t } = useTranslation();
   const [menuOuvert, setMenuOuvert] = useState(false);
   useNettoyageFichiers();
+  // Application installable et ouvrable sans réseau : enregistré une fois l'utilisateur dans l'application.
+  useEffect(() => {
+    enregistrerServiceWorker();
+  }, []);
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[17rem_minmax(0,1fr)]">
       <a
@@ -85,6 +95,7 @@ function Coquille() {
           id="contenu"
           className="mx-auto grid w-full max-w-6xl content-start gap-6 px-4 py-6 sm:px-6 lg:px-10 lg:py-10"
         >
+          <BandeauReseau />
           <BandeauEssai />
           <Outlet />
         </main>

@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { EtatVide, JaugeVide } from "~/components/app/Etats";
 import { useGestionErreur } from "~/components/app/LimitePlan";
+import { SaisiesEnAttente } from "~/components/app/hors-ligne/SaisiesEnAttente";
 import { ChampLocalite } from "~/components/app/zones/ChampLocalite";
 import { Bandeau } from "~/components/ui/banner";
 import { Button } from "~/components/ui/button";
@@ -24,11 +25,13 @@ import {
 import { Champ } from "~/components/ui/field";
 import { Input, NativeSelect, Textarea } from "~/components/ui/input";
 import { useOrg } from "~/hooks/useContexteOrg";
+import { type ResultatEnregistrement, useFileSaisies } from "~/hooks/useFileSaisies";
 import i18n from "~/i18n";
 import { cles, type SaisieLigne } from "~/lib/donnees";
 import { useLocalites } from "~/lib/donnees-se";
 import { analyserErreur } from "~/lib/errors";
 import { formaterDate, formaterValeur } from "~/lib/format";
+import { genererIdentifiant, trouverDansLaFile } from "~/lib/hors-ligne/file";
 import { aujourdhuiIso, detecterAberrant } from "~/lib/kpi";
 import { indexer, libelleLieu } from "~/lib/localites";
 import { getSupabase } from "~/lib/supabase";
@@ -43,10 +46,10 @@ const nombre = z
 const versNombre = (texte: string) => Number(texte.replace(",", "."));
 const versTexte = (valeur: number) => String(valeur).replace(".", ",");
 
-const COLONNES = "id, kpi_id, date, valeur, commentaire, localite_id, created_at, updated_at";
 const PAGE = 25;
 
 type Etape = { type: "aberrant" | "remplacer"; valeurs: Valeurs } | null;
+type ContexteOptimiste = { precedent?: SaisieLigne[] };
 
 const schema = z.object({
   kpiId: z.string().min(1, { error: "saisie.validation.kpi" }),
@@ -62,6 +65,8 @@ export default function Saisie() {
   const org = useOrg();
   const queryClient = useQueryClient();
   const gererErreur = useGestionErreur();
+  const file = useFileSaisies();
+  const { enLigne } = file;
   const { projet, kpis, saisies } = useContexteProjet();
   const [params] = useSearchParams();
   const aujourdhui = aujourdhuiIso();
@@ -95,6 +100,12 @@ export default function Saisie() {
   );
   const existante = historique.find((s) => s.date === date);
   const derniere = historique[0];
+  // Une saisie déjà gardée sur l'appareil pour cet indicateur et cette date (pas encore envoyée).
+  const enAttenteMemeDate = trouverDansLaFile(
+    file.saisies.filter((s) => s.projetId === projet.id),
+    kpiId,
+    date,
+  );
 
   const cleSaisies = cles.saisies(projet.id);
   const rafraichir = () => {
@@ -111,26 +122,21 @@ export default function Saisie() {
     queryClient.setQueryData<SaisieLigne[]>(cleSaisies, (lignes = []) => transformer(lignes));
     return { precedent };
   };
-  const annuler = (_erreur: unknown, _v: unknown, contexte?: { precedent?: SaisieLigne[] }) =>
+  const annuler = (_erreur: unknown, _v: unknown, contexte?: ContexteOptimiste) =>
     queryClient.setQueryData(cleSaisies, contexte?.precedent);
 
   const insertion = useMutation({
-    retry: reessayerSiReseau,
-    mutationFn: async (v: Valeurs) => {
-      const { data, error } = await getSupabase()
-        .from("kpi_entries")
-        .insert({
-          kpi_id: v.kpiId,
-          date: v.date,
-          valeur: versNombre(v.valeur),
-          commentaire: v.commentaire || null,
-          localite_id: v.localiteId || null,
-        })
-        .select(COLONNES)
-        .single();
-      if (error) throw error;
-      return data;
-    },
+    // Pas de nouvelle tentative ici : une saisie qui n'a pas pu partir reste sur l'appareil et part toute seule.
+    mutationFn: (v: Valeurs): Promise<ResultatEnregistrement> =>
+      file.enregistrer({
+        id: genererIdentifiant(),
+        projetId: projet.id,
+        kpiId: v.kpiId,
+        date: v.date,
+        valeur: versNombre(v.valeur),
+        commentaire: v.commentaire || null,
+        localiteId: v.localiteId || null,
+      }),
     onMutate: (v) =>
       optimiste((lignes) => [
         ...lignes,
@@ -149,10 +155,25 @@ export default function Saisie() {
       annuler(erreur, v, contexte);
       gererErreur(erreur);
     },
-    onSuccess: (_d, v) => {
-      toast.success(t("saisie.enregistree", { valeur: formaterValeur(versNombre(v.valeur), kpi?.unite ?? "") }));
-      reset({ kpiId: v.kpiId, date: v.date, valeur: "", commentaire: "", localiteId: v.localiteId });
-      setTimeout(() => setFocus("valeur"), 0);
+    onSuccess: (resultat, v, contexte) => {
+      const valeur = formaterValeur(versNombre(v.valeur), kpi?.unite ?? "");
+      if (resultat.type === "envoyee" || resultat.type === "en_file") {
+        // Gardée sur l'appareil : elle figure dans « En attente d'envoi », pas dans l'historique de la base.
+        if (resultat.type === "en_file") {
+          annuler(null, v, contexte);
+          toast.success(t("horsligne.enregistree_sur_appareil", { valeur }));
+        } else {
+          toast.success(t("saisie.enregistree", { valeur }));
+        }
+        reset({ kpiId: v.kpiId, date: v.date, valeur: "", commentaire: "", localiteId: v.localiteId });
+        setTimeout(() => setFocus("valeur"), 0);
+        return;
+      }
+      annuler(null, v, contexte);
+      if (resultat.type === "stockage") toast.error(t("horsligne.stockage"));
+      else if (resultat.type === "conflit")
+        toast.error(t("horsligne.conflit", { valeur: formaterValeur(resultat.valeurServeur, kpi?.unite ?? "") }));
+      else gererErreur(resultat.erreur);
     },
     onSettled: rafraichir,
   });
@@ -212,7 +233,7 @@ export default function Saisie() {
 
   /** Enchaîne les contrôles : valeur aberrante (confirmable), puis valeur déjà saisie à cette date (remplaçable). */
   const enregistrer = (v: Valeurs) => {
-    if (historique.some((s) => s.date === v.date)) {
+    if (historique.some((s) => s.date === v.date) || trouverDansLaFile(file.saisies, v.kpiId, v.date)) {
       setEtape({ type: "remplacer", valeurs: v });
       return;
     }
@@ -291,7 +312,11 @@ export default function Saisie() {
                         ? t("saisie.avant_projet")
                         : existante
                           ? t("saisie.existe_deja", { valeur: formaterValeur(existante.valeur, kpi?.unite ?? "") })
-                          : undefined
+                          : enAttenteMemeDate
+                            ? t("saisie.en_attente_meme_date", {
+                                valeur: formaterValeur(enAttenteMemeDate.valeur, kpi?.unite ?? ""),
+                              })
+                            : undefined
                   }
                 >
                   {(a) => (
@@ -401,6 +426,8 @@ export default function Saisie() {
         </Card>
       )}
 
+      <SaisiesEnAttente projetId={projet.id} kpis={kpis} />
+
       <Card>
         <CardHeader>
           <CardTitle>{t("saisie.historique")}</CardTitle>
@@ -458,6 +485,8 @@ export default function Saisie() {
                               taille="icone"
                               className="size-9"
                               onClick={() => setAModifier(s)}
+                              disabled={!enLigne}
+                              title={enLigne ? undefined : t("saisie.necessite_connexion")}
                               aria-label={t("saisie.modifier", { date: formaterDate(s.date) })}
                             >
                               <Pencil className="size-4" aria-hidden />
@@ -467,6 +496,8 @@ export default function Saisie() {
                               taille="icone"
                               className="size-9"
                               onClick={() => setASupprimer(s)}
+                              disabled={!enLigne}
+                              title={enLigne ? undefined : t("saisie.necessite_connexion")}
                               aria-label={t("saisie.supprimer", { date: formaterDate(s.date) })}
                             >
                               <Trash2 className="size-4" aria-hidden />
@@ -493,27 +524,41 @@ export default function Saisie() {
           <DialogHeader>
             <DialogTitle>{t("saisie.remplacer_titre")}</DialogTitle>
             <DialogDescription>
-              {t("saisie.remplacer_texte", {
-                valeur: formaterValeur(existante?.valeur ?? 0, kpi?.unite ?? ""),
-                date: formaterDate(date),
-              })}
+              {existante
+                ? t("saisie.remplacer_texte", {
+                    valeur: formaterValeur(existante.valeur, kpi?.unite ?? ""),
+                    date: formaterDate(date),
+                  })
+                : t("saisie.remplacer_en_attente_texte", {
+                    valeur: formaterValeur(enAttenteMemeDate?.valeur ?? 0, kpi?.unite ?? ""),
+                    date: formaterDate(date),
+                  })}
             </DialogDescription>
           </DialogHeader>
+          {existante && !enLigne && <Bandeau variante="vigilance">{t("saisie.remplacer_hors_ligne")}</Bandeau>}
           <DialogFooter>
             <Button variante="contour" onClick={() => setEtape(null)}>
               {t("commun.annuler")}
             </Button>
             <Button
-              onClick={() =>
-                etape &&
-                existante &&
-                remplacement.mutate({
-                  id: existante.id,
-                  valeur: versNombre(etape.valeurs.valeur),
-                  commentaire: etape.valeurs.commentaire || null,
-                  localite_id: etape.valeurs.localiteId || null,
-                })
-              }
+              disabled={Boolean(existante) && !enLigne}
+              onClick={() => {
+                if (!etape) return;
+                if (existante) {
+                  remplacement.mutate({
+                    id: existante.id,
+                    valeur: versNombre(etape.valeurs.valeur),
+                    commentaire: etape.valeurs.commentaire || null,
+                    localite_id: etape.valeurs.localiteId || null,
+                  });
+                } else if (enAttenteMemeDate) {
+                  // Une saisie pas encore envoyée se remplace sur l'appareil : on retire l'ancienne, on garde la nouvelle.
+                  const valeurs = etape.valeurs;
+                  file.retirer(enAttenteMemeDate.id);
+                  setEtape(null);
+                  insertion.mutate(valeurs);
+                }
+              }}
               chargement={remplacement.isPending}
             >
               {t("saisie.remplacer_action")}

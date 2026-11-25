@@ -144,6 +144,17 @@ export default function Confidentialite() {
           navigateur le temps de cette vérification, nécessaire à l’envoi du formulaire ; vous pouvez à la place nous
           écrire par e-mail ou par WhatsApp.
         </p>
+        <p>
+          Pour que la saisie d’indicateurs reste possible sans réseau, l’application garde aussi, sur l’appareil et dans
+          le stockage de votre navigateur : l’enveloppe de l’application (ses fichiers, par un « service worker ») ; ce
+          qui sert à ouvrir un projet et à saisir (votre organisation, vos projets, leurs indicateurs, leurs saisies,
+          les localités et zones d’intervention) ; et les valeurs saisies sans réseau qui n’ont pas encore été envoyées.
+          Ces données sont celles de votre compte seul. Le contenu gardé pour l’ouverture sans réseau s’efface à la
+          déconnexion. Une saisie non envoyée n’est jamais supprimée sans que vous l’ayez voulu : la déconnexion vous
+          demande de l’envoyer ou de la supprimer ; si votre session se termine d’elle-même, elle reste sur l’appareil,
+          à la disposition de votre seul compte, jusqu’à son envoi. Ces données ne sont pas chiffrées au-delà de la
+          protection de l’appareil : sur un appareil partagé, déconnectez-vous après usage.
+        </p>
       </section>
       <section>
         <h2>Combien de temps ?</h2>
