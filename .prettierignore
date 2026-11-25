@@ -1,0 +1,5 @@
+build
+.react-router
+.pg-test
+supabase/.temp
+package-lock.json

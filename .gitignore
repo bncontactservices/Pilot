@@ -1,0 +1,18 @@
+node_modules/
+build/
+.react-router/
+.env
+.env.*
+!.env.example
+supabase/.temp/
+supabase/.branches/
+supabase/functions/.env
+.DS_Store
+*.log
+coverage/
+.pg-test/
+
+# Configuration locale de l’éditeur (chemins absolus propres au poste)
+.claude/
+test-results/
+playwright-report/

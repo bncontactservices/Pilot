@@ -1,0 +1,298 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* =============================================================================
+   Preset A — « Clarté Institutionnelle »
+   Bleu Nuit (primaire), Émeraude (accent de marque), Sable (fond), Ardoise (texte).
+   L'accent n'est jamais une couleur de statut : les statuts KPI ont leurs tokens.
+   ========================================================================== */
+:root {
+  --navy: #0b2545;
+  --navy-soft: #13335c;
+  --emerald: #12b886;
+  --emerald-ink: #0b7a57;
+  --sand: #f7f5f0;
+  --slate: #1f2933;
+
+  --background: var(--sand);
+  --foreground: var(--slate);
+  --card: #ffffff;
+  --card-foreground: var(--slate);
+  --popover: #ffffff;
+  --popover-foreground: var(--slate);
+  --primary: var(--navy);
+  --primary-foreground: #ffffff;
+  --secondary: #ece8df;
+  --secondary-foreground: var(--navy);
+  --muted: #efece5;
+  --muted-foreground: #5b6670;
+  /* Survol des menus et listes (rôle du token « accent » de shadcn/ui). */
+  --subtle: #eef1f6;
+  --subtle-foreground: var(--navy);
+  /* Accent de marque : aplats et glows ; --accent-ink pour le texte et les liens. */
+  --accent: var(--emerald);
+  --accent-ink: var(--emerald-ink);
+  --accent-foreground: var(--navy);
+  --destructive: #b02525;
+  --destructive-foreground: #ffffff;
+  --border: #e4e0d7;
+  /* Bordure des champs : ≥ 3:1 sur blanc (WCAG 1.4.11). */
+  --input: #8a929b;
+  --ring: var(--emerald-ink);
+
+  /* Statuts KPI (section 5 du brief). Aplats ≥ 3:1, variantes -ink ≥ 4,5:1. */
+  --status-ok: #2f9e44;
+  --status-warn: #e8590c;
+  --status-alert: #c92a2a;
+  --status-none: #adb5bd;
+  --status-ok-ink: #1a722d; /* #1e7a32 du brief : 4,39:1 sur la pastille verte posée sur le fond Sable, sous les 4,5:1 exigés */
+  --status-warn-ink: #a34a00;
+  --status-alert-ink: #b02525;
+  --status-none-ink: #5c636a;
+
+  --radius: 1rem;
+  --ease-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --shadow-card: 0 1px 2px rgb(11 37 69 / 0.04), 0 10px 28px -14px rgb(11 37 69 / 0.18);
+  --shadow-card-hover: 0 2px 4px rgb(11 37 69 / 0.06), 0 18px 40px -16px rgb(11 37 69 / 0.26);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle: var(--subtle);
+  --color-subtle-foreground: var(--subtle-foreground);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-navy: var(--navy);
+  --color-navy-soft: var(--navy-soft);
+  --color-sand: var(--sand);
+  --color-ink: var(--slate);
+
+  --color-status-ok: var(--status-ok);
+  --color-status-warn: var(--status-warn);
+  --color-status-alert: var(--status-alert);
+  --color-status-none: var(--status-none);
+  --color-status-ok-ink: var(--status-ok-ink);
+  --color-status-warn-ink: var(--status-warn-ink);
+  --color-status-alert-ink: var(--status-alert-ink);
+  --color-status-none-ink: var(--status-none-ink);
+
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-sm: calc(var(--radius) - 8px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --ease-soft: var(--ease-soft);
+  --shadow-card: var(--shadow-card);
+  --shadow-card-hover: var(--shadow-card-hover);
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--emerald) 28%, transparent);
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Liens et éléments interactifs : léger soulèvement au survol (appareils à pointeur). */
+  @media (hover: hover) {
+    .lift {
+      transition: transform 200ms var(--ease-soft);
+    }
+    .lift:hover {
+      transform: translateY(-1px);
+    }
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   Landing (et deck) : fond sombre du hero, texture, défilement doux.
+   -------------------------------------------------------------------------- */
+@layer utilities {
+  /*
+   * Sections sous le premier écran sans animation de défilement : le navigateur saute leur mise en page et leur rendu
+   * jusqu'à ce qu'elles approchent (content-visibility), ce qui allège le chargement. La hauteur estimée (--hauteur-estimee,
+   * mesurée à 375, 768 et 1280 px) doit rester proche de la réalité : sinon un lien d'ancre qui traverse des sections ignorées
+   * n'atteint pas sa cible. « auto » mémorise la vraie hauteur une fois la section affichée.
+   */
+  .differe {
+    content-visibility: auto;
+    contain-intrinsic-size: auto var(--hauteur-estimee, 46rem);
+  }
+
+  .fond-hero {
+    background-color: var(--navy);
+    background-image:
+      radial-gradient(60rem 36rem at 85% 0%, rgb(18 184 134 / 0.2), transparent 62%),
+      radial-gradient(44rem 32rem at 0% 100%, rgb(19 51 92 / 0.95), transparent 70%),
+      linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+    background-size: auto, auto, 56px 56px, 56px 56px;
+  }
+
+  /*
+   * Bruit : une tuile SVG (feTurbulence) rendue une seule fois et répétée, posée sur toute la page par un
+   * pseudo-élément fixe qui ne reçoit aucun clic. Jamais appliqué au contenu ; absent de l'application.
+   */
+  .bruit::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  @media print {
+    .bruit::after {
+      display: none;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /*
+   * Entrée du hero en CSS pur : elle démarre au premier rendu, sans attendre de JavaScript. Les animations CSS finissent
+   * toujours à l'état visible (« both » ne masque que pendant le délai) : sans JavaScript, la page reste complète.
+   */
+  @keyframes monter {
+    from {
+      opacity: 0;
+      transform: translateY(1.4rem);
+    }
+  }
+  @keyframes tracer {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+  @keyframes apparaitre {
+    from {
+      opacity: 0;
+      transform: scale(0);
+    }
+  }
+  .hero-anim [data-hero] {
+    animation: monter 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--i, 0) * 0.12s);
+  }
+  .hero-anim [data-trace] {
+    animation: tracer 1.6s cubic-bezier(0.45, 0, 0.55, 1) 0.6s both;
+  }
+  .hero-anim [data-point] {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: apparaitre 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation-delay: calc(0.9s + var(--p, 0) * 0.18s);
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   Deck : page imprimée 13,333 × 7,5 in (16:9), une diapositive par page, sans marge.
+   Page nommée : la taille ne s'applique qu'à la route /deck (voir Deck.tsx), pas à la landing ni à l'application.
+   -------------------------------------------------------------------------- */
+@page deck {
+  size: 13.333in 7.5in;
+  margin: 0;
+}
+.deck,
+body.deck-impression {
+  /* Le corps de page porte aussi la page nommée : tout élément hors du deck (notifications, scripts) en changerait,
+     ce qui ajouterait une page blanche au format par défaut à la fin du PDF. */
+  page: deck;
+}
+@media print {
+  /* 1 rem = 16 px : la diapositive de 80 × 45 rem occupe exactement la page. */
+  html {
+    font-size: 16px !important;
+  }
+  .deck {
+    background: none;
+  }
+  /* Les ombres floues sont rastérisées en rectangles gris par certains lecteurs de PDF : en impression, un filet les remplace. */
+  .deck [class*="shadow-"],
+  .deck [class*="ring-"] {
+    box-shadow: none !important;
+  }
+  .deck [class*="shadow-"] {
+    outline: 1px solid rgb(11 37 69 / 0.12);
+    outline-offset: -1px;
+  }
+}
+
+html {
+  /* Les ancres ne passent pas sous la barre de navigation flottante. */
+  scroll-padding-top: 6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

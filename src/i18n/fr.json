@@ -1,0 +1,1722 @@
+{
+  "marque": {
+    "titre_defaut": "Pilot M&E — Pilotez vos projets avec des données fiables",
+    "description": "Pilot M&E simplifie le suivi-évaluation des ONG, PME et projets financés par des bailleurs en Afrique de l’Ouest : indicateurs, saisies et rapports au même endroit."
+  },
+  "commun": {
+    "accueil": "Accueil",
+    "annuler": "Annuler",
+    "chargement": "Chargement…",
+    "enregistrer": "Enregistrer",
+    "facultatif": "facultatif",
+    "fermer": "Fermer",
+    "plus_tard": "Plus tard",
+    "reessayer": "Réessayer",
+    "supprimer": "Supprimer",
+    "accueil_logo": "Pilot M&E, retour à l’accueil"
+  },
+  "accueil": {
+    "surtitre": "Suivi-évaluation · Afrique de l’Ouest",
+    "titre_debut": "Pilotez vos projets avec des données",
+    "titre_mot": "fiables",
+    "titre_fin": ", en temps réel.",
+    "sous_titre": "Pilot M&E réunit vos indicateurs, vos saisies et vos rapports au même endroit, pour votre équipe comme pour vos bailleurs.",
+    "essai": "Commencer l’essai de {{jours}} jours",
+    "connexion": "Se connecter"
+  },
+  "nav": {
+    "principale": "Navigation principale",
+    "accueil_app": "Pilot M&E, retour aux projets",
+    "aller_contenu": "Aller au contenu",
+    "ouvrir_menu": "Ouvrir le menu",
+    "description_menu": "Projets, programmes, équipe et paramètres de votre organisation.",
+    "projets": "Projets",
+    "programmes": "Programmes",
+    "equipe": "Équipe",
+    "parametres": "Paramètres"
+  },
+  "auth": {
+    "non_configure": "Supabase n’est pas encore configuré sur ce poste : les formulaires s’affichent, mais l’inscription et la connexion ne fonctionneront qu’après avoir renseigné VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY (voir le README).",
+    "deconnexion": "Se déconnecter",
+    "renvoyer_confirmation": "Renvoyer l’e-mail de confirmation",
+    "confirmation_renvoyee": "E-mail renvoyé",
+    "champs": {
+      "nom": "Votre nom",
+      "organisation": "Nom de votre organisation",
+      "organisation_aide": "ONG, entreprise ou projet : vous pourrez le modifier plus tard.",
+      "email": "Adresse e-mail",
+      "mot_de_passe": "Mot de passe",
+      "mot_de_passe_aide": "8 caractères minimum, avec au moins une lettre et un chiffre.",
+      "nouveau_mot_de_passe": "Nouveau mot de passe",
+      "confirmation": "Confirmez le mot de passe"
+    },
+    "validation": {
+      "email": "Saisissez une adresse e-mail valide, par exemple nom@organisation.org.",
+      "mot_de_passe_requis": "Saisissez votre mot de passe.",
+      "mot_de_passe_longueur": "Le mot de passe doit contenir au moins 8 caractères.",
+      "mot_de_passe_lettre": "Ajoutez au moins une lettre.",
+      "mot_de_passe_chiffre": "Ajoutez au moins un chiffre.",
+      "confirmation": "Les deux mots de passe ne correspondent pas.",
+      "nom": "Indiquez votre nom (2 caractères minimum).",
+      "organisation": "Indiquez le nom de l’organisation (2 caractères minimum).",
+      "trop_long": "Ce texte est trop long.",
+      "acceptation": "Cochez la case pour accepter les conditions d’utilisation et la politique de confidentialité."
+    },
+    "marque": {
+      "surtitre": "Suivi-évaluation · Afrique de l’Ouest",
+      "titre_debut": "Pilotez vos projets avec des données",
+      "titre_mot": "fiables",
+      "titre_fin": ", en temps réel.",
+      "position": "Où nous en sommes",
+      "ecart": "L’écart avec la cible",
+      "action": "Ce qu’il faut faire maintenant",
+      "citation": "Chaque indicateur répond à ces trois questions, pour décider sans attendre le prochain rapport."
+    },
+    "connexion": {
+      "meta": "Connexion — Pilot M&E",
+      "titre": "Bon retour",
+      "sous_titre": "Connectez-vous pour retrouver vos projets et vos indicateurs.",
+      "oubli": "Mot de passe oublié ?",
+      "action": "Se connecter",
+      "pas_de_compte": "Pas encore de compte ?",
+      "vers_inscription": "Commencer l’essai gratuit"
+    },
+    "inscription": {
+      "meta": "Créer un compte — Pilot M&E",
+      "titre": "Créez votre espace",
+      "sous_titre": "Essai gratuit de {{jours}} jours, sans carte bancaire, avec toutes les fonctions du plan Pro.",
+      "invitation_badge": "Invitation",
+      "rejoindre": "Rejoindre {{organisation}}",
+      "invitation_email": "Créez votre compte avec l’adresse qui a reçu l’invitation ({{email}}).",
+      "invitation_invalide": "Ce lien d’invitation est expiré ou a déjà été utilisé. Demandez un nouveau lien à l’administrateur, ou créez votre propre espace ci-dessous.",
+      "action": "Créer mon espace",
+      "action_invitation": "Rejoindre l’organisation",
+      "acceptation_debut": "J’ai lu et j’accepte les",
+      "acceptation_conditions": "conditions d’utilisation",
+      "acceptation_et": "et la",
+      "acceptation_confidentialite": "politique de confidentialité",
+      "acceptation_onglet": "(les deux pages s’ouvrent dans un nouvel onglet)",
+      "deja_compte": "Déjà un compte ?",
+      "vers_connexion": "Se connecter"
+    },
+    "verifier": {
+      "titre": "Vérifiez votre boîte mail",
+      "texte": "Nous avons envoyé un lien de confirmation à {{email}}. Ouvrez-le pour activer votre compte.",
+      "astuce": "Rien reçu après quelques minutes ? Regardez dans les courriers indésirables, puis renvoyez l’e-mail."
+    },
+    "oubli": {
+      "meta": "Mot de passe oublié — Pilot M&E",
+      "titre": "Mot de passe oublié",
+      "sous_titre": "Indiquez votre adresse e-mail : nous vous enverrons un lien pour en choisir un nouveau.",
+      "action": "Envoyer le lien",
+      "retour": "Retour à la connexion",
+      "envoye_titre": "Lien envoyé",
+      "envoye_texte": "Si un compte existe pour {{email}}, un lien de réinitialisation vient d’y être envoyé. Il est valable une heure."
+    },
+    "reinitialiser": {
+      "meta": "Nouveau mot de passe — Pilot M&E",
+      "titre": "Choisissez un nouveau mot de passe",
+      "sous_titre": "Vous serez connecté·e dès qu’il sera enregistré.",
+      "action": "Enregistrer le mot de passe",
+      "succes": "Mot de passe modifié.",
+      "lien_invalide_titre": "Lien invalide ou expiré",
+      "lien_invalide_texte": "Ce lien de réinitialisation ne fonctionne plus. Demandez-en un nouveau : il arrivera en quelques instants.",
+      "nouveau_lien": "Recevoir un nouveau lien"
+    }
+  },
+  "app": {
+    "sans_organisation": {
+      "titre": "Aucune organisation",
+      "texte": "Votre compte n’est rattaché à aucune organisation, par exemple parce qu’un administrateur vous a retiré de l’équipe. Demandez-lui une nouvelle invitation."
+    }
+  },
+  "roles": {
+    "admin": "Administrateur",
+    "editeur": "Éditeur",
+    "lecteur": "Lecteur",
+    "descriptions": {
+      "admin": "Administrateur : gère l’équipe, les paramètres et peut supprimer des projets.",
+      "editeur": "Éditeur : crée et modifie projets, indicateurs et saisies.",
+      "lecteur": "Lecteur : consulte et exporte, sans rien modifier."
+    }
+  },
+  "plans": {
+    "essai": "Essai",
+    "starter": "Starter",
+    "pro": "Pro",
+    "enterprise": "Enterprise"
+  },
+  "essai": {
+    "fin_aujourdhui": "Votre essai se termine aujourd’hui.",
+    "fin_dans_one": "Votre essai se termine demain ({{date}}).",
+    "fin_dans_other": "Votre essai se termine dans {{count}} jours ({{date}}).",
+    "jours_court_one": "{{count}} jour restant",
+    "jours_court_other": "{{count}} jours restants",
+    "termine": "Votre essai est terminé : vos données restent consultables et exportables. Activez un plan pour reprendre la saisie.",
+    "termine_court": "essai terminé",
+    "activer": "Activer un plan",
+    "message_contact": "Bonjour, je souhaite activer un plan Pilot M&E pour {{organisation}}.",
+    "sujet_email": "Activation d’un plan — {{organisation}}"
+  },
+  "limite": {
+    "titre": "Limite de votre plan atteinte",
+    "projects": "Le plan {{plan}} comprend {{limite}} projet(s). Pour en créer davantage, passez à un plan supérieur.",
+    "kpis": "Le plan {{plan}} comprend {{limite}} indicateurs par projet. Pour en suivre davantage, passez à un plan supérieur.",
+    "users": "Le plan {{plan}} comprend {{limite}} utilisateur(s), invitations en attente comprises. Pour agrandir l’équipe, passez à un plan supérieur.",
+    "inclus_pro": "{{projets}} projets, {{kpis}} indicateurs par projet, {{utilisateurs}} utilisateurs.",
+    "inclus_enterprise": "Projets, indicateurs et utilisateurs illimités, support dédié.",
+    "facturation": "L’activation se fait avec notre équipe, par virement ou mobile money : vos données sont conservées.",
+    "whatsapp": "Écrire sur WhatsApp",
+    "email": "Écrire à l’équipe",
+    "message_whatsapp": "Bonjour, je souhaite passer à un plan supérieur pour {{organisation}} (plan actuel : {{plan}}).",
+    "sujet_email": "Changement de plan — {{organisation}}"
+  },
+  "etats": {
+    "erreur_titre": "Le chargement a échoué",
+    "erreur_code": "Erreur",
+    "erreur_page_titre": "Cette page a rencontré un problème",
+    "erreur_page_texte": "Rien n’est perdu : vos données sont enregistrées. Rechargez la page ou revenez à l’accueil.",
+    "introuvable_meta": "Page introuvable — Pilot M&E",
+    "introuvable_titre": "Page introuvable",
+    "introuvable_texte": "Cette adresse ne correspond à aucune page. Le lien est peut-être incomplet.",
+    "vers_app": "Mes projets"
+  },
+  "projets": {
+    "meta": "Projets — Pilot M&E",
+    "titre": "Projets",
+    "nouveau": "Nouveau projet",
+    "quota_one": "{{count}} projet sur {{limite}} inclus dans le plan {{plan}}",
+    "quota_other": "{{count}} projets sur {{limite}} inclus dans le plan {{plan}}",
+    "quota_illimite_one": "{{count}} projet",
+    "quota_illimite_other": "{{count}} projets",
+    "lecture_seule_role": "Vous consultez les projets en lecture seule. Un administrateur peut vous donner le rôle d’éditeur.",
+    "periode": "Période",
+    "sans_secteur": "Non précisé",
+    "choisir_secteur": "Choisir un secteur",
+    "actions": "Actions pour {{nom}}",
+    "vide": {
+      "titre": "Aucun projet pour l’instant",
+      "texte": "Créez votre premier projet, ou chargez le projet exemple pour découvrir un dashboard déjà rempli.",
+      "texte_lecteur": "Aucun projet n’a encore été créé dans votre organisation."
+    },
+    "exemple": {
+      "action": "Charger un projet exemple",
+      "badge": "Exemple",
+      "charge": "Projet exemple chargé : 8 indicateurs et 12 mois de saisies."
+    },
+    "statuts": {
+      "non_demarre": "Non démarré",
+      "en_cours": "En cours",
+      "en_retard": "En retard",
+      "suspendu": "Suspendu",
+      "termine": "Terminé",
+      "cloture": "Clôturé"
+    },
+    "champs": {
+      "nom": "Nom du projet",
+      "description": "Description",
+      "date_debut": "Date de début",
+      "date_fin": "Date de fin",
+      "secteur": "Secteur",
+      "statut": "Statut",
+      "budget": "Budget",
+      "devise": "Devise"
+    },
+    "validation": {
+      "nom": "Donnez un nom au projet (2 caractères minimum).",
+      "date": "Choisissez une date.",
+      "dates": "La date de fin doit être postérieure à la date de début.",
+      "budget": "Saisissez un montant positif, par exemple 25 000 000."
+    },
+    "creation": {
+      "titre": "Nouveau projet",
+      "description": "Les indicateurs se définissent ensuite, dans le projet.",
+      "action": "Créer le projet",
+      "succes": "Projet « {{nom}} » créé."
+    },
+    "suppression": {
+      "titre": "Supprimer « {{nom}} » ?",
+      "texte": "Le projet, ses indicateurs et toutes ses saisies seront supprimés définitivement.",
+      "texte_exemple": "Le projet exemple et ses données de démonstration seront supprimés. Vous pourrez le recharger plus tard.",
+      "action": "Supprimer définitivement",
+      "succes": "Projet « {{nom}} » supprimé."
+    },
+    "indicateurs_compte_one": "{{count}} indicateur",
+    "indicateurs_compte_other": "{{count}} indicateurs"
+  },
+  "equipe": {
+    "meta": "Équipe — Pilot M&E",
+    "titre": "Équipe",
+    "quota_one": "{{count}} utilisateur sur {{limite}} inclus dans le plan {{plan}}, invitations en attente comprises",
+    "quota_other": "{{count}} utilisateurs sur {{limite}} inclus dans le plan {{plan}}, invitations en attente comprises",
+    "quota_illimite_one": "{{count}} utilisateur",
+    "quota_illimite_other": "{{count}} utilisateurs",
+    "lecture_non_admin": "Seuls les administrateurs peuvent inviter des personnes et modifier les rôles.",
+    "membres": {
+      "titre": "Membres",
+      "description": "Les personnes qui ont accès aux projets de l’organisation.",
+      "vous": "(vous)",
+      "sans_nom": "Sans nom",
+      "role_de": "Rôle de {{nom}}",
+      "role_modifie": "Rôle de {{nom}} modifié.",
+      "retirer": "Retirer de l’équipe",
+      "retirer_de": "Retirer {{nom}} de l’équipe",
+      "retrait_titre": "Retirer {{nom}} ?",
+      "retrait_texte": "Cette personne perdra immédiatement l’accès aux projets de {{organisation}}. Ses saisies restent dans l’historique.",
+      "retire": "{{nom}} a été retiré·e de l’équipe."
+    },
+    "invitations": {
+      "titre": "Invitations en attente",
+      "description": "Une invitation est valable 7 jours et compte dans le quota d’utilisateurs. Renvoyer une invitation crée un nouveau lien et invalide l’ancien.",
+      "vide": "Aucune invitation en attente.",
+      "expire_le": "expire le {{date}}",
+      "expiree": "expirée",
+      "renvoyer": "Renvoyer",
+      "renvoyee": "Invitation renvoyée à {{email}} : un nouveau lien a été créé.",
+      "revoquer": "Révoquer",
+      "revoquee": "Invitation de {{email}} révoquée."
+    },
+    "inviter": {
+      "titre": "Inviter une personne",
+      "description": "Elle reçoit un e-mail avec un lien pour créer son compte. Vous pouvez aussi copier ce lien ou le partager sur WhatsApp.",
+      "role": "Rôle",
+      "action": "Inviter",
+      "quota_atteint": "Le quota d’utilisateurs de votre plan est atteint : révoquez une invitation ou passez à un plan supérieur.",
+      "cree": "Invitation créée pour {{email}}.",
+      "email_envoye": "Un e-mail d’invitation vient d’être envoyé à {{email}}.",
+      "email_non_configure": "L’envoi d’e-mails n’est pas encore configuré : transmettez ce lien à la personne, par WhatsApp par exemple.",
+      "email_echec": "L’e-mail n’a pas pu être envoyé. Transmettez-lui ce lien, ou renvoyez l’invitation dans un instant.",
+      "lien": "Lien d’invitation",
+      "copier": "Copier le lien",
+      "lien_copie": "Lien copié.",
+      "copie_impossible": "Copie impossible : sélectionnez le lien et copiez-le manuellement.",
+      "whatsapp": "Partager sur WhatsApp",
+      "message_whatsapp": "Bonjour, je vous invite à rejoindre {{organisation}} sur Pilot M&E pour suivre nos projets. Créez votre compte ici : {{lien}}"
+    }
+  },
+  "parametres": {
+    "meta": "Paramètres — Pilot M&E",
+    "titre": "Paramètres",
+    "description": "Votre organisation, votre plan et votre profil.",
+    "enregistre": "Modifications enregistrées.",
+    "organisation": {
+      "titre": "Organisation",
+      "description": "Ces informations apparaissent sur les rapports.",
+      "lecture_seule": "Seul un administrateur peut modifier ces informations.",
+      "nom": "Nom de l’organisation",
+      "pays": "Pays",
+      "devise": "Devise par défaut des projets"
+    },
+    "plan": {
+      "titre": "Plan",
+      "actif": "Votre plan est actif.",
+      "essai_jusquau": "Essai jusqu’au {{date}}, avec les limites du plan Pro.",
+      "essai_termine": "Essai terminé le {{date}} : l’organisation est en lecture seule.",
+      "projets": "Projets",
+      "kpis": "Indicateurs par projet",
+      "utilisateurs": "Utilisateurs",
+      "illimite": "∞",
+      "souhaite": "Plan choisi à l’inscription : {{plan}}."
+    },
+    "profil": {
+      "titre": "Profil",
+      "description": "Votre nom apparaît dans l’équipe et l’historique des saisies.",
+      "telephone": "Téléphone",
+      "telephone_aide": "Utile pour être joint sur WhatsApp. Format international conseillé.",
+      "telephone_invalide": "Saisissez un numéro valide, par exemple +221 77 000 00 00."
+    },
+    "compte": {
+      "titre": "Compte",
+      "description": "Connecté avec {{email}}."
+    },
+    "se": {
+      "titre": "Suivi-évaluation",
+      "description": "Ces réglages s’appliquent à tous les projets de l’organisation.",
+      "lecture_seule": "Seul un administrateur peut modifier ces réglages.",
+      "seuil_vert": "Seuil vert (en %)",
+      "seuil_vert_aide": "Un indicateur est « dans les temps » à partir de ce niveau de la trajectoire attendue.",
+      "seuil_ambre": "Seuil ambre (en %)",
+      "seuil_ambre_aide": "Entre les deux seuils : vigilance. En dessous : en retard.",
+      "seuils_invalides": "Le seuil ambre doit être supérieur à 0 et inférieur au seuil vert, qui ne dépasse pas 100.",
+      "frequence": "Fréquence de saisie par défaut",
+      "frequence_aide": "Proposée à la création d’un indicateur.",
+      "mois_fiscal": "Début de l’année fiscale",
+      "mois_fiscal_aide": "Les plans de travail annuels commencent ce mois-là.",
+      "unites": "Unités personnalisées",
+      "unites_aide": "Séparées par des virgules, 40 caractères au plus chacune, 30 unités au maximum. Elles sont proposées à la création d’un indicateur.",
+      "unites_invalides": "30 unités au maximum, de 40 caractères chacune.",
+      "devise_note": "La devise par défaut se règle dans la carte « Organisation »."
+    },
+    "logo": {
+      "titre": "Logo de l’organisation",
+      "description": "Il apparaît en tête de vos rapports PDF. PNG, JPEG ou WebP, 1 Mo au maximum.",
+      "lecture_seule": "Seuls les administrateurs peuvent changer le logo.",
+      "aucun": "Aucun logo : le nom de l’organisation est utilisé dans les rapports.",
+      "alt": "Logo de {{nom}}",
+      "choisir": "Choisir un logo",
+      "remplacer": "Remplacer le logo",
+      "retirer": "Retirer le logo",
+      "enregistre": "Logo enregistré.",
+      "retire": "Logo retiré.",
+      "erreur_type": "Format non pris en charge : utilisez un PNG, un JPEG ou un WebP.",
+      "erreur_taille": "Ce fichier dépasse 1 Mo."
+    }
+  },
+  "pays": {
+    "SN": "Sénégal",
+    "CI": "Côte d’Ivoire",
+    "ML": "Mali",
+    "BF": "Burkina Faso",
+    "NE": "Niger",
+    "GN": "Guinée",
+    "TG": "Togo",
+    "BJ": "Bénin",
+    "CM": "Cameroun",
+    "MR": "Mauritanie",
+    "GM": "Gambie",
+    "GW": "Guinée-Bissau",
+    "CV": "Cap-Vert",
+    "FR": "France"
+  },
+  "legal": {
+    "mentions": "Mentions légales",
+    "mentions_meta": "Mentions légales — Pilot M&E",
+    "confidentialite": "Politique de confidentialité",
+    "confidentialite_meta": "Politique de confidentialité — Pilot M&E",
+    "conditions": "Conditions d’utilisation",
+    "conditions_meta": "Conditions générales d’utilisation — Pilot M&E"
+  },
+  "erreurs": {
+    "reseau": "Connexion impossible. Vérifiez votre réseau, puis réessayez.",
+    "configuration": "Le service n’est pas configuré sur ce poste (variables Supabase manquantes).",
+    "inconnue": "Une erreur inattendue s’est produite. Réessayez dans un instant.",
+    "doublon": "Cet élément existe déjà.",
+    "donnees_invalides": "Certaines valeurs ne sont pas acceptées. Vérifiez le formulaire.",
+    "acces_refuse": "Votre rôle ne permet pas cette action.",
+    "ACCES_REFUSE": "Votre rôle ne permet pas cette action.",
+    "NON_AUTHENTIFIE": "Votre session a expiré. Reconnectez-vous.",
+    "INVITATION_IMPOSSIBLE": "L’invitation n’a pas pu être créée. Réessayez dans un instant.",
+    "EMAIL_INVALIDE": "Cette adresse e-mail n’est pas valide.",
+    "ESSAI_EXPIRE": "L’essai est terminé : l’organisation est en lecture seule. Activez un plan pour reprendre la saisie.",
+    "DEMO_READONLY": "Le projet exemple n’est pas modifiable, mais vous pouvez y saisir des valeurs ou le supprimer.",
+    "DEMO_EXISTE": "Le projet exemple est déjà chargé.",
+    "KPI_EPINGLES_MAX": "Quatre indicateurs au maximum peuvent être épinglés sur le dashboard.",
+    "DERNIER_ADMIN": "L’organisation doit garder au moins un administrateur. Nommez d’abord un autre administrateur.",
+    "PROJET_INTROUVABLE": "Ce projet n’existe plus ou ne vous est pas accessible.",
+    "KPI_INTROUVABLE": "Cet indicateur n’existe plus ou ne vous est pas accessible.",
+    "DEJA_INSCRIT": "Cette personne a déjà un compte Pilot M&E dans une autre organisation. Le multi-organisation arrivera plus tard.",
+    "DEJA_MEMBRE": "Cette personne fait déjà partie de l’équipe.",
+    "IMPORT_INVALIDE": "Un lot de lignes n’a pas pu être lu par le serveur. Vérifiez le fichier, puis réessayez.",
+    "IMPORT_LOT_TROP_GRAND": "Un lot dépasse la taille autorisée. Réessayez avec un fichier plus petit.",
+    "CADRE_PARENT_INVALIDE": "Cette ligne doit être rattachée à une ligne du niveau au-dessus, dans le même projet.",
+    "RATTACHEMENT_INVALIDE": "L’élément choisi n’appartient pas à ce projet ou n’a pas le bon type.",
+    "PROGRAMME_INTROUVABLE": "Ce programme n’existe plus ou ne vous est pas accessible.",
+    "ETIQUETTES_MAX": "Un projet porte dix étiquettes au plus.",
+    "DOCUMENT_CHEMIN_INVALIDE": "L’emplacement de ce fichier n’est pas valide. Réessayez l’envoi.",
+    "stockage_trop_gros": "Ce fichier dépasse la taille autorisée (20 Mo). Réduisez-le, puis réessayez.",
+    "stockage_type": "Ce type de fichier n’est pas accepté. Choisissez un PDF, une image, un document Office, un CSV, un texte ou une archive zip.",
+    "stockage_refuse": "Le dépôt a été refusé : votre rôle est en lecture seule, ou l’essai est terminé.",
+    "PLAN_LIMIT": {
+      "projects": "Limite de projets atteinte pour votre plan.",
+      "kpis": "Limite d’indicateurs atteinte pour ce projet.",
+      "users": "Limite d’utilisateurs atteinte pour votre plan."
+    },
+    "auth": {
+      "identifiants": "Adresse e-mail ou mot de passe incorrect.",
+      "non_confirme": "Votre adresse e-mail n’est pas encore confirmée. Ouvrez le lien reçu par e-mail.",
+      "existe": "Un compte existe déjà avec cette adresse. Connectez-vous ou réinitialisez le mot de passe.",
+      "mot_de_passe_faible": "Mot de passe trop faible : 8 caractères minimum, avec lettres et chiffres.",
+      "meme_mot_de_passe": "Choisissez un mot de passe différent de l’actuel.",
+      "trop_de_tentatives": "Trop de tentatives. Patientez quelques minutes avant de réessayer.",
+      "inscription_fermee": "Les inscriptions sont momentanément fermées.",
+      "lien_expire": "Ce lien a expiré. Demandez-en un nouveau."
+    }
+  },
+  "avancement": {
+    "titre": "Avancement",
+    "resultats": "Résultats",
+    "physique": "Physique",
+    "financier": "Financier",
+    "bientot": "Bientôt",
+    "aucune_donnee": "Aucune donnée",
+    "aucune_activite": "Aucune activité planifiée",
+    "resultats_aide": "Moyenne de l’atteinte des cibles des indicateurs qui ont des saisies.",
+    "physique_aide": "Moyenne de réalisation des activités du plan de travail annuel, hors activités annulées.",
+    "financier_aide": "Dépenses rapportées au budget : disponible avec le suivi financier.",
+    "activites_one": "{{realisees}} terminée sur {{count}} activité",
+    "activites_other": "{{realisees}} terminées sur {{count}} activités"
+  },
+  "programmes": {
+    "meta": "Programmes — Pilot M&E",
+    "titre": "Programmes",
+    "description": "Regroupez vos projets par programme pour suivre leur avancement consolidé.",
+    "nouveau": "Nouveau programme",
+    "vide": {
+      "titre": "Aucun programme pour l’instant",
+      "texte": "Un programme regroupe plusieurs projets d’un même bailleur ou d’une même stratégie. Créez-en un, puis rattachez-y vos projets.",
+      "texte_lecteur": "Aucun programme n’a encore été créé dans cette organisation."
+    },
+    "projets_compte_one": "{{count}} projet",
+    "projets_compte_other": "{{count}} projets",
+    "periode_libre": "Période non précisée",
+    "champs": {
+      "nom": "Nom du programme",
+      "description": "Description",
+      "date_debut": "Début",
+      "date_fin": "Fin"
+    },
+    "validation": {
+      "nom": "Saisissez un nom d’au moins 2 caractères.",
+      "dates": "La fin doit être postérieure ou égale au début."
+    },
+    "creation": {
+      "titre": "Nouveau programme",
+      "description": "Vous pourrez y rattacher des projets depuis leur page.",
+      "action": "Créer le programme",
+      "succes": "Programme « {{nom}} » créé."
+    },
+    "modification": {
+      "titre": "Modifier le programme",
+      "action": "Enregistrer",
+      "succes": "Programme modifié."
+    },
+    "suppression": {
+      "titre": "Supprimer « {{nom}} » ?",
+      "texte": "Le programme est supprimé. Ses projets ne sont pas supprimés : ils restent dans la liste, sans programme.",
+      "action": "Supprimer le programme",
+      "succes": "Programme « {{nom}} » supprimé."
+    },
+    "actions": "Actions pour le programme {{nom}}",
+    "detail": {
+      "retour": "Tous les programmes",
+      "introuvable_titre": "Programme introuvable",
+      "introuvable_texte": "Ce programme n’existe plus ou ne vous est pas accessible.",
+      "projets": "Projets du programme",
+      "projets_vide_titre": "Aucun projet dans ce programme",
+      "projets_vide_texte": "Ouvrez un projet et choisissez ce programme dans son en-tête pour l’y rattacher.",
+      "consolide": "Avancement consolidé",
+      "consolide_aide": "Moyenne simple des taux des projets du programme qui en ont un.",
+      "projets_avec_taux_one": "{{avec}} sur {{count}} projet a des données",
+      "projets_avec_taux_other": "{{avec}} sur {{count}} projets ont des données"
+    },
+    "champ_projet": "Programme",
+    "aucun": "Aucun programme",
+    "choisir": "Aucun programme",
+    "modifie_projet": "Programme du projet modifié."
+  },
+  "travail": {
+    "statuts": {
+      "a_faire": "À faire",
+      "en_cours": "En cours",
+      "termine": "Terminé",
+      "reporte": "Reporté",
+      "annule": "Annulé"
+    },
+    "en_retard": "En retard",
+    "retard_jours_one": "{{count}} jour de retard",
+    "retard_jours_other": "{{count}} jours de retard",
+    "lecture_seule_role": "Votre rôle est en lecture seule : vous pouvez consulter, pas modifier.",
+    "lecture_seule_essai": "L’essai est terminé : cet écran reste consultable, les modifications sont suspendues.",
+    "confirmation_annuler": "Annuler"
+  },
+  "cadre": {
+    "meta": "Cadre logique — Pilot M&E",
+    "titre": "Cadre logique",
+    "description": "La logique d’intervention du projet, de l’objectif global aux activités, avec ses indicateurs, ses moyens de vérification et ses hypothèses.",
+    "vues": {
+      "libelle": "Affichage du cadre logique",
+      "arbre": "Arbre",
+      "matrice": "Matrice"
+    },
+    "types": {
+      "objectif_global": "Objectif global",
+      "objectif_specifique": "Objectif spécifique",
+      "resultat": "Résultat attendu",
+      "activite": "Activité"
+    },
+    "ajouter": {
+      "objectif_global": "Définir l’objectif global",
+      "objectif_specifique": "Ajouter un objectif spécifique",
+      "resultat": "Ajouter un résultat",
+      "activite": "Ajouter une activité"
+    },
+    "vide": {
+      "titre": "Aucun cadre logique pour l’instant",
+      "texte": "Commencez par l’objectif global du projet, puis déclinez-le en objectifs spécifiques, en résultats attendus et en activités. Vous y relierez ensuite vos indicateurs.",
+      "texte_lecteur": "Le cadre logique de ce projet n’a pas encore été renseigné."
+    },
+    "actions": {
+      "menu": "Actions pour {{code}}",
+      "modifier": "Modifier",
+      "supprimer": "Supprimer",
+      "monter": "Monter",
+      "descendre": "Descendre",
+      "replier": "Replier {{code}}",
+      "deplier": "Déplier {{code}}"
+    },
+    "colonnes": {
+      "logique": "Logique d’intervention",
+      "indicateurs": "Indicateurs",
+      "moyens": "Moyens de vérification",
+      "hypotheses": "Hypothèses et risques"
+    },
+    "aucun_indicateur": "Aucun indicateur relié",
+    "non_renseigne": "Non renseigné",
+    "indicateurs_compte_one": "{{count}} indicateur",
+    "indicateurs_compte_other": "{{count}} indicateurs",
+    "formulaire": {
+      "titre_creer": "Nouvelle ligne : {{type}}",
+      "titre_modifier": "Modifier {{code}}",
+      "description": "{{type}}",
+      "libelle": "Libellé",
+      "moyens": "Moyens de vérification",
+      "moyens_aide": "Où et comment l’information est vérifiée : rapports, enquêtes, registres…",
+      "hypotheses": "Hypothèses et risques",
+      "hypotheses_aide": "Conditions extérieures nécessaires pour passer au niveau supérieur.",
+      "rattachement": "Rattaché à",
+      "indicateurs": "Indicateurs reliés",
+      "indicateurs_aide": "Un indicateur n’est relié qu’à une ligne : cocher un indicateur déjà relié ailleurs le déplace ici.",
+      "indicateurs_vide": "Ce projet n’a pas encore d’indicateur.",
+      "relie_a": "actuellement relié à {{code}}",
+      "cree": "Ligne ajoutée.",
+      "modifie": "Ligne modifiée.",
+      "action_creer": "Ajouter",
+      "action_modifier": "Enregistrer",
+      "validation": {
+        "libelle": "Saisissez un libellé de 2 à 500 caractères."
+      }
+    },
+    "suppression": {
+      "titre": "Supprimer {{code}} ?",
+      "texte_seule": "Cette ligne sera supprimée. Les indicateurs qui lui sont reliés ne sont pas supprimés : ils ne seront simplement plus reliés au cadre logique.",
+      "texte_branche_one": "Cette ligne sera supprimée avec la {{count}} ligne qu’elle porte. Les indicateurs reliés ne sont pas supprimés : ils ne seront plus reliés au cadre logique.",
+      "texte_branche_other": "Cette ligne sera supprimée avec les {{count}} lignes qu’elle porte. Les indicateurs reliés ne sont pas supprimés : ils ne seront plus reliés au cadre logique.",
+      "action": "Supprimer",
+      "succes": "Ligne supprimée."
+    }
+  },
+  "phases": {
+    "meta": "Phases et étapes — Pilot M&E",
+    "titre": "Phases et étapes",
+    "description": "Les grandes périodes du projet, avec leurs jalons et leurs livrables datés.",
+    "ajouter_phase": "Ajouter une phase",
+    "ajouter_etape": "Ajouter une étape",
+    "type": {
+      "jalon": "Jalon",
+      "livrable": "Livrable"
+    },
+    "vide": {
+      "titre": "Aucune phase définie",
+      "texte": "Découpez le projet en grandes périodes (conception, démarrage, mise en œuvre…), puis rattachez-y vos jalons et vos livrables.",
+      "texte_lecteur": "Les phases de ce projet n’ont pas encore été définies.",
+      "action_types": "Ajouter les 5 phases types"
+    },
+    "defaut": {
+      "conception": "Conception",
+      "demarrage": "Démarrage",
+      "mise_en_oeuvre": "Mise en œuvre",
+      "suivi_evaluation": "Suivi-évaluation",
+      "cloture": "Clôture"
+    },
+    "defaut_ajoutees": "Les phases types ont été ajoutées.",
+    "chronologie": {
+      "titre": "Chronologie",
+      "alt": "Chronologie des phases et des étapes du projet. Le détail est dans les listes ci-dessous.",
+      "aujourdhui": "Aujourd’hui",
+      "sans_dates": "Les phases sans dates n’apparaissent pas sur la chronologie."
+    },
+    "phase": {
+      "dates_a_preciser": "Dates à préciser",
+      "aucune_etape": "Aucune étape dans cette phase.",
+      "etapes_terminees_one": "{{terminees}} sur {{count}} étape terminée",
+      "etapes_terminees_other": "{{terminees}} sur {{count}} étapes terminées",
+      "actions": "Actions pour la phase {{nom}}",
+      "monter": "Monter la phase {{nom}}",
+      "descendre": "Descendre la phase {{nom}}"
+    },
+    "sans_phase": "Étapes sans phase",
+    "etape": {
+      "prevue_le": "Prévue le {{date}}",
+      "atteinte_le": "Atteinte le {{date}}",
+      "actions": "Actions pour l’étape {{nom}}",
+      "statut_pour": "Statut de l’étape {{nom}}"
+    },
+    "formulaire_phase": {
+      "titre_creer": "Nouvelle phase",
+      "titre_modifier": "Modifier la phase",
+      "nom": "Nom de la phase",
+      "description": "Description",
+      "date_debut": "Début",
+      "date_fin": "Fin",
+      "cree": "Phase ajoutée.",
+      "modifie": "Phase modifiée.",
+      "action_creer": "Ajouter la phase",
+      "action_modifier": "Enregistrer",
+      "validation": {
+        "nom": "Saisissez un nom de 2 à 120 caractères.",
+        "dates": "La fin doit être postérieure ou égale au début."
+      }
+    },
+    "formulaire_etape": {
+      "titre_creer": "Nouvelle étape",
+      "titre_modifier": "Modifier l’étape",
+      "nom": "Intitulé",
+      "description": "Description",
+      "type": "Type",
+      "phase": "Phase",
+      "aucune_phase": "Aucune phase",
+      "date_prevue": "Date prévue",
+      "date_reelle": "Date réelle",
+      "date_reelle_aide": "À renseigner quand l’étape est atteinte.",
+      "statut": "Statut",
+      "cree": "Étape ajoutée.",
+      "modifie": "Étape modifiée.",
+      "action_creer": "Ajouter l’étape",
+      "action_modifier": "Enregistrer",
+      "validation": {
+        "nom": "Saisissez un intitulé de 2 à 200 caractères.",
+        "date": "Indiquez une date valide."
+      }
+    },
+    "suppression_phase": {
+      "titre": "Supprimer la phase « {{nom}} » ?",
+      "texte": "La phase est supprimée. Ses étapes et les activités qui s’y rattachent sont conservées, sans phase.",
+      "action": "Supprimer la phase",
+      "succes": "Phase supprimée."
+    },
+    "suppression_etape": {
+      "titre": "Supprimer l’étape « {{nom}} » ?",
+      "texte": "Cette étape sera supprimée définitivement.",
+      "action": "Supprimer l’étape",
+      "succes": "Étape supprimée."
+    }
+  },
+  "pta": {
+    "meta": "Plan de travail — Pilot M&E",
+    "titre": "Plan de travail annuel",
+    "description": "Les activités planifiées de l’année : période, responsable, budget et avancement.",
+    "annee": "Année fiscale",
+    "annee_option": "Année {{libelle}}",
+    "planifier": "Planifier une activité",
+    "vues": {
+      "libelle": "Affichage du plan de travail",
+      "calendrier": "Calendrier",
+      "liste": "Liste"
+    },
+    "resume": {
+      "activites": "Activités",
+      "terminees": "Terminées",
+      "avancement": "Avancement de l’année",
+      "budget": "Budget prévu",
+      "aucune": "—"
+    },
+    "vide": {
+      "titre": "Aucune activité planifiée pour cette année",
+      "texte": "Planifiez les activités de l’année par trimestre ou par dates, avec leur responsable et leur budget. L’avancement physique du projet se calcule à partir d’elles.",
+      "texte_lecteur": "Aucune activité n’est planifiée pour cette année fiscale."
+    },
+    "calendrier": {
+      "alt": "Calendrier annuel des activités. Le détail est dans la vue Liste.",
+      "aujourdhui": "Aujourd’hui",
+      "activite_bar": "{{intitule}} : {{periode}}, {{statut}}, {{pourcent}} % réalisé"
+    },
+    "colonnes": {
+      "activite": "Activité",
+      "responsable": "Responsable",
+      "periode": "Période",
+      "statut": "Statut",
+      "avancement": "Avancement",
+      "budget": "Budget prévu",
+      "actions": "Actions"
+    },
+    "trimestre": "T{{numero}}",
+    "trimestre_annee": "T{{numero}} {{annee}}",
+    "sans_responsable": "Non précisé",
+    "lien_cadre": "Cadre logique : {{code}}",
+    "actions": "Actions pour l’activité {{nom}}",
+    "statut_pour": "Statut de l’activité {{nom}}",
+    "formulaire": {
+      "titre_creer": "Nouvelle activité",
+      "titre_modifier": "Modifier l’activité",
+      "intitule": "Intitulé",
+      "description": "Description",
+      "annee": "Année fiscale",
+      "periode": "Période de réalisation",
+      "mode_trimestre": "Un trimestre",
+      "mode_dates": "Des dates précises",
+      "trimestre": "Trimestre",
+      "date_debut": "Début",
+      "date_fin": "Fin",
+      "responsable": "Responsable",
+      "responsable_aide": "Une personne de l’équipe ou d’un partenaire.",
+      "budget": "Budget prévu ({{devise}})",
+      "statut": "Statut",
+      "pourcent": "Réalisation (en %)",
+      "pourcent_aide": "Terminée = 100 %, à faire = 0 % : le pourcentage suit le statut.",
+      "noeud": "Activité du cadre logique",
+      "aucun_noeud": "Aucune",
+      "phase": "Phase",
+      "aucune_phase": "Aucune",
+      "cree": "Activité planifiée.",
+      "modifie": "Activité modifiée.",
+      "action_creer": "Planifier l’activité",
+      "action_modifier": "Enregistrer",
+      "validation": {
+        "intitule": "Saisissez un intitulé de 2 à 200 caractères.",
+        "date": "Indiquez une date valide.",
+        "dates": "La fin doit être postérieure ou égale au début.",
+        "budget": "Saisissez un montant positif, par exemple 1 500 000.",
+        "pourcent": "Saisissez un nombre entre 0 et 100."
+      }
+    },
+    "suppression": {
+      "titre": "Supprimer l’activité « {{nom}} » ?",
+      "texte": "Cette activité sera supprimée du plan de travail. Les réalisations qui s’y rattachent sont conservées.",
+      "action": "Supprimer l’activité",
+      "succes": "Activité supprimée."
+    }
+  },
+  "prochaines": {
+    "meta": "Prochaines étapes — Pilot M&E",
+    "titre": "Prochaines étapes",
+    "description": "Les actions à mener à court terme, avec une personne responsable et une échéance. Un indicateur en alerte peut en faire naître une.",
+    "ajouter": "Ajouter une prochaine étape",
+    "vide": {
+      "titre": "Aucune prochaine étape",
+      "texte": "Notez ici ce qu’il faut faire ensuite : qui, pour quand. Vous pouvez aussi en créer une depuis l’alerte d’un indicateur sur le tableau de bord.",
+      "texte_lecteur": "Aucune prochaine étape n’a encore été notée pour ce projet."
+    },
+    "resume": "Ouvertes : {{ouvertes}} · en retard : {{retard}}",
+    "filtre": {
+      "libelle": "Afficher les prochaines étapes",
+      "ouvertes": "Ouvertes",
+      "terminees": "Terminées",
+      "toutes": "Toutes"
+    },
+    "filtre_vide": {
+      "ouvertes": "Aucune prochaine étape ouverte : tout est à jour.",
+      "terminees": "Aucune prochaine étape terminée ou annulée pour l’instant.",
+      "toutes": "Aucune prochaine étape."
+    },
+    "echeance": "Échéance le {{date}}",
+    "sans_echeance": "Sans échéance",
+    "depuis_indicateur": "Indicateur : {{nom}}",
+    "statut_pour": "Statut de la prochaine étape « {{libelle}} »",
+    "actions": "Actions pour la prochaine étape « {{libelle}} »",
+    "suggestion": {
+      "alert": "Corriger l’écart de l’indicateur « {{nom}} »",
+      "warn": "Vérifier l’indicateur « {{nom}} » et ses dernières saisies"
+    },
+    "formulaire": {
+      "titre_creer": "Nouvelle prochaine étape",
+      "titre_modifier": "Modifier la prochaine étape",
+      "description": "Une action à mener à court terme, avec une personne responsable et une échéance.",
+      "depuis_alerte": "Créée depuis l’alerte d’un indicateur : ajustez le texte, la personne responsable et l’échéance.",
+      "libelle": "Action à mener",
+      "responsable": "Responsable",
+      "echeance": "Échéance",
+      "statut": "Statut",
+      "indicateur": "Indicateur concerné",
+      "aucun_indicateur": "Aucun indicateur",
+      "action_creer": "Créer la prochaine étape",
+      "action_modifier": "Enregistrer",
+      "creee": "Prochaine étape créée.",
+      "modifiee": "Prochaine étape mise à jour.",
+      "validation": {
+        "libelle": "Décrivez l’action en 2 caractères au moins (300 au plus).",
+        "date": "Date invalide."
+      }
+    },
+    "suppression": {
+      "titre": "Supprimer cette prochaine étape ?",
+      "texte": "« {{libelle}} » sera supprimée définitivement.",
+      "action": "Supprimer la prochaine étape",
+      "succes": "Prochaine étape supprimée."
+    }
+  },
+  "realisations": {
+    "meta": "Réalisations — Pilot M&E",
+    "titre": "Réalisations",
+    "description": "Ce qui a été réalisé sur le terrain : date, quantité, lieu, lien avec le cadre logique, et les preuves jointes.",
+    "ajouter": "Ajouter une réalisation",
+    "vide": {
+      "titre": "Aucune réalisation enregistrée",
+      "texte": "Enregistrez ce qui a été fait : un forage réhabilité, une formation, une séance de sensibilisation. Joignez-y une preuve (photo, liste de présence, rapport).",
+      "texte_lecteur": "Aucune réalisation n’a encore été enregistrée pour ce projet."
+    },
+    "resume_one": "{{count}} réalisation, dont {{avecPreuve}} avec preuve jointe",
+    "resume_other": "{{count}} réalisations, dont {{avecPreuve}} avec preuve jointe",
+    "actions": "Actions pour la réalisation « {{titre}} »",
+    "joindre": "Joindre une preuve",
+    "liens": "Liens de la réalisation",
+    "activite_pta": "Plan de travail : {{intitule}}",
+    "preuves_aucune": "Aucune preuve jointe",
+    "preuves_one": "{{count}} preuve jointe",
+    "preuves_other": "{{count}} preuves jointes",
+    "formulaire": {
+      "titre_creer": "Nouvelle réalisation",
+      "titre_modifier": "Modifier la réalisation",
+      "description": "Un extrant constaté : ce qui a été fait, quand, combien et où.",
+      "date": "Date",
+      "titre": "Intitulé",
+      "details": "Description",
+      "quantite": "Quantité",
+      "unite": "Unité",
+      "lieu": "Lieu",
+      "lieu_aide": "Texte libre (village, commune…). Le référentiel de localités arrivera avec le suivi géographique.",
+      "noeud": "Résultat ou activité du cadre logique",
+      "noeud_vide": "Le cadre logique du projet n’a pas encore de résultat ni d’activité.",
+      "aucun": "Aucun lien",
+      "pta": "Activité du plan de travail",
+      "aucune": "Aucune",
+      "action_creer": "Enregistrer la réalisation",
+      "action_modifier": "Enregistrer",
+      "creee": "Réalisation enregistrée.",
+      "modifiee": "Réalisation mise à jour.",
+      "validation": {
+        "date": "Date invalide.",
+        "titre": "Donnez un intitulé de 2 à 200 caractères.",
+        "quantite": "Saisissez un nombre positif (deux décimales au plus)."
+      }
+    },
+    "suppression": {
+      "titre": "Supprimer la réalisation « {{titre}} » ?",
+      "texte": "La réalisation sera supprimée. Les preuves jointes restent dans les documents du projet.",
+      "action": "Supprimer la réalisation",
+      "succes": "Réalisation supprimée."
+    }
+  },
+  "etatsAvancement": {
+    "meta": "États d’avancement — Pilot M&E",
+    "titre": "États d’avancement",
+    "description": "Le récit périodique du projet : ce qui a avancé, ce qui bloque, ce qui menace.",
+    "ajouter": "Rédiger un état d’avancement",
+    "vide": {
+      "titre": "Aucun état d’avancement",
+      "texte": "Rédigez un état à chaque point d’étape : période couverte, faits marquants, difficultés et risques. Les taux d’avancement du jour y sont enregistrés.",
+      "texte_lecteur": "Aucun état d’avancement n’a encore été rédigé pour ce projet."
+    },
+    "taux_figes_aide": "Chaque état garde les taux de résultats et physique du jour où il a été rédigé : une saisie ultérieure ne le réécrit pas.",
+    "periode": "Période : {{periode}}",
+    "redige_le": "rédigé le {{date}}",
+    "actions": "Actions pour l’état « {{titre}} »",
+    "rubriques": {
+      "faits": "Faits marquants",
+      "difficultes": "Difficultés rencontrées",
+      "risques": "Risques"
+    },
+    "non_renseigne": "Non renseigné.",
+    "formulaire": {
+      "titre_creer": "Rédiger un état d’avancement",
+      "titre_modifier": "Modifier l’état d’avancement",
+      "description": "Une période, ce qui s’est passé, ce qui bloque, ce qui menace.",
+      "titre_defaut": "État d’avancement · {{periode}}",
+      "taux_actuels": "Taux d’avancement aujourd’hui",
+      "taux_aide": "Ces taux seront enregistrés avec l’état et ne changeront plus.",
+      "taux_figes": "Taux figés le {{date}}",
+      "titre": "Titre",
+      "debut": "Début de la période",
+      "fin": "Fin de la période",
+      "realisations_periode_one": "{{count}} réalisation enregistrée sur cette période.",
+      "realisations_periode_other": "{{count}} réalisations enregistrées sur cette période.",
+      "faits": "Faits marquants",
+      "faits_aide": "Résultats obtenus, activités menées, réunions importantes.",
+      "difficultes": "Difficultés rencontrées",
+      "difficultes_aide": "Retards, blocages, besoins d’appui.",
+      "risques": "Risques",
+      "risques_aide": "Ce qui pourrait compromettre les résultats si rien n’est fait.",
+      "action_creer": "Enregistrer l’état",
+      "action_modifier": "Enregistrer",
+      "cree": "État d’avancement enregistré.",
+      "modifie": "État d’avancement mis à jour.",
+      "validation": {
+        "titre": "Donnez un titre de 2 à 160 caractères.",
+        "date": "Date invalide.",
+        "periode": "La fin de la période doit être le même jour ou après le début."
+      }
+    },
+    "suppression": {
+      "titre": "Supprimer l’état « {{titre}} » ?",
+      "texte": "L’état et ses taux figés seront supprimés définitivement.",
+      "action": "Supprimer l’état",
+      "succes": "État d’avancement supprimé."
+    }
+  },
+  "documents": {
+    "meta": "Documents — Pilot M&E",
+    "titre": "Documents",
+    "description": "Rapports, contrats et justificatifs du projet, dans un espace privé réservé à votre organisation.",
+    "deposer": "Déposer un document",
+    "vide": {
+      "titre": "Aucun document déposé",
+      "texte": "Déposez ici les rapports, contrats et justificatifs du projet. Seuls les membres de votre organisation y ont accès.",
+      "texte_lecteur": "Aucun document n’a encore été déposé pour ce projet."
+    },
+    "resume_one": "{{count}} document · {{taille}}",
+    "resume_other": "{{count}} documents · {{taille}}",
+    "filtre": "Catégorie",
+    "toutes_categories": "Toutes les catégories",
+    "filtre_vide": "Aucun document dans cette catégorie.",
+    "categories": {
+      "rapport": "Rapport",
+      "contrat": "Contrat",
+      "justificatif": "Justificatif",
+      "autre": "Autre"
+    },
+    "depose_le": "déposé le {{date}}",
+    "preuve_de": "Preuve de la réalisation « {{titre}} »",
+    "telecharger": "Télécharger",
+    "telecharger_pour": "Télécharger {{nom}}",
+    "actions": "Actions pour le document « {{nom}} »",
+    "formulaire": {
+      "titre_deposer": "Déposer un document",
+      "titre_modifier": "Modifier le document",
+      "description_depot": "PDF, image, document Office, CSV, texte ou zip : 20 Mo au plus.",
+      "fichier": "Fichier",
+      "fichier_aide": "Glissez un fichier ici ou choisissez-le sur votre appareil.",
+      "choisir": "Choisir un fichier",
+      "changer": "Changer de fichier",
+      "fichier_manquant": "Choisissez un fichier à déposer.",
+      "fichier_vide": "Ce fichier est vide.",
+      "fichier_trop_gros": "Ce fichier dépasse 20 Mo.",
+      "fichier_type": "Ce type de fichier n’est pas accepté (PDF, images, documents Office, CSV, texte, zip).",
+      "nom": "Nom du document",
+      "categorie": "Catégorie",
+      "realisation": "Preuve de la réalisation",
+      "aucune_realisation": "Aucune",
+      "details": "Description",
+      "action_deposer": "Déposer",
+      "action_modifier": "Enregistrer",
+      "depose": "Document déposé.",
+      "modifie": "Document mis à jour.",
+      "validation": {
+        "nom": "Donnez un nom de 1 à 200 caractères."
+      }
+    },
+    "suppression": {
+      "titre": "Supprimer « {{nom}} » ?",
+      "texte": "Le document et son fichier seront supprimés définitivement.",
+      "action": "Supprimer le document",
+      "succes": "Document supprimé.",
+      "fichier_restant": "Document supprimé, mais son fichier n’a pas pu être retiré du stockage : il reste invisible et sera nettoyé ultérieurement."
+    }
+  },
+  "etiquettes": {
+    "titre": "Étiquettes du projet",
+    "aucune": "Aucune étiquette",
+    "retirer": "Retirer l’étiquette {{etiquette}}",
+    "ajouter": "Ajouter",
+    "ajouter_libelle": "Ajouter une étiquette",
+    "placeholder": "Ajouter une étiquette",
+    "max": "10 étiquettes au maximum.",
+    "filtre": "Étiquette",
+    "toutes": "Toutes les étiquettes",
+    "validation": {
+      "vide": "Saisissez une étiquette.",
+      "longue": "Une étiquette fait 40 caractères au plus.",
+      "doublon": "L’étiquette « {{etiquette}} » existe déjà."
+    }
+  },
+  "projet": {
+    "navigation": "Sections du projet",
+    "onglets": {
+      "dashboard": "Tableau de bord",
+      "indicateurs": "Indicateurs",
+      "saisie": "Saisie",
+      "import": "Import",
+      "rapports": "Rapports",
+      "cadre": "Cadre logique",
+      "phases": "Phases et étapes",
+      "pta": "Plan de travail",
+      "realisations": "Réalisations",
+      "prochaines": "Prochaines étapes",
+      "etats": "États d’avancement",
+      "documents": "Documents"
+    },
+    "rubriques": {
+      "libelle": "Rubriques du projet",
+      "pilotage": "Pilotage",
+      "planification": "Planification",
+      "mise_en_oeuvre": "Mise en œuvre"
+    },
+    "retour": "Tous les projets",
+    "introuvable_titre": "Projet introuvable",
+    "introuvable_texte": "Ce projet n’existe plus ou ne vous est pas accessible.",
+    "statut_modifie": "Statut du projet mis à jour.",
+    "progression": "Progression globale",
+    "progression_aucune": "Aucune donnée",
+    "suggestion_retard": "Les indicateurs sont en retard sur la trajectoire du projet.",
+    "suggestion_action": "Passer en « En retard »",
+    "exemple_info": "Projet exemple : vous pouvez y saisir des valeurs pour vous entraîner, mais ses indicateurs ne sont pas modifiables."
+  },
+  "kpi": {
+    "meta": "Indicateurs — Pilot M&E",
+    "titre": "Indicateurs",
+    "statuts": {
+      "ok": "Sur la trajectoire",
+      "warn": "Vigilance",
+      "alert": "En retard",
+      "none": "Aucune donnée"
+    },
+    "jauge_resume": "{{ok}} sur la trajectoire, {{warn}} en vigilance, {{alert}} en retard, {{none}} sans donnée.",
+    "actions": {
+      "warn": "Vigilance : vérifiez les dernières saisies et les activités qui alimentent cet indicateur.",
+      "alert": "En retard : cherchez la cause avec l’équipe et décidez d’une action corrective."
+    },
+    "carte": {
+      "aucune_donnee": "Aucune donnée sur la période",
+      "cible": "Cible : {{cible}}",
+      "atteint": "{{pourcent}} atteint",
+      "ecart_avance": "Attendu à ce jour : {{attendue}}. En avance de {{ecart}}.",
+      "ecart_retard": "Attendu à ce jour : {{attendue}}. En retard de {{ecart}}.",
+      "variation": "{{variation}} par rapport à la période précédente",
+      "saisie_en_retard": "Saisie en retard",
+      "saisir": "Saisir une valeur",
+      "creer_etape": "Créer une prochaine étape",
+      "etapes_ouvertes_one": "{{count}} prochaine étape en cours",
+      "etapes_ouvertes_other": "{{count}} prochaines étapes en cours"
+    },
+    "frequences": {
+      "hebdomadaire": "Hebdomadaire",
+      "mensuelle": "Mensuelle",
+      "trimestrielle": "Trimestrielle",
+      "annuelle": "Annuelle"
+    },
+    "agregations": {
+      "cumul": "Cumul",
+      "dernier": "Dernière valeur",
+      "moyenne": "Moyenne"
+    },
+    "sens": {
+      "croissant": "À augmenter",
+      "decroissant": "À diminuer"
+    },
+    "champs": {
+      "base": "Base",
+      "cible": "Cible",
+      "frequence": "Fréquence",
+      "calcul": "Calcul",
+      "sens": "Objectif"
+    },
+    "quota_one": "{{count}} indicateur sur {{limite}} inclus dans ce projet",
+    "quota_other": "{{count}} indicateurs sur {{limite}} inclus dans ce projet",
+    "quota_illimite_one": "{{count}} indicateur",
+    "quota_illimite_other": "{{count}} indicateurs",
+    "compte_exemple_one": "{{count}} indicateur (le projet exemple ne compte pas dans votre quota)",
+    "compte_exemple_other": "{{count}} indicateurs (le projet exemple ne compte pas dans votre quota)",
+    "epingles_one": "{{count}} épinglé sur {{max}} possibles",
+    "epingles_other": "{{count}} épinglés sur {{max}} possibles",
+    "nouveau": "Nouvel indicateur",
+    "exemple_info": "Projet exemple : vous pouvez réorganiser et épingler ses indicateurs, mais pas les créer, les modifier ni les supprimer.",
+    "lecture_seule": "Vous consultez les indicateurs en lecture seule.",
+    "vide": {
+      "titre": "Aucun indicateur",
+      "texte": "Un indicateur mesure un résultat du projet : une cible, une unité, une fréquence de saisie. Créez le premier.",
+      "texte_lecture": "Aucun indicateur n’a encore été créé dans ce projet."
+    },
+    "deplacer": "Déplacer {{nom}} (espace pour le saisir, flèches pour le déplacer)",
+    "epingler": "Épingler {{nom}} au tableau de bord",
+    "desepingler": "Retirer {{nom}} du tableau de bord",
+    "epingle": "Épinglé",
+    "modifier": "Modifier {{nom}}",
+    "supprimer": "Supprimer {{nom}}",
+    "suppression": {
+      "titre": "Supprimer « {{nom}} » ?",
+      "texte_one": "L’indicateur et sa saisie ({{count}}) seront supprimés définitivement.",
+      "texte_other": "L’indicateur et ses {{count}} saisies seront supprimés définitivement.",
+      "action": "Supprimer définitivement",
+      "succes": "Indicateur « {{nom}} » supprimé."
+    },
+    "formulaire": {
+      "titre_creer": "Nouvel indicateur",
+      "titre_modifier": "Modifier l’indicateur",
+      "description": "Une cible, une unité et un mode de calcul : c’est ce qui permet d’afficher l’écart.",
+      "nom": "Nom de l’indicateur",
+      "description_champ": "Description",
+      "cible": "Cible",
+      "base": "Valeur de base",
+      "unite": "Unité",
+      "unite_aide": "Par exemple : forages, personnes, %, minutes.",
+      "frequence": "Fréquence de saisie",
+      "frequence_aide": "Un badge « saisie en retard » apparaît au-delà d’une fois et demie cette période.",
+      "agregation": "Mode de calcul",
+      "agregation_aide": {
+        "cumul": "Chaque saisie est la quantité réalisée sur la période ; elle s’ajoute au total. La valeur de base est le point de départ.",
+        "dernier": "La valeur actuelle est la dernière saisie, par exemple un taux mesuré par enquête.",
+        "moyenne": "La valeur actuelle est la moyenne des saisies de la période."
+      },
+      "sens": "Sens de l’objectif",
+      "sens_aide": "À augmenter : plus c’est haut, mieux c’est. À diminuer : plus c’est bas, mieux c’est. Un cumul ne peut qu’augmenter.",
+      "action_creer": "Créer l’indicateur",
+      "cree": "Indicateur « {{nom}} » créé.",
+      "modifie": "Indicateur « {{nom}} » modifié.",
+      "validation": {
+        "nom": "Donnez un nom à l’indicateur.",
+        "nombre": "Saisissez un nombre, par exemple 1250 ou 12,5.",
+        "cumul_decroissant": "Un cumul ne peut qu’augmenter : choisissez un autre mode de calcul pour un objectif à diminuer."
+      }
+    }
+  },
+  "dashboard": {
+    "meta": "Tableau de bord — Pilot M&E",
+    "periodes": {
+      "tout": "Depuis le début du projet",
+      "12m": "12 derniers mois",
+      "6m": "6 derniers mois",
+      "3m": "3 derniers mois",
+      "perso": "Dates personnalisées"
+    },
+    "filtres": {
+      "projet": "Projet",
+      "periode": "Période",
+      "du": "Du",
+      "au": "Au",
+      "periode_invalide": "La date de début doit précéder la date de fin."
+    },
+    "vide": {
+      "titre": "Aucun indicateur à afficher",
+      "texte": "Créez des indicateurs pour suivre ce projet : le tableau de bord se remplit dès les premières saisies.",
+      "texte_lecture": "Aucun indicateur n’a encore été créé dans ce projet.",
+      "action": "Créer un indicateur"
+    },
+    "aucune_saisie": "Aucune saisie pour l’instant : les indicateurs restent gris tant qu’aucune valeur n’est enregistrée.",
+    "premiere_saisie": "Saisir une valeur",
+    "aucun_epingle": "Aucun indicateur n’est épinglé : les premiers sont affichés. Vous pouvez en épingler jusqu’à 4 depuis l’onglet Indicateurs.",
+    "evolution": "Évolution",
+    "evolution_description": "Ligne pleine : valeur réelle. Ligne verte en tirets : cible. Ligne grise en pointillés : trajectoire attendue.",
+    "indicateur": "Indicateur",
+    "graphe_vide_titre": "Pas encore de courbe",
+    "graphe_vide_texte": "Cet indicateur n’a aucune saisie : la courbe apparaîtra dès la première.",
+    "dernieres_saisies": "Dernières saisies",
+    "aucune_saisie_courte": "Aucune saisie enregistrée.",
+    "graphe_alt_one": "Courbe d’évolution de {{nom}} : {{count}} saisie, cible {{cible}}.",
+    "graphe_alt_other": "Courbe d’évolution de {{nom}} : {{count}} saisies, cible {{cible}}.",
+    "infobulle_attendu": "Attendu : {{attendue}} (écart {{ecart}})",
+    "cible_etiquette": "Cible",
+    "cartes_titre": "Indicateurs du tableau de bord"
+  },
+  "saisie": {
+    "meta": "Saisie — Pilot M&E",
+    "titre": "Saisir une valeur",
+    "description": "Choisissez l’indicateur, la date et la valeur. La touche Entrée enregistre.",
+    "colonnes": {
+      "date": "Date",
+      "indicateur": "Indicateur",
+      "valeur": "Valeur",
+      "commentaire": "Commentaire",
+      "actions": "Actions"
+    },
+    "enregistree": "Valeur enregistrée : {{valeur}}.",
+    "remplacee": "Valeur remplacée.",
+    "supprimee": "Saisie supprimée.",
+    "vide": {
+      "titre": "Aucun indicateur à renseigner",
+      "texte": "Créez d’abord un indicateur dans l’onglet Indicateurs."
+    },
+    "essai_termine": "L’essai est terminé : les saisies restent consultables mais ne sont plus modifiables.",
+    "lecture_seule": "Vous consultez les saisies en lecture seule.",
+    "cumul_info": "Cet indicateur est un cumul : saisissez la quantité réalisée sur la période (par exemple 12 forages ce mois-ci). Elle s’ajoute au total.",
+    "avant_projet": "Cette date précède le début du projet : elle ne sera pas comptée dans le cumul.",
+    "existe_deja": "Une valeur existe déjà à cette date ({{valeur}}) : vous pourrez la remplacer.",
+    "derniere_valeur": "Dernière valeur : {{valeur}} le {{date}}.",
+    "validation": {
+      "futur": "La date ne peut pas être dans le futur.",
+      "valeur": "Saisissez un nombre, par exemple 1250 ou 12,5.",
+      "kpi": "Choisissez un indicateur.",
+      "date": "Choisissez une date valide."
+    },
+    "aberrante": "{{valeur}} s’écarte nettement des valeurs précédentes. Est-ce bien la bonne valeur ?",
+    "corriger": "Corriger",
+    "confirmer": "Confirmer et enregistrer",
+    "enregistrer": "Enregistrer",
+    "historique": "Historique",
+    "historique_vide": "Aucune saisie pour cet indicateur.",
+    "modifier": "Modifier la saisie du {{date}}",
+    "supprimer": "Supprimer la saisie du {{date}}",
+    "voir_plus_one": "Afficher {{count}} saisie de plus",
+    "voir_plus_other": "Afficher {{count}} saisies de plus",
+    "remplacer_titre": "Remplacer la valeur existante ?",
+    "remplacer_texte": "Une valeur existe déjà au {{date}} : {{valeur}}. Voulez-vous la remplacer ?",
+    "remplacer_action": "Remplacer",
+    "suppression_titre": "Supprimer cette saisie ?",
+    "suppression_texte": "La saisie du {{date}} ({{valeur}}) sera supprimée définitivement.",
+    "suppression_action": "Supprimer",
+    "modification_titre": "Modifier la saisie du {{date}}",
+    "modification_texte": "La date ne change pas : pour la déplacer, supprimez la saisie et recréez-la."
+  },
+  "import": {
+    "meta": "Import de saisies – Pilot M&E",
+    "titre": "Importer des saisies",
+    "description": "Chargez un fichier CSV ou Excel. Chaque ligne est vérifiée avant d’être enregistrée, et vous gardez la main sur les dates déjà saisies.",
+    "etapes_nav": "Étapes de l’import",
+    "etapes": {
+      "fichier": "Fichier",
+      "colonnes": "Colonnes",
+      "verification": "Vérification",
+      "resultat": "Résultat"
+    },
+    "lecture_seule": "Seuls les administrateurs et les éditeurs peuvent importer des saisies.",
+    "essai_termine": "L’essai est terminé : l’organisation est en lecture seule et l’import est désactivé.",
+    "aucun_kpi": {
+      "titre": "Créez d’abord des indicateurs",
+      "texte": "Un fichier d’import se rattache aux indicateurs du projet. Créez-les, puis revenez ici.",
+      "action": "Créer un indicateur"
+    },
+    "depot": {
+      "titre": "Déposez votre fichier ici",
+      "choisir": "Choisir un fichier",
+      "formats": "CSV ou Excel (.xlsx) · 10 Mo et 20 000 lignes au maximum",
+      "lecture": "Lecture du fichier…",
+      "libelle": "Fichier CSV ou Excel à importer"
+    },
+    "attendu": {
+      "titre": "Ce que le fichier doit contenir",
+      "indicateur": "Une ligne par saisie, avec le nom de l’indicateur, une date et une valeur. Le commentaire est facultatif.",
+      "un_seul": "Sans colonne d’indicateur, vous choisirez l’indicateur concerné à l’étape suivante.",
+      "dates": "Dates en jj/mm/aaaa ou aaaa-mm-jj ; nombres avec virgule ou point décimal."
+    },
+    "modele": {
+      "action": "Télécharger un modèle",
+      "fichier": "modele-import-saisies.csv",
+      "commentaire_exemple": "Exemple : première distribution"
+    },
+    "erreurs_lecture": {
+      "format_inconnu": "Ce type de fichier n’est pas pris en charge. Utilisez un fichier .csv ou .xlsx.",
+      "vide": "Ce fichier ne contient aucune donnée.",
+      "trop_gros": "Ce fichier dépasse 10 Mo. Découpez-le en plusieurs fichiers.",
+      "trop_de_lignes": "Ce fichier dépasse 20 000 lignes. Découpez-le en plusieurs fichiers.",
+      "illisible": "Ce fichier n’a pas pu être lu. Vérifiez qu’il n’est pas protégé ni endommagé."
+    },
+    "colonnes": {
+      "titre": "Associez les colonnes du fichier",
+      "description": "Nous avons proposé une correspondance d’après les en-têtes : vérifiez-la et corrigez-la si besoin.",
+      "fichier": "Fichier : {{nom}}",
+      "feuille": "Feuille du classeur",
+      "ignorer": "Ne pas importer",
+      "un_seul": "Aucune : un seul indicateur",
+      "colonne": "Colonne {{n}}",
+      "obligatoire": "obligatoire",
+      "facultatif": "facultatif",
+      "kpi_defaut": "Indicateur concerné par toutes les lignes",
+      "kpi_defaut_choix": "Choisir un indicateur",
+      "apercu_one": "Aperçu de la première ligne de données",
+      "apercu_other": "Aperçu des {{count}} premières lignes de données",
+      "apercu_vide": "Cette feuille ne contient pas de ligne de données.",
+      "aide_dates": "Une date écrite jj/mm/aaaa est lue jour d’abord : 03/12/2026 signifie 3 décembre.",
+      "manquante": "Associez au moins une colonne de date et une colonne de valeur.",
+      "kpi_requis": "Choisissez l’indicateur concerné.",
+      "verifier": "Vérifier le fichier",
+      "changer": "Changer de fichier"
+    },
+    "champs": {
+      "indicateur": "Indicateur",
+      "date": "Date",
+      "valeur": "Valeur",
+      "commentaire": "Commentaire"
+    },
+    "verification": {
+      "titre": "Vérification du fichier",
+      "lues": "Lignes lues",
+      "valides": "Prêtes à importer",
+      "rejetees": "Rejetées",
+      "conflits": "Dates déjà saisies",
+      "aucune_valide": "Aucune ligne n’est valide. Corrigez votre fichier, puis rechargez-le.",
+      "toutes_valides": "Toutes les lignes sont valides.",
+      "conflit_titre": "Que faire des dates déjà saisies ?",
+      "conflit_texte_one": "{{count}} ligne vise un indicateur déjà renseigné à cette date.",
+      "conflit_texte_other": "{{count}} lignes visent un indicateur déjà renseigné à cette date.",
+      "ignorer": "Ignorer ces lignes",
+      "ignorer_aide": "Les valeurs actuelles sont conservées.",
+      "remplacer": "Remplacer les valeurs existantes",
+      "remplacer_aide": "La valeur et le commentaire du fichier remplacent les actuels.",
+      "rejetees_titre": "Lignes rejetées",
+      "rejetees_texte": "Elles ne seront pas importées. Corrigez-les dans votre fichier, ou importez le reste.",
+      "col_ligne": "Ligne",
+      "col_colonne": "Colonne",
+      "col_valeur": "Valeur lue",
+      "col_probleme": "Problème",
+      "autres_one": "… et {{count}} autre ligne rejetée.",
+      "autres_other": "… et {{count}} autres lignes rejetées.",
+      "rapport": "Télécharger le rapport d’erreurs",
+      "retour": "Retour aux colonnes",
+      "importer_one": "Importer {{count}} ligne",
+      "importer_other": "Importer {{count}} lignes"
+    },
+    "progression": {
+      "titre": "Import en cours",
+      "texte": "{{fait}} sur {{total}} lignes traitées. Gardez cette page ouverte."
+    },
+    "resultat": {
+      "titre": "Import terminé",
+      "titre_interrompu": "Import interrompu",
+      "texte_interrompu_one": "L’import s’est arrêté après {{count}} ligne enregistrée. Relancez-le en choisissant « Ignorer » pour reprendre sans doublon.",
+      "texte_interrompu_other": "L’import s’est arrêté après {{count}} lignes enregistrées. Relancez-le en choisissant « Ignorer » pour reprendre sans doublon.",
+      "importees": "Importées",
+      "remplacees": "Remplacées",
+      "ignorees": "Ignorées",
+      "rejetees": "Rejetées",
+      "toast_one": "Import terminé : {{count}} saisie enregistrée.",
+      "toast_other": "Import terminé : {{count}} saisies enregistrées.",
+      "dashboard": "Voir le tableau de bord",
+      "nouveau": "Nouvel import"
+    },
+    "rapport": {
+      "ligne": "Ligne",
+      "colonne": "Colonne",
+      "valeur_lue": "Valeur lue",
+      "probleme": "Problème"
+    },
+    "raisons": {
+      "indicateur_vide": "Indicateur manquant.",
+      "indicateur_inconnu": "Cet indicateur n’existe pas dans ce projet.",
+      "indicateur_ambigu": "Plusieurs indicateurs du projet portent ce nom.",
+      "date_vide": "Date manquante.",
+      "date_format": "Format de date non reconnu : utilisez jj/mm/aaaa ou aaaa-mm-jj.",
+      "date_inexistante": "Cette date n’existe pas dans le calendrier.",
+      "date_improbable": "Année improbable : entre 2000 et 2100 attendu.",
+      "valeur_vide": "Valeur manquante.",
+      "valeur_format": "Ce n’est pas un nombre.",
+      "valeur_trop_grande": "Valeur trop grande.",
+      "commentaire_trop_long": "Commentaire de plus de 2 000 caractères.",
+      "doublon_fichier": "Même indicateur et même date que la ligne {{ligne}} : cette ligne est ignorée.",
+      "date_future": "La date ne peut pas être dans le futur (inversion jour/mois ?)."
+    }
+  },
+  "rapport": {
+    "meta": "Rapports — Pilot M&E",
+    "titre": "Rapport PDF",
+    "description": "Générez en un clic un rapport prêt à partager : logo de l’organisation, période, indicateurs, graphiques et commentaires.",
+    "periode_label": "Période du rapport",
+    "periode_custom_debut": "Du",
+    "periode_custom_fin": "Au",
+    "contenu_titre": "Ce que contient le rapport",
+    "contenu": {
+      "synthese": "La synthèse du projet : progression globale et statut de chaque indicateur.",
+      "tableau": "Le tableau des indicateurs : valeur, cible, avancement et écart à la trajectoire.",
+      "graphiques": "Un graphique par indicateur, avec la cible et la trajectoire attendue.",
+      "commentaires": "Les derniers commentaires saisis sur la période."
+    },
+    "generer": "Générer le PDF",
+    "generation": "Génération du PDF…",
+    "genere": "Rapport téléchargé : {{nom}}",
+    "erreur": "Le rapport n’a pas pu être généré. Réessayez dans un instant.",
+    "aucun_kpi": "Ce projet n’a pas encore d’indicateur : le rapport serait vide. Créez d’abord des indicateurs.",
+    "lecture_ok": "L’export reste disponible en lecture seule, même après la fin de l’essai.",
+    "exporter": "Exporter en PDF",
+    "document": {
+      "titre": "Rapport de suivi",
+      "genere_le": "Généré le {{date}}",
+      "pied": "{{produit}} · {{projet}}",
+      "page": "Page {{page}} sur {{total}}",
+      "projet_exemple": "Projet exemple",
+      "exemple_mention": "Données fictives fournies pour découvrir le produit.",
+      "progression": "Progression globale",
+      "statuts": "Statut des indicateurs",
+      "indicateurs": "Indicateurs",
+      "detail": "Détail par indicateur",
+      "col_indicateur": "Indicateur",
+      "col_valeur": "Valeur",
+      "col_cible": "Cible",
+      "col_atteint": "Atteint",
+      "col_statut": "Statut",
+      "sans_graphique": "Aucune saisie sur la période.",
+      "legende_valeurs": "Valeurs",
+      "legende_cible": "Cible",
+      "legende_trajectoire": "Trajectoire attendue",
+      "commentaires": "Commentaires récents",
+      "derniere_saisie": "Dernière saisie : {{date}}",
+      "saisies_one": "{{count}} saisie sur la période",
+      "saisies_other": "{{count}} saisies sur la période",
+      "aucun_indicateur": "Ce projet n’a pas encore d’indicateur."
+    },
+    "periode": "Du {{debut}} au {{fin}}",
+    "periode_depuis_debut": "Depuis le début du projet jusqu’au {{fin}}",
+    "progression_aucune": "Aucune donnée",
+    "trajectoire_attendue": "Avancement attendu à ce jour : {{pourcent}}"
+  },
+  "landing": {
+    "meta": {
+      "titre": "Pilot M&E — Suivi-évaluation pour les ONG, PME et projets bailleurs",
+      "description": "Pilot M&E simplifie le suivi-évaluation : tableaux de bord en temps réel, indicateurs, import Excel et CSV, rapports PDF en un clic. Essai gratuit de 14 jours, sans carte."
+    },
+    "aller_contenu": "Aller au contenu",
+    "nav": {
+      "label": "Navigation principale",
+      "probleme": "Problème",
+      "solution": "Solution",
+      "demo": "Démo",
+      "tarifs": "Tarifs",
+      "faq": "FAQ",
+      "connexion": "Se connecter",
+      "demander_demo": "Demander une démo",
+      "ouvrir": "Ouvrir le menu",
+      "fermer": "Fermer le menu",
+      "accueil": "Pilot M&E, retour en haut de page"
+    },
+    "hero": {
+      "badge": "Suivi-évaluation, pensé pour l’Afrique de l’Ouest",
+      "titre_debut": "Pilotez vos projets avec des données ",
+      "titre_mot": "fiables",
+      "titre_fin": ", en temps réel.",
+      "sous_titre": "Pilot M&E simplifie le suivi-évaluation : dashboards, KPI, rapports PDF en un clic.",
+      "cta_demo": "Demander une démo",
+      "cta_produit": "Voir le produit",
+      "fenetre": "Tableau de bord — Projet exemple",
+      "donnees_demo": "Données de démonstration",
+      "evolution": "Évolution face à la cible",
+      "confiance": "Conçu pour les ONG, PME et projets bailleurs en Afrique de l’Ouest",
+      "faits": {
+        "kpi": "4 KPI en un coup d’œil",
+        "import": "Import Excel et CSV",
+        "pdf": "100 % exportable en PDF"
+      }
+    },
+    "probleme": {
+      "surtitre": "Le constat",
+      "titre": "Vos données sont dispersées. Vos rapports prennent des heures. Vos décisions manquent de visibilité.",
+      "dispersees": {
+        "titre": "Des données dispersées",
+        "texte": "Excel sur un poste, WhatsApp sur un autre, des e-mails égarés : personne n’a la version à jour."
+      },
+      "rapports": {
+        "titre": "Des rapports qui prennent des heures",
+        "texte": "Chaque rapport de bailleur se reconstruit à la main, chiffre par chiffre, à chaque échéance."
+      },
+      "decisions": {
+        "titre": "Des décisions à l’aveugle",
+        "texte": "Sans vue claire de l’avancement, les retards se découvrent quand il est déjà trop tard pour agir."
+      }
+    },
+    "solution": {
+      "surtitre": "Le système",
+      "titre": "Pilot M&E centralise vos indicateurs, génère vos rapports en un clic et vous donne une vue claire de vos projets.",
+      "etape": "Fonction {{n}} sur 4",
+      "centraliser": {
+        "titre": "Centraliser vos KPI",
+        "texte": "Un projet, ses indicateurs, leurs cibles, leurs unités et leur fréquence de saisie : tout est au même endroit, pour toute l’équipe."
+      },
+      "saisir": {
+        "titre": "Saisir en 30 secondes",
+        "texte": "Choisissez l’indicateur, saisissez la valeur, ajoutez un commentaire si besoin. L’historique garde la trace de chaque saisie."
+      },
+      "temps_reel": {
+        "titre": "Un dashboard en temps réel",
+        "texte": "L’évolution face à la cible se met à jour dès qu’une saisie est enregistrée, sur tous les écrans de l’équipe."
+      },
+      "rapports": {
+        "titre": "Des rapports en un clic",
+        "texte": "Exportez un rapport PDF avec le logo de votre organisation, la période choisie, les indicateurs, les graphiques et les commentaires."
+      },
+      "visuel": {
+        "nom": "Nom",
+        "cible": "Cible",
+        "unite": "Unité",
+        "frequence": "Fréquence",
+        "exemple_nom": "Forages réhabilités",
+        "exemple_cible": "40",
+        "exemple_unite": "forages",
+        "exemple_frequence": "Mensuelle",
+        "valeur": "Valeur",
+        "enregistrer": "Enregistrer",
+        "enregistre": "Valeur enregistrée",
+        "secondes": "30 s",
+        "mis_a_jour": "Mis à jour à l’instant",
+        "pdf": "PDF",
+        "rapport": "Rapport de suivi",
+        "periode": "Période : 2026"
+      },
+      "livre": {
+        "titre": "Disponible",
+        "texte": "Déjà dans l’application, à côté de vos indicateurs :",
+        "elements": {
+          "programmes": "Programmes et taux d’avancement",
+          "cadre_logique": "Cadre logique",
+          "pta": "Plan de travail annuel",
+          "phases": "Phases et étapes",
+          "realisations": "Réalisations et preuves jointes",
+          "prochaines_etapes": "Prochaines étapes",
+          "etats": "États d’avancement",
+          "documents": "Documents du projet"
+        }
+      },
+      "bientot": {
+        "titre": "Bientôt",
+        "texte": "Sur la feuille de route, sans date annoncée :",
+        "elements": {
+          "carte": "Carte des zones d’intervention",
+          "budget": "Suivi budgétaire",
+          "rapports_programmes": "Rapports automatiques programmés",
+          "hors_ligne": "Saisie hors ligne"
+        }
+      }
+    },
+    "demo": {
+      "surtitre": "La preuve",
+      "titre": "Le vrai tableau de bord, pas une maquette.",
+      "texte": "Voici le tableau de bord d’un projet exemple, avec des données fictives. Touchez les repères pour voir ce que chaque zone vous apporte.",
+      "fenetre": "Pilot M&E — Tableau de bord",
+      "repere": "Repère {{n}} : {{titre}}",
+      "export": "Exporter en PDF",
+      "repere_1": {
+        "titre": "Quatre indicateurs en un coup d’œil",
+        "texte": "Valeur actuelle, cible, écart à la trajectoire et action suggérée, pour chaque indicateur épinglé."
+      },
+      "repere_2": {
+        "titre": "L’évolution face à la cible",
+        "texte": "La courbe des saisies, la cible en tirets et la trajectoire attendue, au même endroit."
+      },
+      "repere_3": {
+        "titre": "Un statut lisible par tous",
+        "texte": "Sur la trajectoire, vigilance ou en retard : toujours en toutes lettres et avec une icône, jamais par la couleur seule."
+      },
+      "repere_4": {
+        "titre": "Le rapport en un clic",
+        "texte": "Le même tableau de bord, exporté en PDF avec votre logo et la période de votre choix."
+      }
+    },
+    "pilotes": {
+      "badge": "Bientôt",
+      "titre": "Programme pilotes",
+      "texte": "Pilot M&E s’ouvre à un petit groupe d’organisations pilotes. Leurs retours guident la suite du produit, et leurs témoignages apparaîtront ici avec leur accord.",
+      "action": "Devenir client pilote"
+    },
+    "tarifs": {
+      "surtitre": "L’offre",
+      "titre": "Une offre simple, sans paiement en ligne.",
+      "texte": "Essai de {{jours}} jours avec toutes les fonctions Pro, sans carte. À la fin, vos données restent consultables et exportables jusqu’à l’activation d’un plan par notre équipe.",
+      "periode": "Durée de facturation",
+      "mensuel": "Mensuel",
+      "annuel": "Annuel",
+      "remise": "−20 %",
+      "starter": {
+        "nom": "Starter",
+        "description": "Pour démarrer avec un projet."
+      },
+      "pro": {
+        "nom": "Pro",
+        "description": "Pour piloter plusieurs projets en équipe.",
+        "badge": "Le plus choisi"
+      },
+      "enterprise": {
+        "nom": "Enterprise",
+        "description": "Pour les grandes organisations et les programmes.",
+        "prix": "Sur devis"
+      },
+      "par_mois": "/ mois",
+      "total_annuel": "soit {{total}} par an",
+      "equivalent": "≈ {{montant}} FCFA par mois (indicatif)",
+      "inclusions": {
+        "projets_one": "{{count}} projet",
+        "projets_other": "{{count}} projets",
+        "kpis": "{{count}} KPI par projet",
+        "utilisateurs_one": "{{count}} utilisateur",
+        "utilisateurs_other": "{{count}} utilisateurs",
+        "roles": "Invitations et rôles",
+        "sur_mesure": "Projets, KPI et utilisateurs sur mesure",
+        "echange": "Échange direct avec l’équipe",
+        "programmes": "Rapports automatiques programmés"
+      },
+      "bientot": "Bientôt",
+      "tous": {
+        "titre": "Inclus dans tous les plans",
+        "pdf": "Export PDF en un clic",
+        "import": "Import Excel et CSV",
+        "temps_reel": "Dashboard en temps réel"
+      },
+      "commencer": "Commencer",
+      "parler": "Parler à l’équipe",
+      "facturation": "Facturation par virement ou mobile money, activée par notre équipe. Le paiement en ligne n’existe pas encore."
+    },
+    "faq": {
+      "surtitre": "Les réponses",
+      "titre": "Questions fréquentes",
+      "questions": {
+        "securite": {
+          "q": "Mes données sont-elles sécurisées ?",
+          "r": "Chaque organisation ne voit que ses propres données : cette séparation est appliquée par la base de données elle-même, pas seulement par l’application. Les échanges sont chiffrés (HTTPS) et les données sont chiffrées au repos chez notre hébergeur, dans l’Union européenne (Irlande). Le détail du traitement des données personnelles figure dans notre politique de confidentialité."
+        },
+        "import": {
+          "q": "Puis-je importer mes fichiers Excel ?",
+          "r": "Oui. Déposez un fichier Excel (.xlsx) ou CSV : vous associez ses colonnes, voyez un aperçu, puis chaque ligne est vérifiée avant l’import. Les lignes en erreur sont listées avec leur raison dans un rapport téléchargeable, et vous choisissez quoi faire des dates déjà saisies."
+        },
+        "demarrer": {
+          "q": "Combien de temps pour démarrer ?",
+          "r": "Notre objectif est de moins de 5 minutes entre l’inscription et votre premier tableau de bord. Un projet exemple, chargé en un clic, permet d’explorer le produit avant de créer le vôtre."
+        },
+        "bailleurs": {
+          "q": "Fonctionne-t-il avec mes indicateurs de bailleur ?",
+          "r": "Vous définissez vos propres indicateurs : nom, unité, valeur de base, cible, fréquence de saisie et mode de calcul (cumul, dernière valeur ou moyenne). Vous les rattachez à un cadre logique (objectif global, objectifs spécifiques, résultats, activités) et à un plan de travail annuel, et vous joignez des preuves à vos réalisations."
+        },
+        "essai": {
+          "q": "Y a-t-il un essai gratuit ?",
+          "r": "Oui : {{jours}} jours avec toutes les fonctions du plan Pro, sans carte bancaire. À la fin de l’essai, vos données restent consultables et exportables en PDF ; la saisie reprend dès l’activation d’un plan."
+        },
+        "support": {
+          "q": "Comment fonctionne le support ?",
+          "r": "Vous pouvez nous écrire par e-mail ou sur WhatsApp, directement depuis le site ou depuis l’application. Nous répondons en jours ouvrés."
+        }
+      }
+    },
+    "contact": {
+      "surtitre": "Prêt à démarrer ?",
+      "titre": "Prêt à piloter avec la donnée ?",
+      "texte": "Parlez-nous de vos projets : nous revenons vers vous pour une démonstration adaptée à votre organisation.",
+      "cta": "Demander une démo",
+      "whatsapp": "Écrire sur WhatsApp",
+      "whatsapp_message": "Bonjour, je souhaite une démonstration de Pilot M&E.",
+      "email": "Écrire par e-mail",
+      "email_sujet": "Demande de démonstration Pilot M&E"
+    },
+    "formulaire": {
+      "titre_demo": "Demander une démo",
+      "titre_enterprise": "Parler de l’offre Enterprise",
+      "titre_pilote": "Devenir client pilote",
+      "type": "Votre demande",
+      "types": {
+        "demo": "Une démonstration",
+        "enterprise": "L’offre Enterprise"
+      },
+      "nom": "Nom",
+      "organisation": "Organisation",
+      "email": "E-mail professionnel",
+      "besoin": "Votre besoin",
+      "besoin_aide": "Combien de projets suivez-vous, avec quels bailleurs ? (facultatif)",
+      "envoyer": "Envoyer ma demande",
+      "envoyer_pilote": "Devenir client pilote",
+      "envoi": "Envoi en cours…",
+      "succes_titre": "Demande bien reçue",
+      "succes_texte": "Merci. Nous vous répondons à {{email}} en jours ouvrés.",
+      "nouvelle": "Envoyer une autre demande",
+      "erreur_titre": "Votre demande n’a pas pu être envoyée",
+      "erreur_reseau": "La connexion a échoué. Vérifiez votre réseau, puis réessayez.",
+      "erreur_serveur": "Le service est momentanément indisponible. Réessayez dans un instant, ou écrivez-nous directement.",
+      "erreur_debit": "Vous avez envoyé plusieurs demandes en peu de temps. Réessayez plus tard ou écrivez-nous directement.",
+      "erreur_captcha": "La vérification anti-robot a échoué. Rechargez la page, puis réessayez.",
+      "reessayer": "Réessayer",
+      "non_configure": "Le formulaire n’est pas disponible pour le moment. Écrivez-nous directement :",
+      "erreurs": {
+        "requis": "Ce champ est obligatoire.",
+        "trop_court": "Trop court : 2 caractères au moins.",
+        "trop_long": "Trop long.",
+        "email_invalide": "Cette adresse e-mail n’est pas valide.",
+        "inconnu": "Type de demande inconnu."
+      },
+      "anti_robot": "Vérification anti-robot",
+      "confidentialite": "Vos informations servent uniquement à vous répondre. Voir la politique de confidentialité."
+    },
+    "pied": {
+      "texte": "Pilotez vos projets avec des données fiables, en temps réel.",
+      "edite_par": "Édité par {{editeur}}",
+      "liens": "Liens du pied de page",
+      "produit": "Produit",
+      "legal": "Informations légales",
+      "creer": "Créer un compte",
+      "droits": "© {{annee}} Pilot M&E",
+      "etat": {
+        "verification": "Vérification du service…",
+        "ok": "En ligne",
+        "perturbe": "Service perturbé"
+      }
+    }
+  }
+}
