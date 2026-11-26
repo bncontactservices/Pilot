@@ -266,7 +266,10 @@ export function normaliserEvenement(evenement: unknown, env: Env): ResultatNorma
       periodicite: choix?.periodicite ?? null,
       statut: type === "customer.subscription.deleted" ? "canceled" : (statut as StatutAbonnement),
       periodeFin: typeof fin === "number" ? new Date(fin * 1000) : null,
-      annuleEnFinDePeriode: o.cancel_at_period_end === true,
+      // Une résiliation planifiée s'annonce de deux façons selon la version de l'API et le chemin (portail client, tableau de
+      // bord) : `cancel_at_period_end` vrai, ou une date `cancel_at` renseignée. Constaté en réel : le portail de Stripe
+      // laisse `cancel_at_period_end` à faux et renseigne `cancel_at`.
+      annuleEnFinDePeriode: o.cancel_at_period_end === true || typeof o.cancel_at === "number",
       prixInconnu: choix === null,
     },
   };

@@ -249,6 +249,20 @@ describe("événements d'abonnement", () => {
     });
   });
 
+  it("lit une résiliation planifiée annoncée par une date « cancel_at » (c'est ce que renvoie le portail de Stripe)", () => {
+    // Constaté avec le vrai Stripe : cancel_at_period_end reste faux, cancel_at porte la date de fin.
+    const planifiee = normaliserEvenement(
+      evenement({}, { cancel_at_period_end: false, cancel_at: 1_802_592_000 }),
+      env(PRIX),
+    );
+    expect(planifiee.ok && planifiee.valeur.annuleEnFinDePeriode).toBe(true);
+    // Sans date ni indicateur : pas de résiliation, et une date nulle (reprise de l'abonnement) l'annule.
+    const nulle = normaliserEvenement(evenement({}, { cancel_at_period_end: false, cancel_at: null }), env(PRIX));
+    expect(nulle.ok && nulle.valeur.annuleEnFinDePeriode).toBe(false);
+    const absente = normaliserEvenement(evenement(), env(PRIX));
+    expect(absente.ok && absente.valeur.annuleEnFinDePeriode).toBe(false);
+  });
+
   it("marque l'abonnement supprimé comme terminé, quel que soit le statut annoncé", () => {
     const r = normaliserEvenement(
       evenement({ type: "customer.subscription.deleted" }, { status: "active" }),

@@ -271,6 +271,14 @@ export async function traiterWebhook(requete: Request, deps: Deps): Promise<Resp
   }
   try {
     const resultat = await deps.base.appliquer(abonnement);
+    // Trace sans donnée personnelle ni secret : de quoi suivre un abonnement dans les journaux.
+    deps.journal(
+      "webhook:abonnement",
+      abonnement.type,
+      abonnement.statut,
+      `fin_planifiee=${abonnement.annuleEnFinDePeriode}`,
+      String(resultat),
+    );
     return repondre(200, { recu: true, traite: true, resultat }, false);
   } catch (erreur) {
     // Une panne de base : on répond 500 pour que Stripe renvoie l'événement.

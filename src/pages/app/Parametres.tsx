@@ -21,6 +21,7 @@ import { useFileSaisies } from "~/hooks/useFileSaisies";
 import i18n from "~/i18n";
 import { lienEmailEquipe, lienWhatsAppEquipe } from "~/lib/contact";
 import { formaterDate } from "~/lib/format";
+import { abonnementEnCours, useAbonnement } from "~/lib/paiement";
 import { getSupabase } from "~/lib/supabase";
 
 export const meta = () => [{ title: i18n.t("parametres.meta") }];
@@ -282,6 +283,9 @@ function CartePlan() {
   const whatsapp = lienWhatsAppEquipe(message);
   const email = lienEmailEquipe(t("limite.sujet_email", { organisation: org.organisation.nom }));
   const limite = (valeur: number | null) => (valeur === null ? t("parametres.plan.illimite") : String(valeur));
+  // Seuls les administrateurs lisent l'abonnement (la base le refuse aux autres) ; un plan payé en ligne se gère depuis la carte « Abonnement en ligne ».
+  const abonnement = useAbonnement(org.organisation.id, org.estAdmin);
+  const payeEnLigne = abonnementEnCours(abonnement.data);
 
   return (
     <Card>
@@ -319,7 +323,9 @@ function CartePlan() {
             {t("parametres.plan.souhaite", { plan: t(`plans.${plan_souhaite}`) })}
           </p>
         )}
-        <p className="text-sm text-muted-foreground">{t("limite.facturation")}</p>
+        <p className="text-sm text-muted-foreground">
+          {payeEnLigne ? t("parametres.plan.en_ligne") : t("limite.facturation")}
+        </p>
         <div className="flex flex-wrap gap-2">
           {whatsapp && (
             <Button asChild variante="accent" taille="sm">
