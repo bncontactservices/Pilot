@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useAnimation } from "~/lib/animation";
 
@@ -121,19 +121,32 @@ const CARTES = [
   { cle: "decisions", Visuel: VisuelFlou },
 ] as const;
 
+/** Découpe un titre en phrases (jusqu'au point, au point d'exclamation ou d'interrogation) ; sans ponctuation, le titre entier. */
+function phrases(texte: string): string[] {
+  const trouvees = texte.match(/[^.!?]+[.!?]+/g)?.map((p) => p.trim()) ?? [];
+  return trouvees.length > 1 ? trouvees : [texte];
+}
+
 export function Probleme() {
   const { t } = useTranslation();
   const racine = useRef<HTMLElement>(null);
 
   useAnimation(racine, ({ gsap, racine }) => {
-    gsap.from(racine.querySelectorAll("[data-carte]"), {
-      y: 44,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.15,
-      ease: "power3.out",
-      scrollTrigger: { trigger: racine, start: "top 60%", once: true },
-    });
+    // fromTo avec une arrivée explicite (y: 0) et clearProps : les cartes finissent toujours à leur place, alignées, et GSAP ne
+    // laisse aucun style en ligne (sinon `scale: none` en ligne neutralise le survol `hover:scale` des cartes).
+    gsap.fromTo(
+      racine.querySelectorAll("[data-carte]"),
+      { y: 44, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power3.out",
+        clearProps: "transform,translate,rotate,scale,opacity",
+        scrollTrigger: { trigger: racine, start: "top 60%", once: true },
+      },
+    );
     // Léger parallaxe : chaque élément dérive de part et d'autre de sa position naturelle (au milieu du défilement, il est à sa place).
     racine.querySelectorAll<SVGElement | HTMLElement>("[data-derive]").forEach((el) => {
       const k = Number(el.getAttribute("data-derive"));
@@ -157,14 +170,20 @@ export function Probleme() {
       className="differe [--hauteur-estimee:98rem] md:[--hauteur-estimee:61rem] lg:[--hauteur-estimee:57rem] px-4 py-24 sm:px-6 sm:py-32"
     >
       <div className="mx-auto max-w-6xl">
-        <p className="font-mono text-xs tracking-[0.18em] text-accent-ink uppercase">
+        <p className="text-center font-mono text-xs tracking-[0.18em] text-accent-ink uppercase">
           {t("landing.probleme.surtitre")}
         </p>
         <h2
           id="titre-probleme"
-          className="mt-4 max-w-4xl font-serif text-4xl leading-[1.08] font-semibold text-navy italic sm:text-6xl"
+          className="mx-auto mt-4 max-w-4xl text-center font-serif text-4xl leading-[1.08] font-semibold text-balance text-navy italic sm:text-6xl"
         >
-          {t("landing.probleme.titre")}
+          {/* Une phrase par ligne : la coupure suit le sens, jamais au milieu d'un groupe (« Vos / données »). L'espace entre les blocs garde le titre lisible d'une traite pour un lecteur d'écran. */}
+          {phrases(t("landing.probleme.titre")).map((phrase, i) => (
+            <Fragment key={phrase}>
+              {i > 0 && " "}
+              <span className="block">{phrase}</span>
+            </Fragment>
+          ))}
         </h2>
         <ul data-cartes className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
           {CARTES.map(({ cle, Visuel }) => (
@@ -173,12 +192,15 @@ export function Probleme() {
               data-carte
               className="flex flex-col gap-6 overflow-hidden rounded-[2rem] bg-card p-6 shadow-card transition-[box-shadow,transform] duration-300 ease-soft hover:scale-[1.01] hover:shadow-card-hover"
             >
-              <div className="grid min-h-48 place-items-center">
+              <div className="grid h-52 place-items-center">
                 <Visuel />
               </div>
-              <div className="grid gap-2">
-                <h3 className="text-xl font-extrabold text-navy">{t(`landing.probleme.${cle}.titre`)}</h3>
-                <p className="text-sm text-muted-foreground">{t(`landing.probleme.${cle}.texte`)}</p>
+              <div className="grid content-start gap-2 text-center">
+                {/* Deux lignes réservées au titre dès md : les titres s'alignent par le bas, les textes démarrent à la même hauteur. */}
+                <h3 className="text-xl font-extrabold text-balance text-navy md:flex md:min-h-14 md:items-end md:justify-center">
+                  {t(`landing.probleme.${cle}.titre`)}
+                </h3>
+                <p className="text-sm text-pretty text-muted-foreground">{t(`landing.probleme.${cle}.texte`)}</p>
               </div>
             </li>
           ))}

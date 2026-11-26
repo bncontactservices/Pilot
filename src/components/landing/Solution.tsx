@@ -110,10 +110,13 @@ export function Solution() {
       className="bg-subtle/60 px-4 py-24 sm:px-6 sm:py-32"
     >
       <div className="mx-auto max-w-6xl">
-        <p className="font-mono text-xs tracking-[0.18em] text-accent-ink uppercase">
+        <p className="text-center font-mono text-xs tracking-[0.18em] text-accent-ink uppercase">
           {t("landing.solution.surtitre")}
         </p>
-        <h2 id="titre-solution" className="mt-4 max-w-4xl text-3xl leading-[1.1] font-extrabold text-navy sm:text-5xl">
+        <h2
+          id="titre-solution"
+          className="mx-auto mt-4 max-w-4xl text-center text-3xl leading-[1.1] font-extrabold text-balance text-navy sm:text-5xl"
+        >
           {t("landing.solution.titre")}
         </h2>
 
@@ -124,7 +127,7 @@ export function Solution() {
                 data-fonction
                 className="grid grid-cols-1 items-center gap-8 rounded-[2.5rem] bg-card p-6 shadow-card-hover sm:p-10 lg:min-h-[22rem] lg:grid-cols-2"
               >
-                <div className="grid gap-4">
+                <div className="grid gap-4 text-center">
                   <p className="font-mono text-sm text-accent-ink">
                     <span aria-hidden>{String(i + 1).padStart(2, "0")} / 04</span>
                     <span className="sr-only">{t("landing.solution.etape", { n: i + 1 })}</span>
@@ -132,7 +135,7 @@ export function Solution() {
                   <h3 className="text-2xl font-extrabold text-navy sm:text-3xl">
                     {t(`landing.solution.${cle}.titre`)}
                   </h3>
-                  <p className="max-w-md text-muted-foreground">{t(`landing.solution.${cle}.texte`)}</p>
+                  <p className="mx-auto max-w-md text-muted-foreground">{t(`landing.solution.${cle}.texte`)}</p>
                 </div>
                 <div className="mx-auto w-full max-w-sm">
                   <Visuel />
@@ -157,7 +160,9 @@ export function Solution() {
                 <Badge variante={variante} className="w-fit">
                   {t(`landing.solution.${cle}.titre`)}
                 </Badge>
-                <p className="text-sm text-muted-foreground">{t(`landing.solution.${cle}.texte`)}</p>
+                {cle === "livre" && (
+                  <p className="text-sm text-muted-foreground">{t("landing.solution.livre.texte")}</p>
+                )}
               </div>
               <ul className="flex flex-wrap gap-2">
                 {elements.map((element) => (

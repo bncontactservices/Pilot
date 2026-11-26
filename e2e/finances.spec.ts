@@ -164,7 +164,7 @@ test.describe("finances d'un projet", () => {
     const saisie = pageAdmin.getByRole("dialog");
     await saisie.getByLabel("Libellé").fill("Pompes et tuyauterie");
     await saisie.getByLabel(/^Montant \(/).fill("400 000");
-    await saisie.getByLabel("Ligne du budget").selectOption({ label: `${ANNEE} — Forages` });
+    await saisie.getByLabel("Ligne du budget").selectOption({ label: `${ANNEE} - Forages` });
     await saisie.getByLabel("Fournisseur").fill("Sahel Hydraulique");
     await saisie.getByLabel("Numéro de pièce").fill("FAC-001");
     await saisie.getByLabel(/^Justificatif/).selectOption({ label: "Déposer un nouveau fichier…" });
@@ -194,7 +194,7 @@ test.describe("finances d'un projet", () => {
     const seconde = pageAdmin.getByRole("dialog");
     await seconde.getByLabel("Libellé").fill("Dalles de latrines");
     await seconde.getByLabel(/^Montant \(/).fill("650 000,5");
-    await seconde.getByLabel("Ligne du budget").selectOption({ label: `${ANNEE} — Latrines` });
+    await seconde.getByLabel("Ligne du budget").selectOption({ label: `${ANNEE} - Latrines` });
     await seconde.getByRole("button", { name: "Enregistrer" }).click();
     await expect(pageAdmin.getByText("Dépense enregistrée.").first()).toBeVisible();
     await expect(pageAdmin.getByRole("dialog")).toHaveCount(0);

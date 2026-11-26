@@ -55,7 +55,7 @@ export type DonneesRapportProgramme = {
 };
 
 const pct = (valeur: number | null | undefined): string =>
-  valeur === null || valeur === undefined ? "—" : `${arrondirTaux(Number(valeur))} %`;
+  valeur === null || valeur === undefined ? "-" : `${arrondirTaux(Number(valeur))} %`;
 
 function nomFichier(programme: string, jour: string): string {
   const propre = programme

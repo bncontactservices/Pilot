@@ -18,7 +18,7 @@ async function monter() {
   await screen.findByRole("heading", { name: "Prêt à piloter avec la donnée ?" }, attendre);
   await screen.findByRole("contentinfo", {}, attendre);
   await screen.findByRole("heading", { name: "Programme pilotes" }, attendre);
-  await screen.findByRole("heading", { name: "Une offre simple, sans paiement en ligne." }, attendre);
+  await screen.findByRole("heading", { name: /^Une offre simple, sans\s+paiement en ligne\.$/ }, attendre);
   await screen.findByRole("heading", { name: "Le vrai tableau de bord, pas une maquette." }, attendre);
   await screen.findByRole("heading", { name: "Centraliser vos KPI" }, attendre);
   return rendu;
@@ -162,7 +162,7 @@ describe("Landing : tarifs", () => {
     expect(t.getByRole("heading", { name: "Pro" })).toBeInTheDocument();
     expect(t.getByText("Le plus choisi")).toBeInTheDocument();
     expect(t.getByText("Sur devis")).toBeInTheDocument();
-    expect(t.getByText(/14\s?150 FCFA par mois \(indicatif\)/)).toBeInTheDocument();
+    expect(t.getByText(/16\s?400 FCFA par mois \(indicatif\)/)).toBeInTheDocument();
     // Limites réelles des plans (constants.ts), pas des chiffres de marketing.
     expect(t.getByText("3 projets")).toBeInTheDocument();
     expect(t.getByText("20 KPI par projet")).toBeInTheDocument();
@@ -174,11 +174,11 @@ describe("Landing : tarifs", () => {
     const t = within(tarifs());
     expect(t.queryByText(/par an/)).not.toBeInTheDocument(); // en mensuel, aucun total annuel
     fireEvent.click(t.getByRole("button", { name: /Annuel/ }));
-    expect(t.getByText("soit 240 $ par an")).toBeInTheDocument();
-    expect(t.getByText("soit 480 $ par an")).toBeInTheDocument();
+    expect(t.getByText("soit 240 € par an")).toBeInTheDocument();
+    expect(t.getByText("soit 480 € par an")).toBeInTheDocument();
     expect(t.getByRole("button", { name: /Annuel/ })).toHaveAttribute("aria-pressed", "true");
     fireEvent.click(t.getByRole("button", { name: "Mensuel" }));
-    expect(t.queryByText(/soit 240 \$ par an/)).not.toBeInTheDocument();
+    expect(t.queryByText(/soit 240 € par an/)).not.toBeInTheDocument();
   });
 
   it("« Commencer » ouvre l'inscription avec le plan choisi ; Enterprise ouvre le formulaire", async () => {

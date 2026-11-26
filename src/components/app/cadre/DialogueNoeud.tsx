@@ -180,7 +180,7 @@ function CorpsNoeud({ mode, onFermer, projetId, noeuds, kpis }: Props & { mode: 
                 <NativeSelect {...a} {...register("parentId")}>
                   {parents.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {`${p.code} — ${p.libelle.length > 70 ? `${p.libelle.slice(0, 70)}…` : p.libelle}`}
+                      {`${p.code} - ${p.libelle.length > 70 ? `${p.libelle.slice(0, 70)}…` : p.libelle}`}
                     </option>
                   ))}
                 </NativeSelect>

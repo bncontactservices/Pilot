@@ -131,7 +131,7 @@ describe("passage planifié", () => {
     expect(e.url).toBe("https://api.resend.com/emails");
     expect(e.entetes.Authorization).toBe(`Bearer ${CLE}`);
     expect(e.corps).toMatchObject({ from: ENV.EMAIL_FROM, to: ["awa@exemple.org"] });
-    expect(String(e.corps.subject)).toBe("Rapport de suivi hebdomadaire — ONG Eau · 30 novembre 2026");
+    expect(String(e.corps.subject)).toBe("Rapport de suivi hebdomadaire - ONG Eau · 30 novembre 2026");
     expect(String(e.corps.html)).toContain("Forages Kolda");
     expect(String(e.corps.text)).toContain("Bonjour Awa,");
     expect((e.corps.headers as Record<string, string>)["List-Unsubscribe"]).toBe(
@@ -233,7 +233,7 @@ describe("exemple à la demande d'un membre", () => {
     expect(await r.json()).toEqual({ envoye: true });
     expect(c.envoyes).toHaveLength(1);
     expect(c.envoyes[0]!.corps.to).toEqual(["awa@exemple.org"]);
-    expect(String(c.envoyes[0]!.corps.subject)).toBe("Exemple de rapport de suivi — ONG Eau");
+    expect(String(c.envoyes[0]!.corps.subject)).toBe("Exemple de rapport de suivi - ONG Eau");
     expect(c.base.contenu).toHaveBeenCalledWith("o1");
   });
 

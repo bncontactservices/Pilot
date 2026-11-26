@@ -134,7 +134,7 @@ function Corps({ onFermer, projet, depense, lignes, documents, ligneId = "" }: P
           orgId: org.organisation.id,
           projetId: projet.id,
           fichier,
-          nom: `${t("finances.depense.justificatif_nom")} — ${v.libelle}`.slice(0, 200),
+          nom: `${t("finances.depense.justificatif_nom")} - ${v.libelle}`.slice(0, 200),
           categorie: "justificatif",
           description: null,
           realisationId: null,
@@ -226,7 +226,7 @@ function Corps({ onFermer, projet, depense, lignes, documents, ligneId = "" }: P
                 <option value="">{t("finances.depense.formulaire.choisir_ligne")}</option>
                 {triees.map((l) => (
                   <option key={l.id} value={l.id}>
-                    {`${l.annee} — ${l.poste}`}
+                    {`${l.annee} - ${l.poste}`}
                   </option>
                 ))}
               </NativeSelect>

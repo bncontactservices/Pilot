@@ -91,9 +91,9 @@ export function Faq() {
       className="differe [--hauteur-estimee:53rem] md:[--hauteur-estimee:54rem] lg:[--hauteur-estimee:45rem] px-4 py-24 sm:px-6 sm:py-32"
     >
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]">
-        <div className="lg:sticky lg:top-28 lg:self-start">
+        <div className="text-center lg:sticky lg:top-28 lg:self-start">
           <p className="font-mono text-xs tracking-[0.18em] text-accent-ink uppercase">{t("landing.faq.surtitre")}</p>
-          <h2 id="titre-faq" className="mt-4 text-3xl leading-[1.1] font-extrabold text-navy sm:text-5xl">
+          <h2 id="titre-faq" className="mt-4 text-3xl leading-[1.1] font-extrabold text-balance text-navy sm:text-5xl">
             {t("landing.faq.titre")}
           </h2>
         </div>

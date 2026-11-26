@@ -27,5 +27,5 @@ export function PageLegale({ titre, majLe, children }: { titre: string; majLe: s
 
 /** Valeur légale à compléter : visible, jamais déguisée en vraie donnée (voir PLACEHOLDERS.md). */
 export function ACompleter({ children }: { children: ReactNode }) {
-  return <mark className="rounded bg-status-warn/15 px-1 text-status-warn-ink">[{children} — à compléter]</mark>;
+  return <mark className="rounded bg-status-warn/15 px-1 text-status-warn-ink">[{children} - à compléter]</mark>;
 }

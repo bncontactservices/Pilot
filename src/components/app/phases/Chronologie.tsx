@@ -126,7 +126,7 @@ export function Chronologie({ projet, phases, etapes, aujourdhui }: Props) {
               className={classes}
               strokeWidth={2}
             >
-              <title>{`${e.nom} — ${formaterDate(e.date_prevue)}`}</title>
+              <title>{`${e.nom} - ${formaterDate(e.date_prevue)}`}</title>
             </polygon>
           ) : (
             <rect
@@ -139,7 +139,7 @@ export function Chronologie({ projet, phases, etapes, aujourdhui }: Props) {
               className={classes}
               strokeWidth={2}
             >
-              <title>{`${e.nom} — ${formaterDate(e.date_prevue)}`}</title>
+              <title>{`${e.nom} - ${formaterDate(e.date_prevue)}`}</title>
             </rect>
           );
         })}

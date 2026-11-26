@@ -198,7 +198,7 @@ export default function Finances() {
               )}
               <Chiffre
                 libelle={t("finances.synthese.taux")}
-                valeur={synthese.taux === null ? "—" : `${arrondirTaux(synthese.taux)} %`}
+                valeur={synthese.taux === null ? "-" : `${arrondirTaux(synthese.taux)} %`}
                 alerte={synthese.taux !== null && synthese.taux > 100}
               />
             </dl>
@@ -295,7 +295,7 @@ export default function Finances() {
                       .sort((a, b) => b.annee - a.annee || a.poste.localeCompare(b.poste, "fr"))
                       .map((l) => (
                         <option key={l.id} value={l.id}>
-                          {`${l.annee} — ${l.poste}`}
+                          {`${l.annee} - ${l.poste}`}
                         </option>
                       ))}
                   </NativeSelect>
@@ -346,7 +346,7 @@ export default function Finances() {
                             <p className="font-mono text-xs text-muted-foreground tabular">{formaterDate(d.date)}</p>
                             <h3 className="text-base leading-snug font-bold text-navy">{d.libelle}</h3>
                             <p className="text-sm text-muted-foreground">
-                              {ligne ? `${ligne.annee} — ${ligne.poste}` : ""}
+                              {ligne ? `${ligne.annee} - ${ligne.poste}` : ""}
                               {d.fournisseur ? ` · ${d.fournisseur}` : ""}
                               {d.reference ? ` · ${t("finances.depenses.reference", { reference: d.reference })}` : ""}
                             </p>
@@ -503,7 +503,7 @@ function LigneTableau({
       </td>
       <td className="px-3 py-2.5 text-right align-top">
         <span className="inline-flex flex-wrap items-center justify-end gap-x-2 gap-y-1">
-          <span className="font-mono tabular">{ligne.taux === null ? "—" : `${arrondirTaux(ligne.taux)} %`}</span>
+          <span className="font-mono tabular">{ligne.taux === null ? "-" : `${arrondirTaux(ligne.taux)} %`}</span>
           {ligne.depassement && (
             <Badge variante="alerte">
               <TriangleAlert aria-hidden />

@@ -159,7 +159,7 @@ describe("preparerRapport", () => {
     expect(forages.statut).toBe("ok");
     expect(rapport.kpis[1]!.valeur).toBe("61 %");
     expect(rapport.kpis[2]!.valeur).toBe("8 jours"); // moyenne de 9 et 7
-    expect(rapport.kpis[3]!.valeur).toBe("—");
+    expect(rapport.kpis[3]!.valeur).toBe("-");
     expect(rapport.kpis[3]!.statut).toBe("none");
     expect(rapport.comptes.reduce((somme, c) => somme + c.nombre, 0)).toBe(4);
   });

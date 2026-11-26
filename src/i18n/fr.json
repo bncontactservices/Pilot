@@ -1,6 +1,6 @@
 {
   "marque": {
-    "titre_defaut": "Pilot M&E — Pilotez vos projets avec des données fiables",
+    "titre_defaut": "Pilot M&E - Pilotez vos projets avec des données fiables",
     "description": "Pilot M&E simplifie le suivi-évaluation des ONG, PME et projets financés par des bailleurs en Afrique de l’Ouest : indicateurs, saisies et rapports au même endroit."
   },
   "commun": {
@@ -75,7 +75,7 @@
       "citation": "Chaque indicateur répond à ces trois questions, pour décider sans attendre le prochain rapport."
     },
     "connexion": {
-      "meta": "Connexion — Pilot M&E",
+      "meta": "Connexion - Pilot M&E",
       "titre": "Bon retour",
       "sous_titre": "Connectez-vous pour retrouver vos projets et vos indicateurs.",
       "oubli": "Mot de passe oublié ?",
@@ -84,7 +84,7 @@
       "vers_inscription": "Commencer l’essai gratuit"
     },
     "inscription": {
-      "meta": "Créer un compte — Pilot M&E",
+      "meta": "Créer un compte - Pilot M&E",
       "titre": "Créez votre espace",
       "sous_titre": "Essai gratuit de {{jours}} jours, sans carte bancaire, avec toutes les fonctions du plan Pro.",
       "invitation_badge": "Invitation",
@@ -107,7 +107,7 @@
       "astuce": "Rien reçu après quelques minutes ? Regardez dans les courriers indésirables, puis renvoyez l’e-mail."
     },
     "oubli": {
-      "meta": "Mot de passe oublié — Pilot M&E",
+      "meta": "Mot de passe oublié - Pilot M&E",
       "titre": "Mot de passe oublié",
       "sous_titre": "Indiquez votre adresse e-mail : nous vous enverrons un lien pour en choisir un nouveau.",
       "action": "Envoyer le lien",
@@ -116,7 +116,7 @@
       "envoye_texte": "Si un compte existe pour {{email}}, un lien de réinitialisation vient d’y être envoyé. Il est valable une heure."
     },
     "reinitialiser": {
-      "meta": "Nouveau mot de passe — Pilot M&E",
+      "meta": "Nouveau mot de passe - Pilot M&E",
       "titre": "Choisissez un nouveau mot de passe",
       "sous_titre": "Vous serez connecté·e dès qu’il sera enregistré.",
       "action": "Enregistrer le mot de passe",
@@ -158,7 +158,7 @@
     "termine_court": "essai terminé",
     "activer": "Activer un plan",
     "message_contact": "Bonjour, je souhaite activer un plan Pilot M&E pour {{organisation}}.",
-    "sujet_email": "Activation d’un plan — {{organisation}}",
+    "sujet_email": "Activation d’un plan - {{organisation}}",
     "payer_en_ligne": "Payer en ligne"
   },
   "limite": {
@@ -172,20 +172,20 @@
     "whatsapp": "Écrire sur WhatsApp",
     "email": "Écrire à l’équipe",
     "message_whatsapp": "Bonjour, je souhaite passer à un plan supérieur pour {{organisation}} (plan actuel : {{plan}}).",
-    "sujet_email": "Changement de plan — {{organisation}}"
+    "sujet_email": "Changement de plan - {{organisation}}"
   },
   "etats": {
     "erreur_titre": "Le chargement a échoué",
     "erreur_code": "Erreur",
     "erreur_page_titre": "Cette page a rencontré un problème",
     "erreur_page_texte": "Rien n’est perdu : vos données sont enregistrées. Rechargez la page ou revenez à l’accueil.",
-    "introuvable_meta": "Page introuvable — Pilot M&E",
+    "introuvable_meta": "Page introuvable - Pilot M&E",
     "introuvable_titre": "Page introuvable",
     "introuvable_texte": "Cette adresse ne correspond à aucune page. Le lien est peut-être incomplet.",
     "vers_app": "Mes projets"
   },
   "projets": {
-    "meta": "Projets — Pilot M&E",
+    "meta": "Projets - Pilot M&E",
     "titre": "Projets",
     "nouveau": "Nouveau projet",
     "quota_one": "{{count}} projet sur {{limite}} inclus dans le plan {{plan}}",
@@ -248,7 +248,7 @@
     "indicateurs_compte_other": "{{count}} indicateurs"
   },
   "equipe": {
-    "meta": "Équipe — Pilot M&E",
+    "meta": "Équipe - Pilot M&E",
     "titre": "Équipe",
     "quota_one": "{{count}} utilisateur sur {{limite}} inclus dans le plan {{plan}}, invitations en attente comprises",
     "quota_other": "{{count}} utilisateurs sur {{limite}} inclus dans le plan {{plan}}, invitations en attente comprises",
@@ -298,7 +298,7 @@
     }
   },
   "parametres": {
-    "meta": "Paramètres — Pilot M&E",
+    "meta": "Paramètres - Pilot M&E",
     "titre": "Paramètres",
     "description": "Votre organisation, votre plan et votre profil.",
     "enregistre": "Modifications enregistrées.",
@@ -384,11 +384,11 @@
   },
   "legal": {
     "mentions": "Mentions légales",
-    "mentions_meta": "Mentions légales — Pilot M&E",
+    "mentions_meta": "Mentions légales - Pilot M&E",
     "confidentialite": "Politique de confidentialité",
-    "confidentialite_meta": "Politique de confidentialité — Pilot M&E",
+    "confidentialite_meta": "Politique de confidentialité - Pilot M&E",
     "conditions": "Conditions d’utilisation",
-    "conditions_meta": "Conditions générales d’utilisation — Pilot M&E"
+    "conditions_meta": "Conditions générales d’utilisation - Pilot M&E"
   },
   "erreurs": {
     "reseau": "Connexion impossible. Vérifiez votre réseau, puis réessayez.",
@@ -470,7 +470,7 @@
     "aucun_budget": "Aucun budget défini"
   },
   "programmes": {
-    "meta": "Programmes — Pilot M&E",
+    "meta": "Programmes - Pilot M&E",
     "titre": "Programmes",
     "description": "Regroupez vos projets par programme pour suivre leur avancement consolidé.",
     "nouveau": "Nouveau programme",
@@ -547,7 +547,7 @@
     "confirmation_annuler": "Annuler"
   },
   "cadre": {
-    "meta": "Cadre logique — Pilot M&E",
+    "meta": "Cadre logique - Pilot M&E",
     "titre": "Cadre logique",
     "description": "La logique d’intervention du projet, de l’objectif global aux activités, avec ses indicateurs, ses moyens de vérification et ses hypothèses.",
     "vues": {
@@ -623,7 +623,7 @@
     }
   },
   "phases": {
-    "meta": "Phases et étapes — Pilot M&E",
+    "meta": "Phases et étapes - Pilot M&E",
     "titre": "Phases et étapes",
     "description": "Les grandes périodes du projet, avec leurs jalons et leurs livrables datés.",
     "ajouter_phase": "Ajouter une phase",
@@ -719,7 +719,7 @@
     }
   },
   "pta": {
-    "meta": "Plan de travail — Pilot M&E",
+    "meta": "Plan de travail - Pilot M&E",
     "titre": "Plan de travail annuel",
     "description": "Les activités planifiées de l’année : période, responsable, budget et avancement.",
     "annee": "Année fiscale",
@@ -735,7 +735,7 @@
       "terminees": "Terminées",
       "avancement": "Avancement de l’année",
       "budget": "Budget prévu",
-      "aucune": "—"
+      "aucune": "-"
     },
     "vide": {
       "titre": "Aucune activité planifiée pour cette année",
@@ -806,7 +806,7 @@
     }
   },
   "prochaines": {
-    "meta": "Prochaines étapes — Pilot M&E",
+    "meta": "Prochaines étapes - Pilot M&E",
     "titre": "Prochaines étapes",
     "description": "Les actions à mener à court terme, avec une personne responsable et une échéance. Un indicateur en alerte peut en faire naître une.",
     "ajouter": "Ajouter une prochaine étape",
@@ -864,7 +864,7 @@
     }
   },
   "realisations": {
-    "meta": "Réalisations — Pilot M&E",
+    "meta": "Réalisations - Pilot M&E",
     "titre": "Réalisations",
     "description": "Ce qui a été réalisé sur le terrain : date, quantité, lieu, lien avec le cadre logique, et les preuves jointes.",
     "ajouter": "Ajouter une réalisation",
@@ -919,7 +919,7 @@
     }
   },
   "etatsAvancement": {
-    "meta": "États d’avancement — Pilot M&E",
+    "meta": "États d’avancement - Pilot M&E",
     "titre": "États d’avancement",
     "description": "Le récit périodique du projet : ce qui a avancé, ce qui bloque, ce qui menace.",
     "ajouter": "Rédiger un état d’avancement",
@@ -975,7 +975,7 @@
     }
   },
   "documents": {
-    "meta": "Documents — Pilot M&E",
+    "meta": "Documents - Pilot M&E",
     "titre": "Documents",
     "description": "Rapports, contrats et justificatifs du projet, dans un espace privé réservé à votre organisation.",
     "deposer": "Déposer un document",
@@ -1087,7 +1087,7 @@
     "exemple_info": "Projet exemple : vous pouvez y saisir des valeurs pour vous entraîner, mais ses indicateurs ne sont pas modifiables."
   },
   "kpi": {
-    "meta": "Indicateurs — Pilot M&E",
+    "meta": "Indicateurs - Pilot M&E",
     "titre": "Indicateurs",
     "statuts": {
       "ok": "Sur la trajectoire",
@@ -1195,7 +1195,7 @@
     }
   },
   "dashboard": {
-    "meta": "Tableau de bord — Pilot M&E",
+    "meta": "Tableau de bord - Pilot M&E",
     "periodes": {
       "tout": "Depuis le début du projet",
       "12m": "12 derniers mois",
@@ -1233,7 +1233,7 @@
     "cartes_titre": "Indicateurs du tableau de bord"
   },
   "saisie": {
-    "meta": "Saisie — Pilot M&E",
+    "meta": "Saisie - Pilot M&E",
     "titre": "Saisir une valeur",
     "description": "Choisissez l’indicateur, la date et la valeur. La touche Entrée enregistre.",
     "colonnes": {
@@ -1428,7 +1428,7 @@
     }
   },
   "rapport": {
-    "meta": "Rapports — Pilot M&E",
+    "meta": "Rapports - Pilot M&E",
     "titre": "Rapport PDF",
     "description": "Générez en un clic un rapport prêt à partager : logo de l’organisation, période, indicateurs, graphiques et commentaires.",
     "periode_label": "Période du rapport",
@@ -1516,7 +1516,7 @@
   },
   "landing": {
     "meta": {
-      "titre": "Pilot M&E — Suivi-évaluation pour les ONG, PME et projets bailleurs",
+      "titre": "Pilot M&E - Suivi-évaluation pour les ONG, PME et projets bailleurs",
       "description": "Pilot M&E simplifie le suivi-évaluation : tableaux de bord en temps réel, indicateurs, import Excel et CSV, rapports PDF en un clic. Essai gratuit de 14 jours, sans carte."
     },
     "aller_contenu": "Aller au contenu",
@@ -1541,7 +1541,7 @@
       "sous_titre": "Pilot M&E simplifie le suivi-évaluation : dashboards, KPI, rapports PDF en un clic.",
       "cta_demo": "Demander une démo",
       "cta_produit": "Voir le produit",
-      "fenetre": "Tableau de bord — Projet exemple",
+      "fenetre": "Tableau de bord - Projet exemple",
       "donnees_demo": "Données de démonstration",
       "evolution": "Évolution face à la cible",
       "confiance": "Conçu pour les ONG, PME et projets bailleurs en Afrique de l’Ouest",
@@ -1628,7 +1628,6 @@
       },
       "bientot": {
         "titre": "Bientôt",
-        "texte": "Sur la feuille de route, sans date annoncée :",
         "elements": {
           "rapports_programmes": "Rapports automatiques programmés"
         }
@@ -1638,7 +1637,7 @@
       "surtitre": "La preuve",
       "titre": "Le vrai tableau de bord, pas une maquette.",
       "texte": "Voici le tableau de bord d’un projet exemple, avec des données fictives. Touchez les repères pour voir ce que chaque zone vous apporte.",
-      "fenetre": "Pilot M&E — Tableau de bord",
+      "fenetre": "Pilot M&E - Tableau de bord",
       "repere": "Repère {{n}} : {{titre}}",
       "export": "Exporter en PDF",
       "repere_1": {
@@ -1666,7 +1665,7 @@
     },
     "tarifs": {
       "surtitre": "L’offre",
-      "titre": "Une offre simple, sans paiement en ligne.",
+      "titre": "Une offre simple, sans paiement en ligne.",
       "texte": "Essai de {{jours}} jours avec toutes les fonctions Pro, sans carte. À la fin, vos données restent consultables et exportables jusqu’à l’activation d’un plan par notre équipe.",
       "periode": "Durée de facturation",
       "mensuel": "Mensuel",
@@ -1804,7 +1803,7 @@
     }
   },
   "finances": {
-    "meta": "Budget et dépenses — Pilot M&E",
+    "meta": "Budget et dépenses - Pilot M&E",
     "titre": "Budget et dépenses",
     "description": "Prévoyez le budget par poste et par année, enregistrez les dépenses avec leur justificatif : le taux d’exécution se calcule seul.",
     "ajouter_ligne": "Ajouter une ligne",
@@ -1929,7 +1928,7 @@
     }
   },
   "composantes": {
-    "meta": "Composantes et planning — Pilot M&E",
+    "meta": "Composantes et planning - Pilot M&E",
     "titre": "Composantes et planning",
     "description": "Les axes du projet, leurs dates et leur avancement, avec les activités du plan de travail qui leur sont rattachées.",
     "ajouter": "Ajouter une composante",
@@ -1998,7 +1997,7 @@
     }
   },
   "acteurs": {
-    "meta": "Acteurs — Pilot M&E",
+    "meta": "Acteurs - Pilot M&E",
     "titre": "Acteurs",
     "description": "L’annuaire des bailleurs, partenaires, prestataires et autorités locales avec lesquels vous travaillez. Leur rôle se précise projet par projet.",
     "ajouter": "Ajouter un acteur",
@@ -2074,7 +2073,7 @@
       }
     },
     "projet": {
-      "meta": "Acteurs du projet — Pilot M&E",
+      "meta": "Acteurs du projet - Pilot M&E",
       "titre": "Acteurs du projet",
       "description": "Qui intervient dans ce projet, et à quel titre.",
       "vers_annuaire": "Voir l’annuaire complet.",
@@ -2097,7 +2096,7 @@
     }
   },
   "beneficiaires": {
-    "meta": "Bénéficiaires — Pilot M&E",
+    "meta": "Bénéficiaires - Pilot M&E",
     "titre": "Bénéficiaires",
     "description": "Les effectifs atteints par le projet, par période, catégorie, sexe et tranche d’âge. Aucune fiche nominative n’est enregistrée : seulement des nombres.",
     "ajouter": "Ajouter un effectif",
@@ -2186,7 +2185,7 @@
     }
   },
   "localites": {
-    "meta": "Localités — Pilot M&E",
+    "meta": "Localités - Pilot M&E",
     "titre": "Localités",
     "description": "Le référentiel de la plateforme et les localités de votre organisation : régions, communes, villages, quartiers. Chaque projet y choisit ses zones d’intervention.",
     "niveaux": {
@@ -2243,7 +2242,7 @@
     }
   },
   "zones": {
-    "meta": "Zones d’intervention — Pilot M&E",
+    "meta": "Zones d’intervention - Pilot M&E",
     "titre": "Zones d’intervention",
     "description": "Les localités où ce projet agit. Elles s’affichent sur la carte et peuvent être choisies pour une saisie ou une réalisation.",
     "vers_localites": "Gérer les localités de l’organisation.",

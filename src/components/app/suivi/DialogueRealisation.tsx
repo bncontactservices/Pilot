@@ -228,7 +228,7 @@ function Corps({ onFermer, projetId, realisation, noeuds, activitesPta, unitesEx
                 <option value="">{t("realisations.formulaire.aucun")}</option>
                 {lignes.map((n) => (
                   <option key={n.id} value={n.id}>
-                    {`${n.code} — ${court(n.libelle)}`}
+                    {`${n.code} - ${court(n.libelle)}`}
                   </option>
                 ))}
               </NativeSelect>
@@ -240,7 +240,7 @@ function Corps({ onFermer, projetId, realisation, noeuds, activitesPta, unitesEx
                 <option value="">{t("realisations.formulaire.aucune")}</option>
                 {activitesPta.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {`${p.annee} — ${court(p.intitule)}`}
+                    {`${p.annee} - ${court(p.intitule)}`}
                   </option>
                 ))}
               </NativeSelect>

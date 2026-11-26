@@ -36,7 +36,7 @@ export function TauxAvancement({ resultats, physique, financier, avecAide = fals
           <dd className="font-mono text-lg font-semibold text-navy tabular">
             {valeur === null ? (
               <span title={vide}>
-                <span aria-hidden>—</span>
+                <span aria-hidden>-</span>
                 <span className="sr-only">{vide}</span>
               </span>
             ) : cle === "financier" && valeur > 100 ? (

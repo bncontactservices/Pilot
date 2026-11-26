@@ -132,7 +132,7 @@ function Corps({ onFermer, projetId, role, rattachables, acteurId = "" }: Props)
                   <option value="">{t("acteurs.role.choisir")}</option>
                   {rattachables.map((ac) => (
                     <option key={ac.id} value={ac.id}>
-                      {`${ac.nom} — ${t(`acteurs.types.${ac.type}`)}`}
+                      {`${ac.nom} - ${t(`acteurs.types.${ac.type}`)}`}
                     </option>
                   ))}
                 </NativeSelect>

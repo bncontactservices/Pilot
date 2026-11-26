@@ -12,11 +12,11 @@ import { CourbeDemo } from "~/components/landing/CourbeDemo";
 import { FenetreHero } from "~/components/landing/FenetreHero";
 import { VisuelDispersion, VisuelFlou, VisuelRapports } from "~/components/landing/Probleme";
 import { Badge } from "~/components/ui/badge";
-import { BASELINE, DUREE_ESSAI_JOURS, LIMITES_PLAN, NOM_PRODUIT, PRIX_MENSUEL_USD } from "~/lib/constants";
+import { BASELINE, DUREE_ESSAI_JOURS, LIMITES_PLAN, NOM_PRODUIT, PRIX_MENSUEL_EUR } from "~/lib/constants";
 import { env } from "~/lib/env";
 import { INDICATEURS_DEMO } from "~/lib/demo-landing";
 import { cn } from "~/lib/utils";
-import { formaterDollars } from "~/lib/tarifs";
+import { formaterEuros } from "~/lib/tarifs";
 
 type Props = { actif: boolean; date: string };
 
@@ -138,7 +138,7 @@ function Solution({ actif }: Props) {
         </div>
         <div data-a>
           <CadreNavigateur
-            titre="Pilot M&E — Tableau de bord"
+            titre="Pilot M&E - Tableau de bord"
             etiquette="Données de démonstration"
             className="shadow-card-hover ring-border"
           >
@@ -265,7 +265,7 @@ function Produit({ actif }: Props) {
               <Badge variante="exemple">Projet exemple</Badge>
             </div>
             <p className="mt-[0.7rem] text-[1.15rem] font-extrabold text-navy">
-              Projet exemple — Eau, hygiène et assainissement
+              Projet exemple - Eau, hygiène et assainissement
             </p>
             <p className="font-mono text-[0.8rem] text-muted-foreground">Janv. 2026 – déc. 2026</p>
             <div className="mt-[1rem] grid gap-[0.4rem]">
@@ -323,7 +323,7 @@ function Modele({ actif }: Props) {
               >
                 <p className="text-[1.1rem] font-extrabold">{p.nom}</p>
                 <p className="font-mono text-[1.9rem] font-semibold">
-                  {formaterDollars(PRIX_MENSUEL_USD[p.cle])}
+                  {formaterEuros(PRIX_MENSUEL_EUR[p.cle])}
                   <span
                     className={cn(
                       "ml-[0.3rem] font-sans text-[0.8rem]",
@@ -362,11 +362,11 @@ function Modele({ actif }: Props) {
             Chaque tranche de <b>10 organisations</b> au plan Pro représente :
           </p>
           <p className="font-mono text-[2.3rem] font-semibold text-accent">
-            {formaterDollars(10 * PRIX_MENSUEL_USD.pro)}
+            {formaterEuros(10 * PRIX_MENSUEL_EUR.pro)}
             <span className="ml-[0.4rem] font-sans text-[0.9rem] text-white/75">par mois</span>
           </p>
           <p className="font-mono text-[1.2rem]">
-            {formaterDollars(10 * PRIX_MENSUEL_USD.pro * 12)}
+            {formaterEuros(10 * PRIX_MENSUEL_EUR.pro * 12)}
             <span className="ml-[0.4rem] font-sans text-[0.85rem] text-white/75">par an, au tarif mensuel</span>
           </p>
           <p className="flex flex-wrap items-center gap-[0.5rem] border-t border-white/15 pt-[0.8rem] text-[0.8rem] text-white/75">

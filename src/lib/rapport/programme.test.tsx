@@ -132,8 +132,8 @@ describe("données du rapport de programme", () => {
       ...entree,
       consolide: { ...consolide, taux_resultats: null, taux_physique: null, taux_financier: null },
     });
-    expect(vide.synthese).toMatchObject({ resultats: "—", physique: "—", financier: "—" });
-    expect(preparerRapportProgramme({ ...entree, consolide: null }).synthese.financier).toBe("—");
+    expect(vide.synthese).toMatchObject({ resultats: "-", physique: "-", financier: "-" });
+    expect(preparerRapportProgramme({ ...entree, consolide: null }).synthese.financier).toBe("-");
   });
 
   it("explique la consolidation : moyenne simple, projets avec données, projets avec budget, dépassements", () => {
@@ -181,9 +181,9 @@ describe("données du rapport de programme", () => {
   it("n'invente aucun chiffre pour un projet sans donnée", () => {
     const capitalisation = rapport.projets[1]!;
     expect(capitalisation).toMatchObject({
-      resultats: "—",
-      physique: "—",
-      financier: "—",
+      resultats: "-",
+      physique: "-",
+      financier: "-",
       budget: null,
       statutResultats: "none",
     });

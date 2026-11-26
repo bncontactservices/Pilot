@@ -42,7 +42,7 @@ export function CarteKpi({
         <div className="min-w-0">
           {valeur === null ? (
             <>
-              <p className="font-mono text-3xl font-semibold text-muted-foreground">—</p>
+              <p className="font-mono text-3xl font-semibold text-muted-foreground">-</p>
               <p className="text-sm text-muted-foreground">{t("kpi.carte.aucune_donnee")}</p>
             </>
           ) : (

@@ -76,7 +76,7 @@ async function notifier(lead: { type_demande: string; nom: string | null; organi
         to: [destinataire],
         reply_to: lead.email,
         // Une ligne, jamais de retour à la ligne dans un objet d'e-mail (le champ organisation en accepte).
-        subject: `${LIBELLES_TYPE[lead.type_demande] ?? "Nouvelle demande"} — ${(lead.organisation ?? lead.email).replace(/[\r\n]+/g, " ")}`,
+        subject: `${LIBELLES_TYPE[lead.type_demande] ?? "Nouvelle demande"} - ${(lead.organisation ?? lead.email).replace(/[\r\n]+/g, " ")}`,
         html: `<div style="font-family:system-ui,sans-serif;font-size:15px;color:#1f2933">${ligne("Type", LIBELLES_TYPE[lead.type_demande] ?? lead.type_demande)}${ligne("Nom", lead.nom)}${ligne("Organisation", lead.organisation)}${ligne("E-mail", lead.email)}${ligne("Besoin", lead.besoin)}</div>`,
       }),
     });

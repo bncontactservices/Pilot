@@ -22,7 +22,7 @@ export default function Confidentialite() {
   return (
     <PageLegale
       titre="Politique de confidentialité"
-      majLe={`Version du ${VERSION_CONDITIONS_LISIBLE} — provisoire, à valider par un juriste avant publication`}
+      majLe={`Version du ${VERSION_CONDITIONS_LISIBLE} - provisoire, à valider par un juriste avant publication`}
     >
       <section>
         <h2>Qui est responsable de vos données ?</h2>

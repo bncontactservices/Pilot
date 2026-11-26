@@ -294,7 +294,7 @@ function Assistant() {
                     </option>
                     {feuille.table[0]!.map((entete, i) => (
                       <option key={i} value={i}>
-                        {lettreColonne(i)} — {entete || t("import.colonnes.colonne", { n: i + 1 })}
+                        {lettreColonne(i)} - {entete || t("import.colonnes.colonne", { n: i + 1 })}
                       </option>
                     ))}
                   </NativeSelect>

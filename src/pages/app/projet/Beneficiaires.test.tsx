@@ -99,7 +99,7 @@ describe("Bénéficiaires : synthèse", () => {
     fireEvent.change(screen.getByLabelText("Catégorie"), { target: { value: "Participants aux séances" } });
     const synthese = screen.getByRole("heading", { name: "Synthèse des effectifs", hidden: true }).closest("section")!;
     expect(within(synthese).getByText("60")).toBeInTheDocument();
-    expect(within(synthese).getByText("—")).toBeInTheDocument(); // aucun sexe précisé : pas de part de femmes
+    expect(within(synthese).getByText("-")).toBeInTheDocument(); // aucun sexe précisé : pas de part de femmes
   });
 
   it("le cumul de toutes les périodes est présenté comme tel, avec son avertissement", async () => {

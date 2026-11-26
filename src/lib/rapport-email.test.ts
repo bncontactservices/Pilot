@@ -48,8 +48,8 @@ describe("formaterTaux", () => {
     expect(formaterTaux(82.5)).toBe("82,5 %");
     expect(formaterTaux(100)).toBe("100 %");
     expect(formaterTaux(0)).toBe("0 %");
-    expect(formaterTaux(null)).toBe("—");
-    expect(formaterTaux(undefined)).toBe("—");
+    expect(formaterTaux(null)).toBe("-");
+    expect(formaterTaux(undefined)).toBe("-");
   });
 });
 
@@ -94,9 +94,9 @@ describe("pointsAttention", () => {
 describe("composerRapport", () => {
   it("compose un message à la cadence demandée, avec le nom de l'organisation et la date", () => {
     const m = composerRapport(parametres());
-    expect(m.sujet).toBe("Rapport de suivi hebdomadaire — ONG Eau · 30 novembre 2026");
-    expect(composerRapport(parametres({ cadence: "mensuelle" })).sujet).toMatch(/^Rapport de suivi mensuel — ONG Eau/);
-    expect(composerRapport(parametres({ cadence: "exemple" })).sujet).toBe("Exemple de rapport de suivi — ONG Eau");
+    expect(m.sujet).toBe("Rapport de suivi hebdomadaire - ONG Eau · 30 novembre 2026");
+    expect(composerRapport(parametres({ cadence: "mensuelle" })).sujet).toMatch(/^Rapport de suivi mensuel - ONG Eau/);
+    expect(composerRapport(parametres({ cadence: "exemple" })).sujet).toBe("Exemple de rapport de suivi - ONG Eau");
   });
 
   it("reprend les chiffres des vues, tels quels, dans le texte comme dans le HTML", () => {
@@ -124,7 +124,7 @@ describe("composerRapport", () => {
       expect(sortie).toContain("55,2 %");
     }
     // Un taux inconnu est un tiret, jamais un zéro inventé.
-    expect(m.texte).toContain("financier —");
+    expect(m.texte).toContain("financier -");
   });
 
   it("dit « aucun point d'attention » quand tout est en règle, et les liste sinon", () => {

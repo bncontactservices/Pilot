@@ -25,7 +25,7 @@ export default function ConditionsUtilisation() {
   return (
     <PageLegale
       titre="Conditions générales d’utilisation"
-      majLe={`Version du ${VERSION_CONDITIONS_LISIBLE} — provisoire, à valider par un juriste avant publication`}
+      majLe={`Version du ${VERSION_CONDITIONS_LISIBLE} - provisoire, à valider par un juriste avant publication`}
     >
       <section>
         <h2>1. Objet et champ d’application</h2>

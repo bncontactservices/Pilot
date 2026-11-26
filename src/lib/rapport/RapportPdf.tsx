@@ -262,7 +262,7 @@ function CarteIndicateur({ k, t }: { k: KpiRapport; t: Traducteur }) {
 
 export function RapportPdf({ donnees, t, produit }: { donnees: DonneesRapport; t: Traducteur; produit: string }) {
   const { projet, progression, kpis } = donnees;
-  const titreDocument = `${projet.nom} — ${t("rapport.document.titre")}`;
+  const titreDocument = `${projet.nom} - ${t("rapport.document.titre")}`;
   return (
     <Document
       title={txt(titreDocument)}

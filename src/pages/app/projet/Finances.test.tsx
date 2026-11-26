@@ -143,7 +143,7 @@ describe("Finances : contenu", () => {
     donnees();
     monterProjet(<Finances />);
     const pompes = (await screen.findByRole("heading", { name: "Pompes et tuyauterie" })).closest("li")!;
-    expect(within(pompes).getByText(/2026 — Forages · Sahel Hydraulique · pièce FAC-001/)).toBeInTheDocument();
+    expect(within(pompes).getByText(/2026 - Forages · Sahel Hydraulique · pièce FAC-001/)).toBeInTheDocument();
     expect(within(pompes).getByText("12 mai 2026")).toBeInTheDocument();
     expect(
       within(pompes).getByRole("button", { name: "Télécharger le justificatif : Facture pompes" }),
@@ -337,7 +337,7 @@ describe("Finances : dépense", () => {
     const options = within(within(dialogue).getByLabelText("Ligne du budget"))
       .getAllByRole("option")
       .map((o) => o.textContent);
-    expect(options).toEqual(["Choisir une ligne", "2027 — Forages", "2026 — Forages", "2026 — Latrines"]);
+    expect(options).toEqual(["Choisir une ligne", "2027 - Forages", "2026 - Forages", "2026 - Latrines"]);
   });
 
   it("refuse un montant nul, une ligne non choisie et une date dans le futur", async () => {
@@ -389,7 +389,7 @@ describe("Finances : dépense", () => {
     expect(base.appels[1]).toMatchObject({
       table: "documents",
       operation: "insert",
-      valeurs: { project_id: "p1", nom: "Justificatif — Dalles", categorie: "justificatif" },
+      valeurs: { project_id: "p1", nom: "Justificatif - Dalles", categorie: "justificatif" },
     });
     expect(base.appels[2]).toMatchObject({
       table: "depenses",

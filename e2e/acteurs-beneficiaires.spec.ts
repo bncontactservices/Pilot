@@ -130,7 +130,7 @@ test.describe("acteurs et bénéficiaires", () => {
     await expect(page.getByText("Aucun acteur rattaché à ce projet")).toBeVisible();
     await page.getByRole("button", { name: "Rattacher un acteur" }).first().click();
     tiroir = page.getByRole("dialog");
-    await tiroir.getByLabel("Acteur", { exact: true }).selectOption({ label: `${ACTEUR_A} — Bailleur` });
+    await tiroir.getByLabel("Acteur", { exact: true }).selectOption({ label: `${ACTEUR_A} - Bailleur` });
     await tiroir.getByLabel(/^Rôle dans le projet/).fill("Bailleur principal");
     await tiroir.getByRole("button", { name: "Rattacher" }).click();
     await expect(page.getByText("Acteur rattaché au projet.").first()).toBeVisible();

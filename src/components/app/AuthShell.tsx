@@ -60,7 +60,9 @@ function PanneauMarque() {
         </h2>
         <JaugeMarque />
       </div>
-      <p className="relative max-w-sm text-sm text-white/75">{t("auth.marque.citation")}</p>
+      <p className="relative mx-auto max-w-sm text-center text-sm text-pretty text-white/75">
+        {t("auth.marque.citation")}
+      </p>
     </aside>
   );
 }

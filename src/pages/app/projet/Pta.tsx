@@ -361,7 +361,7 @@ export default function Pta() {
                                 {Math.round(a.pct_realisation)} %
                               </td>
                               <td className="border-t border-border px-4 py-3 text-right align-top font-mono text-xs tabular">
-                                {a.budget_prevu === null ? "—" : formaterMontant(a.budget_prevu, projet.devise)}
+                                {a.budget_prevu === null ? "-" : formaterMontant(a.budget_prevu, projet.devise)}
                               </td>
                               {peutModifier && (
                                 <td className="border-t border-border px-2 py-2 align-top">{menu(a)}</td>

@@ -230,7 +230,7 @@ export default function Composantes() {
                         <p className="font-mono text-lg font-semibold text-navy tabular" aria-live="polite">
                           {taux === null ? (
                             <span title={t("composantes.aucune_activite")}>
-                              <span aria-hidden>—</span>
+                              <span aria-hidden>-</span>
                               <span className="sr-only">{t("composantes.aucune_activite")}</span>
                             </span>
                           ) : (

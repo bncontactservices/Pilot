@@ -6,7 +6,7 @@ import { chargerGsap, mouvementAutorise } from "~/lib/animation";
 import { cn } from "~/lib/utils";
 
 export const meta = () => [
-  { title: "Pilot M&E — Pitch deck" },
+  { title: "Pilot M&E - Pitch deck" },
   { name: "robots", content: "noindex, nofollow" },
   {
     name: "description",
@@ -164,7 +164,7 @@ export default function Deck() {
   return (
     <div className="deck bruit relative grid min-h-dvh place-items-center bg-[#050f1d] print:block print:min-h-0 print:bg-transparent">
       <header className="contents">
-        <h1 className="sr-only">Pilot M&amp;E — pitch deck</h1>
+        <h1 className="sr-only">Pilot M&amp;E - pitch deck</h1>
         <div
           role="progressbar"
           aria-label="Progression du deck"

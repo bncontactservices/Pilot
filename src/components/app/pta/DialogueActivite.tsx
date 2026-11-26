@@ -350,7 +350,7 @@ export function DialogueActivite({
                   <option value="">{t("pta.formulaire.aucun_noeud")}</option>
                   {activitesCadre.map((n) => (
                     <option key={n.id} value={n.id}>
-                      {`${n.code} — ${n.libelle.length > 60 ? `${n.libelle.slice(0, 60)}…` : n.libelle}`}
+                      {`${n.code} - ${n.libelle.length > 60 ? `${n.libelle.slice(0, 60)}…` : n.libelle}`}
                     </option>
                   ))}
                 </NativeSelect>

@@ -1001,3 +1001,17 @@ RLS sur les 32 tables `public` avec `WITH CHECK` explicites ; droits en écritur
 
 1. **Authentication** : longueur minimale du mot de passe à 10 ; « Prevent use of leaked passwords » (plan Pro) ; vérifier que la liste des URL de redirection ne contient pas `http://localhost:*` en production, que la confirmation d'e-mail est active et les limites de débit.
 2. **Edge Functions > Secrets** : `TURNSTILE_SECRET_KEY` (sans lui, le jeton de la landing n'est pas vérifié) ; `APP_URL` = adresse publique du site en production ; `ALLOWED_ORIGINS` si besoin.
+
+---
+
+## 31. Plus de tiret long dans le texte affiché (26 novembre 2026)
+
+**Décision** : l'application n'affiche plus de tiret long (« — », U+2014) ; elle écrit un tiret simple (« - »). Cela vaut pour tout le texte vu par une personne : interface et titres de page (`fr.json`), infobulles, listes déroulantes, valeurs absentes (« - » au lieu de « — »), rapports PDF, diaporama, pages légales, objets et textes des e-mails (rapport de suivi, notification de demande).
+
+**Non touchés** : les tirets moyens « – » (une douzaine, surtout des plages), les commentaires du code, la documentation, la sortie console des scripts, et les noms de projets de test (données de test des suites Vitest et Playwright).
+
+**Projet exemple** : il est écrit par des fonctions SQL. Migration `20261127140000_tirets_exemple.sql` (appliquée : `tirets_exemple`, version `20261126222610`) : les 4 fonctions concernées (`charger_projet_exemple`, `charger_contenu_exemple_lot2`, `_lot3a`, `_lot3b`) sont recréées à l'identique avec un tiret simple (propriétaire, `SECURITY DEFINER`, `search_path` et droits conservés, vérifié), et les lignes du projet exemple déjà chargé sont corrigées (nom du projet, activités, étapes, états d'avancement, dépenses). Le lot 3b retrouve les activités par leur nom : les noms changent des deux côtés, et un test le prouve (activités toujours rattachées à leurs composantes). Le tiret est construit à partir de ses octets UTF-8, car `chr(8212)` échoue sur la base locale des tests (SQL_ASCII).
+
+**Vérifié** : 871 tests Vitest et 894 assertions pgTAP (13 nouvelles) ; sur le vrai projet, plus aucun tiret long dans les fonctions ni dans les lignes du projet exemple, le nom du projet exemple est « Projet exemple - Eau, hygiène et assainissement », aucune ligne créée ou supprimée ; `submit-lead` v10 et `rapports-programmes` v3 redéployées (origine étrangère refusée, mauvais jeton 401, validation 422), chaîne `pg_cron` → fonction toujours « non configuré » (503). **Pas vérifié** : un e-mail réellement reçu (aucun n'est encore parti, faute de clé Resend).
+
+**À savoir** : les pages pré-calculées du dossier `build/` gardent leurs anciens titres jusqu'au prochain `npm run build`.

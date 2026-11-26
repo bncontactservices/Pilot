@@ -229,7 +229,7 @@ function Corps({ onFermer, projetId, document, realisations, realisationId = "" 
                 <option value="">{t("documents.formulaire.aucune_realisation")}</option>
                 {realisations.map((r) => (
                   <option key={r.id} value={r.id}>
-                    {`${formaterDate(r.date)} — ${r.titre.length > 50 ? `${r.titre.slice(0, 50)}…` : r.titre}`}
+                    {`${formaterDate(r.date)} - ${r.titre.length > 50 ? `${r.titre.slice(0, 50)}…` : r.titre}`}
                   </option>
                 ))}
               </NativeSelect>

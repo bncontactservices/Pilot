@@ -44,7 +44,7 @@ export function Diapo({
             sombre ? "text-accent" : "text-accent-ink",
           )}
         >
-          {String(n).padStart(2, "0")} — {etiquette}
+          {String(n).padStart(2, "0")} - {etiquette}
         </p>
       </header>
       <div className="flex min-h-0 flex-1 flex-col pt-[1.4rem]">{children}</div>
@@ -108,7 +108,7 @@ export function ACompleterDeck({
         className,
       )}
     >
-      [{children} — à compléter]
+      [{children} - à compléter]
     </span>
   );
 }

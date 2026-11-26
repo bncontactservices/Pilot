@@ -42,11 +42,11 @@ export function Hero() {
       className="fond-hero hero-anim relative flex min-h-dvh flex-col overflow-hidden text-white"
     >
       <div className="mx-auto grid w-full max-w-6xl flex-1 grid-cols-1 items-center gap-10 px-4 pt-28 pb-10 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-8 lg:pt-24">
-        <div className="grid gap-6">
+        <div className="grid gap-6 text-center">
           <p
             data-hero
             style={{ "--i": 0 } as React.CSSProperties}
-            className="w-fit rounded-full border border-white/20 bg-white/5 px-3.5 py-1.5 font-mono text-xs tracking-wide text-white/85 uppercase"
+            className="mx-auto w-fit rounded-full border border-white/20 bg-white/5 px-3.5 py-1.5 font-mono text-xs tracking-wide text-white/85 uppercase"
           >
             {t("landing.hero.badge")}
           </p>
@@ -55,10 +55,14 @@ export function Hero() {
             <em className="font-serif text-[1.12em] font-semibold text-accent italic">{t("landing.hero.titre_mot")}</em>
             {t("landing.hero.titre_fin")}
           </h1>
-          <p data-hero style={{ "--i": 2 } as React.CSSProperties} className="max-w-xl text-lg text-white/85">
+          <p data-hero style={{ "--i": 2 } as React.CSSProperties} className="mx-auto max-w-xl text-lg text-white/85">
             {t("landing.hero.sous_titre")}
           </p>
-          <div data-hero style={{ "--i": 3 } as React.CSSProperties} className="flex flex-wrap items-center gap-3">
+          <div
+            data-hero
+            style={{ "--i": 3 } as React.CSSProperties}
+            className="flex flex-wrap items-center justify-center gap-3"
+          >
             <Magnetique>
               <Button asChild variante="accent" taille="lg">
                 <a href="#contact" onClick={() => evenement("Demo CTA Click", { emplacement: "hero" })}>

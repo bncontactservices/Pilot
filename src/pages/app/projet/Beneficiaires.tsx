@@ -175,7 +175,7 @@ export default function Beneficiaires() {
               <Chiffre libelle={t("beneficiaires.sexes.homme")} valeur={formaterNombre(resume.parSexe.homme)} />
               <Chiffre
                 libelle={t("beneficiaires.synthese.part_femmes")}
-                valeur={resume.partFemmes === null ? "—" : `${arrondirTaux(resume.partFemmes)} %`}
+                valeur={resume.partFemmes === null ? "-" : `${arrondirTaux(resume.partFemmes)} %`}
               />
             </dl>
             {resume.partNonVentile !== null && resume.partNonVentile > 0 && (
@@ -291,7 +291,7 @@ export default function Beneficiaires() {
                       </th>
                       <td className="px-3 py-2">{t(`beneficiaires.sexes.${e.sexe}`)}</td>
                       <td className="px-3 py-2">{t(`beneficiaires.tranches.${e.tranche_age}`)}</td>
-                      <td className="px-3 py-2 text-muted-foreground">{e.lieu ?? "—"}</td>
+                      <td className="px-3 py-2 text-muted-foreground">{e.lieu ?? "-"}</td>
                       <td className="px-3 py-2 text-right font-mono font-semibold tabular">
                         {formaterNombre(e.effectif)}
                       </td>

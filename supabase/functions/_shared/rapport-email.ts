@@ -73,7 +73,7 @@ export function echapperHtml(valeur: unknown): string {
 
 /** « 47,5 % », ou un tiret quand aucun projet n'a de donnée pour ce taux. */
 export function formaterTaux(valeur: number | null | undefined): string {
-  if (valeur === null || valeur === undefined || Number.isNaN(Number(valeur))) return "—";
+  if (valeur === null || valeur === undefined || Number.isNaN(Number(valeur))) return "-";
   return `${Number(valeur).toLocaleString("fr-FR", { maximumFractionDigits: 1 })} %`;
 }
 
@@ -110,8 +110,8 @@ function sujet(p: ParametresMessage, org: string): string {
   const date = formaterDateLongue(p.date);
   // Jamais de saut de ligne dans un objet : un nom d'organisation ne doit pas pouvoir en introduire.
   const nom = org.replace(/[\r\n\t]+/g, " ").trim();
-  if (p.cadence === "exemple") return `Exemple de rapport de suivi — ${nom}`;
-  return `Rapport de suivi ${p.cadence === "hebdomadaire" ? "hebdomadaire" : "mensuel"} — ${nom} · ${date}`;
+  if (p.cadence === "exemple") return `Exemple de rapport de suivi - ${nom}`;
+  return `Rapport de suivi ${p.cadence === "hebdomadaire" ? "hebdomadaire" : "mensuel"} - ${nom} · ${date}`;
 }
 
 function lien(appUrl: string, chemin: string): string {

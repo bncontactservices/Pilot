@@ -76,7 +76,7 @@ function Ligne({
     <li className="grid gap-2 py-3 first:pt-0 last:pb-0">
       <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
         <div className="min-w-0">
-          <p className="font-semibold text-navy">{kpi?.nom ?? "—"}</p>
+          <p className="font-semibold text-navy">{kpi?.nom ?? "-"}</p>
           <p className="font-mono text-sm tabular">
             {date} · {formaterValeur(saisie.valeur, unite)}
           </p>

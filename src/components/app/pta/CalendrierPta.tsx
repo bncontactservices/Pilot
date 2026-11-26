@@ -114,7 +114,7 @@ export function CalendrierPta({
                         CLASSES_BARRE[activite.statut],
                       )}
                       style={{ left: `${position.gauche * 100}%`, width: `${Math.max(position.largeur * 100, 1.2)}%` }}
-                      title={`${activite.intitule} — ${resume}`}
+                      title={`${activite.intitule} - ${resume}`}
                     >
                       {activite.statut === "en_cours" && (
                         <div

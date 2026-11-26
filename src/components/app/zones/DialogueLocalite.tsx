@@ -183,7 +183,7 @@ function Corps({ onFermer, localite, localites, parentInitial = "", onCree }: Pr
           {localite ? (
             <p className="text-sm text-muted-foreground">
               {t(`localites.niveaux.${localite.niveau}`)}
-              {localite.parent_id && ` — ${libelleLieu(index, localite.parent_id, 3)}`}
+              {localite.parent_id && ` - ${libelleLieu(index, localite.parent_id, 3)}`}
             </p>
           ) : (
             <>

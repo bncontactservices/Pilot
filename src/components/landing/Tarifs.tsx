@@ -8,7 +8,7 @@ import { useAnimation } from "~/lib/animation";
 import { DUREE_ESSAI_JOURS, LIMITES_PLAN } from "~/lib/constants";
 import { lienWhatsAppEquipe } from "~/lib/contact";
 import { formaterNombre } from "~/lib/format";
-import { formaterDollars, type PlanPayant, prixAffiche } from "~/lib/tarifs";
+import { formaterEuros, type PlanPayant, prixAffiche } from "~/lib/tarifs";
 import { cn } from "~/lib/utils";
 
 function Coche({ children, bientot }: { children: string; bientot?: string }) {
@@ -54,7 +54,7 @@ function CartePayante({ plan, annuel, vedette }: { plan: PlanPayant; annuel: boo
       </div>
       <div className="grid gap-1">
         <p className="font-mono text-4xl font-semibold tabular">
-          {formaterDollars(prix.mensuelUsd)}
+          {formaterEuros(prix.mensuelEur)}
           <span
             className={cn("ml-1.5 font-sans text-sm font-medium", vedette ? "text-white/75" : "text-muted-foreground")}
           >
@@ -62,8 +62,8 @@ function CartePayante({ plan, annuel, vedette }: { plan: PlanPayant; annuel: boo
           </span>
         </p>
         <p className={cn("min-h-5 text-sm", vedette ? "text-white/80" : "text-muted-foreground")}>
-          {prix.totalAnnuelUsd !== null &&
-            t("landing.tarifs.total_annuel", { total: formaterDollars(prix.totalAnnuelUsd) })}
+          {prix.totalAnnuelEur !== null &&
+            t("landing.tarifs.total_annuel", { total: formaterEuros(prix.totalAnnuelEur) })}
         </p>
         <p className={cn("text-xs", vedette ? "text-white/70" : "text-muted-foreground")}>
           {t("landing.tarifs.equivalent", { montant: formaterNombre(prix.mensuelFcfa) })}
@@ -110,18 +110,23 @@ export function Tarifs() {
       className="differe [--hauteur-estimee:130rem] md:[--hauteur-estimee:82rem] lg:[--hauteur-estimee:74rem] bg-subtle/60 px-4 py-24 sm:px-6 sm:py-32"
     >
       <div className="mx-auto max-w-6xl">
-        <p className="font-mono text-xs tracking-[0.18em] text-accent-ink uppercase">{t("landing.tarifs.surtitre")}</p>
-        <h2 id="titre-tarifs" className="mt-4 max-w-3xl text-3xl leading-[1.1] font-extrabold text-navy sm:text-5xl">
+        <p className="text-center font-mono text-xs tracking-[0.18em] text-accent-ink uppercase">
+          {t("landing.tarifs.surtitre")}
+        </p>
+        <h2
+          id="titre-tarifs"
+          className="mx-auto mt-4 max-w-3xl text-center text-3xl leading-[1.1] font-extrabold text-balance text-navy sm:text-5xl"
+        >
           {t("landing.tarifs.titre")}
         </h2>
-        <p className="mt-4 max-w-2xl text-muted-foreground">
+        <p className="mx-auto mt-4 max-w-2xl text-center text-pretty text-muted-foreground">
           {t("landing.tarifs.texte", { jours: DUREE_ESSAI_JOURS })}
         </p>
 
         <div
           role="group"
           aria-label={t("landing.tarifs.periode")}
-          className="mt-8 inline-flex rounded-full bg-card p-1 shadow-card"
+          className="mx-auto mt-8 flex w-fit rounded-full bg-card p-1 shadow-card"
         >
           {([false, true] as const).map((valeur) => (
             <button
@@ -183,15 +188,17 @@ export function Tarifs() {
           </li>
         </ul>
 
-        <div className="mt-10 grid gap-4 rounded-[2rem] bg-card/70 p-6 sm:flex sm:items-center sm:gap-8">
+        <div className="mt-10 grid justify-items-center gap-4 rounded-[2rem] bg-card/70 p-6 text-center sm:flex sm:items-center sm:justify-center sm:gap-8">
           <p className="font-bold text-navy">{t("landing.tarifs.tous.titre")}</p>
-          <ul className="flex flex-wrap gap-x-6 gap-y-2">
+          <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2">
             {(["pdf", "import", "temps_reel"] as const).map((cle) => (
               <Coche key={cle}>{t(`landing.tarifs.tous.${cle}`)}</Coche>
             ))}
           </ul>
         </div>
-        <p className="mt-4 max-w-3xl text-sm text-muted-foreground">{t("landing.tarifs.facturation")}</p>
+        <p className="mx-auto mt-4 max-w-3xl text-center text-sm text-muted-foreground">
+          {t("landing.tarifs.facturation")}
+        </p>
       </div>
     </section>
   );

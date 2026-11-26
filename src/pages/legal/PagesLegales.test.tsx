@@ -27,7 +27,7 @@ describe("Pages légales : datées, versionnées, sans fait inventé", () => {
       /RCCM/,
       /NINEA/,
       /adresse complète/,
-      /nom — à compléter/,
+      /nom - à compléter/,
       /adresse de correspondance/,
     ]) {
       expect(screen.getAllByText(manquant, { selector: "mark" }).length).toBeGreaterThan(0);

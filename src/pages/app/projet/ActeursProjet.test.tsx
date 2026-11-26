@@ -79,7 +79,7 @@ describe("Acteurs du projet", () => {
     const options = within(within(dialogue).getByLabelText("Acteur"))
       .getAllByRole("option")
       .map((o) => o.textContent);
-    expect(options).toEqual(["Choisir un acteur", "Mairie de Kolda — Autorité locale"]);
+    expect(options).toEqual(["Choisir un acteur", "Mairie de Kolda - Autorité locale"]);
     fireEvent.change(within(dialogue).getByLabelText("Acteur"), { target: { value: "a3" } });
     fireEvent.change(within(dialogue).getByLabelText(/^Rôle dans le projet/), { target: { value: "Autorité locale" } });
     fireEvent.click(within(dialogue).getByRole("button", { name: "Rattacher" }));

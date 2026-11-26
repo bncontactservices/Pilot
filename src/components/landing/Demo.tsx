@@ -109,11 +109,18 @@ export function Demo() {
       className="differe [--hauteur-estimee:169rem] md:[--hauteur-estimee:139rem] lg:[--hauteur-estimee:103rem] px-4 py-24 sm:px-6 sm:py-32"
     >
       <div className="mx-auto max-w-6xl">
-        <p className="font-mono text-xs tracking-[0.18em] text-accent-ink uppercase">{t("landing.demo.surtitre")}</p>
-        <h2 id="titre-demo" className="mt-4 max-w-3xl text-3xl leading-[1.1] font-extrabold text-navy sm:text-5xl">
+        <p className="text-center font-mono text-xs tracking-[0.18em] text-accent-ink uppercase">
+          {t("landing.demo.surtitre")}
+        </p>
+        <h2
+          id="titre-demo"
+          className="mx-auto mt-4 max-w-3xl text-center text-3xl leading-[1.1] font-extrabold text-balance text-navy sm:text-5xl"
+        >
           {t("landing.demo.titre")}
         </h2>
-        <p className="mt-4 max-w-2xl text-muted-foreground">{t("landing.demo.texte")}</p>
+        <p className="mx-auto mt-4 max-w-2xl text-center text-pretty text-muted-foreground">
+          {t("landing.demo.texte")}
+        </p>
 
         <div data-cadre className="mt-12">
           <CadreNavigateur

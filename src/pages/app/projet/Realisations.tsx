@@ -166,7 +166,7 @@ export default function Realisations() {
                               <MapPin className="size-3.5" aria-hidden />
                               {[r.localite_id ? libelleLieu(indexLocalites, r.localite_id, 1) : "", r.lieu]
                                 .filter(Boolean)
-                                .join(" — ")}
+                                .join(" - ")}
                             </span>
                           )}
                         </p>

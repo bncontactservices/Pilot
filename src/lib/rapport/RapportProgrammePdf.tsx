@@ -137,7 +137,7 @@ export function RapportProgrammePdf({
 }) {
   const { programme, synthese, projets, attention } = donnees;
   return (
-    <Document title={`${t("rapport.programme.titre")} — ${programme.nom}`} author={produit} creator={produit}>
+    <Document title={`${t("rapport.programme.titre")} - ${programme.nom}`} author={produit} creator={produit}>
       <Page size="A4" style={s.page}>
         <View style={s.entete}>
           <Logo donnees={donnees} />

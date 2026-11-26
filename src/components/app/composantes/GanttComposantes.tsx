@@ -60,7 +60,7 @@ export function GanttComposantes({ planning, aujourdhui }: Props) {
   const xAujourdhui = jourAujourdhui >= debut && jourAujourdhui <= fin ? x(jourAujourdhui + 0.5) : null;
 
   const infobulle = (nom: string, statut: StatutTravail, barre: BarrePlan, suite = "") =>
-    `${nom} — ${t(`travail.statuts.${statut}`)} — ${formaterDate(isoDe(barre.debut))} → ${formaterDate(isoDe(barre.fin))}${suite}`;
+    `${nom} - ${t(`travail.statuts.${statut}`)} - ${formaterDate(isoDe(barre.debut))} → ${formaterDate(isoDe(barre.fin))}${suite}`;
 
   let y = HAUTEUR_AXE;
   const lignes: React.ReactNode[] = [];
@@ -87,7 +87,7 @@ export function GanttComposantes({ planning, aujourdhui }: Props) {
           fill={c.statut === "reporte" && !g.enRetard ? `url(#${idHachures})` : undefined}
           strokeWidth={1.5}
         >
-          <title>{infobulle(c.nom, c.statut, g.barre, taux ? ` — ${taux}` : "")}</title>
+          <title>{infobulle(c.nom, c.statut, g.barre, taux ? ` - ${taux}` : "")}</title>
         </rect>
         {taux && (
           <text

@@ -41,13 +41,13 @@ export function Contact() {
       className="differe [--hauteur-estimee:86rem] md:[--hauteur-estimee:85rem] lg:[--hauteur-estimee:61rem] bg-accent px-4 py-24 text-accent-foreground sm:px-6 sm:py-32"
     >
       <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <div className="grid gap-6">
+        <div className="grid gap-6 text-center">
           <p className="font-mono text-xs tracking-[0.18em] uppercase">{t("landing.contact.surtitre")}</p>
-          <h2 id="titre-contact" className="text-4xl leading-[1.05] font-extrabold sm:text-6xl">
+          <h2 id="titre-contact" className="text-4xl leading-[1.05] font-extrabold text-balance sm:text-6xl">
             {t("landing.contact.titre")}
           </h2>
-          <p className="max-w-md text-lg">{t("landing.contact.texte")}</p>
-          <div className="flex flex-wrap items-center gap-4">
+          <p className="mx-auto max-w-md text-lg text-pretty">{t("landing.contact.texte")}</p>
+          <div className="flex flex-wrap items-center justify-center gap-4">
             <Magnetique force={0.3}>
               <Button
                 taille="lg"

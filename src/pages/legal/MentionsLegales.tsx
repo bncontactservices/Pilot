@@ -12,7 +12,7 @@ export default function MentionsLegales() {
   return (
     <PageLegale
       titre="Mentions légales"
-      majLe={`Version du ${VERSION_CONDITIONS_LISIBLE} — provisoire, à valider par un juriste avant publication`}
+      majLe={`Version du ${VERSION_CONDITIONS_LISIBLE} - provisoire, à valider par un juriste avant publication`}
     >
       <section>
         <h2>Éditeur du service</h2>

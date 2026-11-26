@@ -22,9 +22,14 @@ export const LIMITES_PLAN: Record<Enums<"plan_org">, Record<Ressource, number | 
 export const SEUIL_VERT = 90;
 export const SEUIL_AMBRE = 60;
 
-/** Prix mensuels en USD et taux indicatif USD → FCFA (placeholder, voir PLACEHOLDERS.md). */
-export const PRIX_MENSUEL_USD = { starter: 25, pro: 50 } as const;
-export const TAUX_USD_XOF = 565;
+/**
+ * Prix mensuels en euros : la devise de Stripe (compte en France, DECISIONS.md section 25), donc celle de la landing, du
+ * diaporama et des conditions. Les montants sont provisoires (PLACEHOLDERS.md) et doivent rester ceux des prix créés dans Stripe.
+ * Le franc CFA (XOF) est arrimé à l'euro par une parité fixe officielle : 1 € = 655,957 FCFA. Ce n'est pas un taux de change
+ * à tenir à jour, seulement un équivalent indicatif affiché.
+ */
+export const PRIX_MENSUEL_EUR = { starter: 25, pro: 50 } as const;
+export const TAUX_EUR_XOF = 655.957;
 export const REMISE_ANNUELLE = 0.2;
 
 /** Durée d'une période de saisie, en jours, selon la fréquence d'un indicateur. */
