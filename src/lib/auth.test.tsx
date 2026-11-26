@@ -4,7 +4,7 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import { useEffect } from "react";
 import { MemoryRouter } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { AuthProvider, useAuth } from "./auth";
+import { AuthProvider, DELAI_OUVERTURE_SESSION_MS, useAuth } from "./auth";
 import { type EnregistrementCache, type StockageCache, VERSION_CACHE } from "./hors-ligne/cache";
 
 vi.mock("./env", () => ({
@@ -152,6 +152,57 @@ describe("AuthProvider : ouverture", () => {
     const renouvelee = { ...session("u1"), access_token: "neuf" };
     act(() => rappelAuth("TOKEN_REFRESHED", renouvelee));
     expect(vu.courant?.session?.access_token).toBe("neuf");
+  });
+});
+
+describe("AuthProvider : renouvellement du jeton qui tarde", () => {
+  afterEach(() => vi.useRealTimers());
+
+  it("n'attend pas le renouvellement quand une session est gardée : l'application s'ouvre avec elle après un court délai", async () => {
+    vi.useFakeTimers();
+    contenu = gardees("u1");
+    localStorage.setItem("sb-abc123-auth-token", JSON.stringify(session("u1")));
+    // Sans réseau, supabase-js réessaie une trentaine de secondes avant de répondre.
+    auth.getSession.mockReturnValue(new Promise(() => undefined));
+    monter();
+    await act(async () => vi.advanceTimersByTimeAsync(DELAI_OUVERTURE_SESSION_MS - 100));
+    expect(screen.getByTestId("statut")).toHaveTextContent("chargement");
+    await act(async () => vi.advanceTimersByTimeAsync(200));
+    expect(screen.getByTestId("statut")).toHaveTextContent("connecte");
+    expect(vu.courant?.utilisateur?.id).toBe("u1");
+    expect(client.getQueryData(["kpis", "p1"])).toEqual([{ id: "k1" }]);
+  });
+
+  it("sans session gardée, attend la réponse de supabase-js, aussi longue soit-elle", async () => {
+    vi.useFakeTimers();
+    let repondre!: (valeur: unknown) => void;
+    auth.getSession.mockReturnValue(new Promise((resolve) => (repondre = resolve)));
+    monter();
+    await act(async () => vi.advanceTimersByTimeAsync(DELAI_OUVERTURE_SESSION_MS * 3));
+    expect(screen.getByTestId("statut")).toHaveTextContent("chargement");
+    await act(async () => repondre({ data: { session: session("u1") }, error: null }));
+    expect(screen.getByTestId("statut")).toHaveTextContent("connecte");
+  });
+
+  it("la session reprise s'actualise quand le renouvellement finit par réussir", async () => {
+    vi.useFakeTimers();
+    localStorage.setItem("sb-abc123-auth-token", JSON.stringify(session("u1")));
+    auth.getSession.mockReturnValue(new Promise(() => undefined));
+    monter();
+    await act(async () => vi.advanceTimersByTimeAsync(DELAI_OUVERTURE_SESSION_MS + 100));
+    expect(screen.getByTestId("statut")).toHaveTextContent("connecte");
+    act(() => rappelAuth("TOKEN_REFRESHED", { ...session("u1"), access_token: "neuf" }));
+    expect(vu.courant?.session?.access_token).toBe("neuf");
+  });
+
+  it("la session reprise est abandonnée si le serveur la refuse ensuite", async () => {
+    vi.useFakeTimers();
+    localStorage.setItem("sb-abc123-auth-token", JSON.stringify(session("u1")));
+    auth.getSession.mockReturnValue(new Promise(() => undefined));
+    monter();
+    await act(async () => vi.advanceTimersByTimeAsync(DELAI_OUVERTURE_SESSION_MS + 100));
+    act(() => rappelAuth("SIGNED_OUT", null));
+    expect(screen.getByTestId("statut")).toHaveTextContent("anonyme");
   });
 });
 

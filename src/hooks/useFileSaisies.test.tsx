@@ -9,7 +9,12 @@ import { creerClientSaisies, simulerReseau } from "~/test/client-saisies";
 import { COMPTE_DE_TEST, creerContexteOrg } from "~/test/monter-projet";
 import { creerStockageMemoire } from "~/test/stockage-memoire";
 import { ContexteOrgProvider } from "./useContexteOrg";
-import { FileSaisiesProvider, useFileSaisies } from "./useFileSaisies";
+import {
+  DELAI_INTERACTIF_MS,
+  FileSaisiesProvider,
+  type ResultatEnregistrement,
+  useFileSaisies,
+} from "./useFileSaisies";
 
 const nouvelle = (id: string, extra: Partial<NouvelleSaisie> = {}): NouvelleSaisie => ({
   id,
@@ -185,5 +190,57 @@ describe("BandeauReseau", () => {
     monter(magasin);
     expect(screen.getByText(/1 saisie demande votre attention/)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Voir" })).toHaveAttribute("href", "/app/projets/p42/saisie");
+  });
+});
+
+describe("Enregistrement quand la réponse tarde", () => {
+  afterEach(() => vi.useRealTimers());
+
+  function Enregistreur({ surResultat }: { surResultat: (r: ResultatEnregistrement) => void }) {
+    const { enregistrer } = useFileSaisies();
+    return (
+      <button
+        onClick={async () => {
+          const { utilisateurId: _u, orgId: _o, ...saisie } = nouvelle("a");
+          surResultat(await enregistrer(saisie));
+        }}
+      >
+        Enregistrer
+      </button>
+    );
+  }
+
+  it("annonce la saisie gardée sur l'appareil passé 8 secondes, et l'envoi en cours se termine en arrière-plan", async () => {
+    vi.useFakeTimers();
+    let terminer!: () => void;
+    const client = creerClientSaisies({
+      inserer: vi.fn(() => new Promise<null>((resolve) => (terminer = () => resolve(null)))),
+    });
+    const magasin = magasinAvec();
+    const surResultat = vi.fn();
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <ContexteAuth.Provider value={COMPTE_DE_TEST}>
+          <ContexteOrgProvider valeur={creerContexteOrg()}>
+            <MemoryRouter>
+              <FileSaisiesProvider magasin={magasin} client={client}>
+                <Enregistreur surResultat={surResultat} />
+              </FileSaisiesProvider>
+            </MemoryRouter>
+          </ContexteOrgProvider>
+        </ContexteAuth.Provider>
+      </QueryClientProvider>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Enregistrer" }));
+    await act(async () => vi.advanceTimersByTimeAsync(DELAI_INTERACTIF_MS - 100));
+    expect(surResultat).not.toHaveBeenCalled();
+    await act(async () => vi.advanceTimersByTimeAsync(200));
+    expect(surResultat).toHaveBeenCalledWith({ type: "en_file" });
+    // La saisie est toujours dans la file, et un seul envoi est en cours (l'envoi automatique ne le double pas).
+    expect(magasin.lister()).toHaveLength(1);
+    expect(client.inserer).toHaveBeenCalledTimes(1);
+    // L'envoi finit par aboutir : la saisie quitte la file.
+    await act(async () => terminer());
+    expect(magasin.lister()).toEqual([]);
   });
 });

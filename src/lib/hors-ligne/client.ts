@@ -4,13 +4,24 @@ import { analyserErreur } from "../errors";
 import { getSupabase } from "../supabase";
 import type { ClientSaisies } from "./synchro";
 
+/** Attente maximale de la session avant de dire « réseau » : une réponse qui tarde vaut une connexion perdue. */
+export const DELAI_SESSION_MS = 5000;
+
 export function clientSupabase(): ClientSaisies {
   return {
     async sessionValide() {
       // `getSession` rafraîchit le jeton s'il est périmé. Sans session, supabase-js enverrait la clé anonyme : la base
       // répondrait « refusé » et la saisie serait marquée refusée à tort. On n'envoie donc rien.
+      // Sans réseau, ce renouvellement réessaie une trentaine de secondes : on ne l'attend pas (le renouvellement continue en
+      // arrière-plan, l'envoi sera retenté).
+      const lent = Symbol("lent");
       try {
-        const { data, error } = await getSupabase().auth.getSession();
+        const reponse = await Promise.race([
+          getSupabase().auth.getSession(),
+          new Promise<typeof lent>((resolve) => setTimeout(() => resolve(lent), DELAI_SESSION_MS)),
+        ]);
+        if (reponse === lent) return "reseau";
+        const { data, error } = reponse;
         if (data.session) return "ok";
         // Le renouvellement a échoué faute de réseau (ou est en pause : supabase-js garde l'échec une minute, même
         // après le retour du réseau) : la session existe toujours, l'envoi sera retenté.

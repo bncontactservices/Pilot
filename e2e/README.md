@@ -87,3 +87,19 @@ Mêmes comptes de test que ci-dessus.
   bloquée tant que des saisies attendent, puis envoyées ou supprimées avec confirmation. (5) Téléphone (375 px) sans débordement. Axe sur le bandeau
   hors ligne, la carte d'attente, le conflit et la fenêtre de déconnexion. Il crée « Projet E2E hors ligne », qu'il supprime à la fin ; il demande une
   place libre dans le quota de trois projets. Le port 4191 doit être libre.
+
+## Saisie hors ligne dans Safari (`scripts/safari-hors-ligne.mjs`)
+
+Playwright ne propose pas WebKit sur toutes les versions de macOS, et Safari n'a pas de mode hors ligne simulable. Ce script pilote le
+**vrai Safari de bureau** par WebDriver (`safaridriver`) contre le vrai Supabase, avec un build dont Supabase passe par le serveur
+d'aperçu : arrêter le serveur coupe tout. Il joue : connexion, service worker et IndexedDB, serveur arrêté et jeton périmé, ouverture
+sans serveur (durée mesurée), saisie dans la file, rechargement, serveur relancé, envoi, identifiant conservé (voir `DECISIONS.md`, section 28).
+
+1. Safari, Réglages, **Avancées** : « Afficher les fonctionnalités pour les développeurs web » ; onglet **Développeur** : « Autoriser l'automatisation à distance »
+   (au besoin une fois : `sudo safaridriver --enable`). Décochez après usage.
+2. Un compte administrateur de test (`.env.e2e`, voir plus haut).
+3. `VITE_SUPABASE_URL=http://localhost:4191/supabase npm run build`, puis `node scripts/safari-hors-ligne.mjs`, puis `npm run build` pour revenir au build normal.
+
+Le serveur d'aperçu accepte deux variables pour ce test : `APERCU_SUPABASE` (relais vers Supabase) et `APERCU_SANS_UPGRADE=1` (Safari applique
+« upgrade-insecure-requests » même à `http://localhost` et ne charge alors aucun module ; en production, en https, la directive reste en place).
+

@@ -35,6 +35,8 @@ const INTERVALLE_RELANCE_MS = 30_000;
  * échec de renouvellement pendant une minute, et une tentative qui tombe dans ce délai ne coûte aucune requête.
  */
 const INTERVALLE_RELANCE_BLOQUEE_MS = 10_000;
+/** Temps qu'une saisie tapée attend la réponse de la base avant d'être annoncée « gardée sur l'appareil ». */
+export const DELAI_INTERACTIF_MS = 8000;
 
 export type ResultatEnregistrement =
   | { type: "envoyee" }
@@ -149,12 +151,26 @@ export function FileSaisiesProvider({
       }
       if (!navigator.onLine) return { type: "en_file" };
       enVol.current.add(saisie.id);
-      let resultat: ResultatEnvoi;
-      try {
-        resultat = await envoyerSaisie(db, saisie);
-      } finally {
-        enVol.current.delete(saisie.id);
+      const envoi = envoyerSaisie(db, saisie).finally(() => enVol.current.delete(saisie.id));
+      let minuterie: ReturnType<typeof setTimeout> | undefined;
+      const lent = Symbol("lent");
+      const premier = await Promise.race([
+        envoi,
+        new Promise<typeof lent>((resolve) => {
+          minuterie = setTimeout(() => resolve(lent), DELAI_INTERACTIF_MS);
+        }),
+      ]);
+      clearTimeout(minuterie);
+      if (premier === lent) {
+        // Réseau annoncé mais lent ou injoignable : la saisie reste dans la file et l'envoi en cours se termine en arrière-plan.
+        void envoi
+          .then((r) => {
+            if (appliquerResultat(magasin, saisie, r)) rafraichir();
+          })
+          .catch(() => undefined);
+        return { type: "en_file" };
       }
+      const resultat = premier;
       if (resultat.type === "refusee" || resultat.type === "conflit") {
         // Une saisie qu'on vient de taper et que la base refuse ne doit pas rester dans la file : l'écran le dit.
         magasin.retirer(saisie.id);

@@ -864,7 +864,7 @@ Sur « Poursuis », en prenant le premier chantier que le brief recommande aprè
 
 ### Non vérifié, limites
 
-- **Safari et iOS, et de vrais téléphones** : le service worker, IndexedDB et l'installation à l'écran d'accueil n'ont été joués que dans Chrome. Safari efface les données d'un site après sept jours sans visite : une saisie non envoyée depuis plus longtemps pourrait être perdue.
+- **Safari sur iPhone et iPad, et de vrais téléphones** : le service worker, IndexedDB et la file ont depuis été joués dans le vrai Safari de bureau (section 28) ; l'installation à l'écran d'accueil et Safari pour iOS ne l'ont pas été. Safari efface les données d'un site après sept jours sans visite : une saisie non envoyée depuis plus longtemps pourrait être perdue.
 - **Appareil partagé** : les données gardées ne sont pas chiffrées au-delà de la protection de l'appareil. La déconnexion les efface (et bloque tant que des saisies attendent) ; si la session se termine d'elle-même (jeton révoqué), les saisies non envoyées restent sur l'appareil, lisibles par le seul compte qui les a faites, jusqu'à son envoi. La page de confidentialité le dit ; à valider avec un juriste comme le reste.
 - **Une saisie non envoyée n'est pas comptée dans le tableau de bord** tant qu'elle n'est pas partie (la carte d'attente le dit).
 - Une saisie envoyée **ne peut plus être modifiée hors ligne**, et une saisie en attente pour une date où quelqu'un d'autre saisit ensuite se règle au moment de l'envoi (conflit).
@@ -894,3 +894,33 @@ Après la première résiliation, la base gardait « résiliation non planifiée
 - **Adaptive Pricing** : la page de paiement Stripe proposait de payer en XOF (franc CFA) ou en EUR, avec conversion et frais de 4 % annoncés. C'est un réglage de votre compte Stripe, pas de notre code ; à décider avant la mise en ligne (il peut se désactiver).
 - **Petit défaut d'affichage, corrigé ensuite** : sur la page Paramètres, la carte « Plan » gardait, pour un plan payé en ligne, la phrase « L'activation se fait avec notre équipe, par virement ou mobile money ». Quand un abonnement en ligne est en cours (actif, en essai Stripe ou en retard de paiement), elle dit maintenant « Votre plan est géré par l'abonnement en ligne ci-dessous. Pour payer autrement (virement, mobile money), écrivez à notre équipe. » ; la phrase d'origine revient sans abonnement ou une fois l'abonnement terminé. Quatre tests d'écran (administrateur sans abonnement, avec abonnement actif, abonnement terminé, éditeur qui ne lit pas l'abonnement). **803 tests Vitest** au total, types et lint sans erreur ; non rejoué dans le navigateur.
 - **Côté Stripe, rien à nettoyer d'obligatoire** : un client de test « Organisation E2E (test) » et son abonnement terminé restent dans votre environnement de test ; vous pouvez les supprimer depuis le tableau de bord.
+
+## 28. Saisie hors ligne dans le vrai Safari (26 novembre 2026)
+
+Sur « Teste le hors ligne WebKit » : Playwright ne propose pas WebKit sur macOS 13 (`Playwright does not support webkit on mac13`). Le test s'est donc fait dans **le vrai Safari de votre Mac (18.6, moteur WebKit pour ordinateur)**, piloté par `safaridriver` (WebDriver) après que vous avez activé « Autoriser l'automatisation à distance ». Compte administrateur de test, projet et indicateur de test créés puis supprimés (votre accord « Oui, puis suppression ») ; la base est revenue à son état de départ, table par table.
+
+### Dispositif
+
+- **Un build de test où Supabase passe par le serveur local** : `VITE_SUPABASE_URL=http://localhost:4191/supabase` à la construction, et `scripts/apercu-build.mjs` relaie `/supabase/*` vers Supabase quand `APERCU_SUPABASE` est défini. L'application et sa base passent alors par un seul processus : **l'arrêter coupe tout, comme une absence de réseau** (Safari n'a pas d'équivalent au mode hors ligne de Chrome). Dans ce cas `navigator.onLine` reste vrai : c'est le cas « réseau annoncé mais injoignable », le plus courant sur le terrain, que les tests Chrome (qui coupent le réseau pour de bon) ne couvraient pas.
+- **Particularité de Safari** : Safari applique `upgrade-insecure-requests` même à `http://localhost` et ne charge alors aucun module (page blanche). Pour ce test seulement, `APERCU_SANS_UPGRADE=1` retire cette directive du serveur d'aperçu ; en production (https) elle reste en place. Aucun défaut de l'application.
+
+### Ce qui a été joué dans Safari
+
+Service worker enregistré et actif (243 fichiers préchargés, page contrôlée) ; contenu gardé en IndexedDB (8 requêtes) ; **serveur arrêté et jeton d'accès rendu périmé** : l'application s'ouvre depuis le cache, reprend la session gardée et affiche la page de saisie ; une valeur saisie est mise dans la file (localStorage), **survit à un rechargement sans serveur**, puis, le serveur relancé, **part toute seule et la ligne de la base porte l'identifiant tiré sur l'appareil**.
+
+### Défauts trouvés dans cette passe, et corrigés
+
+1. **L'ouverture sans réseau prenait 30 secondes** (mesuré dans Safari : 30 033 ms). Quand le jeton est périmé et injoignable, supabase-js réessaie une trentaine de secondes avant de répondre, et l'application attendait cette réponse. Les tests Chrome n'avaient rien vu : le réseau y est coupé net, l'échec est immédiat. Désormais, **quand une session est gardée sur l'appareil, on l'attend 3 secondes** (`DELAI_OUVERTURE_SESSION_MS`) puis on ouvre avec elle ; le renouvellement continue en arrière-plan (réussi : `TOKEN_REFRESHED` met l'état à jour ; refusé par le serveur : `SIGNED_OUT` renvoie vers la connexion). Sans session gardée, on attend toujours la réponse. **Mesuré après correction : 3,6 s.**
+2. **L'envoi d'une saisie pouvait attendre jusqu'à une trentaine de secondes** pour la même raison (vérification de la session). `sessionValide` n'attend plus que 5 secondes avant de répondre « réseau », et une saisie tapée est annoncée « gardée sur cet appareil » au bout de 8 secondes au plus (`DELAI_INTERACTIF_MS`) si la base ne répond pas ; l'envoi en cours se termine en arrière-plan et applique son résultat (la saisie quitte la file, ou passe en refus ou en conflit, visible). Aucun double envoi : la saisie reste marquée « en cours d'envoi ».
+3. **Retour du serveur : l'envoi est passé de 70 à 6 secondes** dans la même mesure. Cette seconde valeur dépend du moment où le renouvellement du jeton réessaie (supabase-js garde un échec 60 secondes) : **jusqu'à environ une minute reste possible**.
+
+### Vérifié
+
+- **Safari 18.6 (ordinateur), avant et après les corrections** : le scénario ci-dessus ; mesures : ouverture sans serveur 30 s puis 3,6 s ; envoi après retour 70 s puis 6 s.
+- **Chrome, build normal, vrai Supabase** : `hors-ligne.spec.ts` 5 scénarios sur 5 après les corrections (le premier est passé de 2 min 6 s à 28 s).
+- **812 tests Vitest** (13 nouveaux : ouverture avec session gardée, attente sans session gardée, actualisation et abandon de la session reprise, `sessionValide` borné, envoi qui tarde).
+
+### Toujours non vérifié
+
+- **Safari sur iPhone et sur iPad**, et de vrais téléphones : Safari pour ordinateur n'est pas Safari pour iOS. En particulier l'effacement des données d'un site après sept jours sans visite (une saisie non envoyée depuis plus longtemps pourrait être perdue) et l'installation sur l'écran d'accueil.
+- Firefox.
