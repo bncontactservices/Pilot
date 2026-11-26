@@ -446,7 +446,11 @@
     "ABONNEMENT_EXISTE": "Un abonnement est déjà en cours : utilisez « Gérer l’abonnement » pour le modifier.",
     "ABONNEMENT_INTROUVABLE": "Aucun abonnement en ligne n’est associé à cette organisation.",
     "PLAN_ENTERPRISE": "Votre plan Enterprise est géré par l’équipe : le paiement en ligne ne s’applique pas.",
-    "PORTAIL_NON_CONFIGURE": "Le portail de gestion de l’abonnement n’est pas encore réglé. Contactez l’équipe."
+    "PORTAIL_NON_CONFIGURE": "Le portail de gestion de l’abonnement n’est pas encore réglé. Contactez l’équipe.",
+    "RAPPORTS_NON_CONFIGURES": "L’envoi des rapports par e-mail n’est pas encore réglé. Contactez l’équipe.",
+    "RAPPORTS_INDISPONIBLES": "L’envoi des rapports est momentanément indisponible. Réessayez dans un instant.",
+    "ENVOI_IMPOSSIBLE": "Le message n’a pas pu être envoyé. Réessayez dans un instant.",
+    "ADRESSE_ABSENTE": "Votre compte n’a pas d’adresse e-mail : impossible d’envoyer le rapport."
   },
   "avancement": {
     "titre": "Avancement",
@@ -2386,5 +2390,24 @@
       "tout_envoye": "Tout est envoyé",
       "tout_envoye_texte": "Aucune saisie ne reste sur cet appareil : vous pouvez vous déconnecter."
     }
+  },
+  "rapports_email": {
+    "titre": "Rapport de suivi par e-mail",
+    "description": "Recevez l’avancement de votre organisation (taux, points d’attention) à l’adresse de votre compte : {{email}}. C’est votre choix, et vous pouvez l’arrêter à tout moment.",
+    "frequence": "Fréquence",
+    "choix": {
+      "aucun": "Ne pas recevoir de rapport",
+      "hebdomadaire": "Chaque semaine, le lundi",
+      "mensuelle": "Chaque mois, le 1er"
+    },
+    "enregistrer": "Enregistrer",
+    "enregistre": "Préférence enregistrée.",
+    "desabonne": "Vous ne recevrez plus de rapport par e-mail.",
+    "prochain": "Prochain envoi : {{date}}, vers 7 h (heure de Dakar).",
+    "dernier": "Dernier envoi : {{date}}.",
+    "lecture_seule": "L’organisation est en lecture seule : aucun rapport n’est envoyé tant qu’un plan n’est pas activé. Votre choix est conservé.",
+    "exemple": "Recevoir un exemple maintenant",
+    "exemple_envoye": "Exemple envoyé à {{email}}. Pensez à regarder vos courriers indésirables.",
+    "exemple_aide": "L’exemple ne change rien à vos envois programmés."
   }
 }

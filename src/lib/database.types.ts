@@ -23,6 +23,7 @@ type Enums_ = {
   niveau_localite: "region" | "departement" | "arrondissement" | "commune" | "village" | "quartier";
   statut_abonnement:
     "incomplete" | "incomplete_expired" | "trialing" | "active" | "past_due" | "canceled" | "unpaid" | "paused";
+  frequence_rapport: "hebdomadaire" | "mensuelle";
 };
 
 export type Database = {
@@ -616,6 +617,23 @@ export type Database = {
         };
         Insert: never;
         Update: never;
+        Relationships: [];
+      };
+      /**
+       * Abonnement d'un membre au rapport de suivi par e-mail (Lot 4b). Chacun ne voit et ne modifie que sa ligne ; le client
+       * n'écrit que la fréquence : le compte, l'organisation et les dates d'envoi sont posés par la base.
+       */
+      rapports_abonnes: {
+        Row: {
+          user_id: string;
+          org_id: string;
+          frequence: Enums_["frequence_rapport"];
+          prochain_envoi_le: string;
+          dernier_envoi_le: string | null;
+          created_at: string;
+        };
+        Insert: { frequence: Enums_["frequence_rapport"] };
+        Update: { frequence?: Enums_["frequence_rapport"] };
         Relationships: [];
       };
       projet_localites: {

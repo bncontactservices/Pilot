@@ -9,6 +9,7 @@ import { z } from "zod";
 import { DEVISES } from "~/components/app/DialogueNouveauProjet";
 import { EntetePage } from "~/components/app/EntetePage";
 import { CarteAbonnement } from "~/components/app/abonnement/CarteAbonnement";
+import { CarteRapportEmail } from "~/components/app/rapports/CarteRapportEmail";
 import { CarteSuiviEvaluation } from "~/components/app/CarteSuiviEvaluation";
 import { useGestionErreur } from "~/components/app/LimitePlan";
 import { Badge } from "~/components/ui/badge";
@@ -42,6 +43,7 @@ export default function Parametres() {
         <CartePlan />
         <CarteAbonnement />
         <CarteProfil />
+        <CarteRapportEmail />
         <Card>
           <CardHeader>
             <CardTitle>{t("parametres.compte.titre")}</CardTitle>

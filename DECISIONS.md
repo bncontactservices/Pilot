@@ -924,3 +924,38 @@ Service worker enregistré et actif (243 fichiers préchargés, page contrôlée
 
 - **Safari sur iPhone et sur iPad**, et de vrais téléphones : Safari pour ordinateur n'est pas Safari pour iOS. En particulier l'effacement des données d'un site après sept jours sans visite (une saisie non envoyée depuis plus longtemps pourrait être perdue) et l'installation sur l'écran d'accueil.
 - Firefox.
+
+## 29. Lot 4b : rapport de suivi par e-mail, programmé (26 novembre 2026)
+
+Sur « Oui, construire », avec la voie A que je recommandais : **un e-mail récapitulatif avec un lien vers l'application**, et non un PDF en pièce jointe (nos PDF se génèrent dans le navigateur ; les produire sur un serveur sans écran est lourd, et une pièce jointe fait circuler des chiffres dans les boîtes mail). Construit et testé sans clé ; **non encore envoyé pour de vrai** : il manque la clé d'API Resend, l'expéditeur, et c'est vous qui posez les secrets.
+
+### Ce que ça fait
+
+- **Par choix, jamais d'office** (décision du 25 novembre, section 24) : chaque membre, quel que soit son rôle, règle son propre rapport dans **Paramètres, « Rapport de suivi par e-mail »** : pas de rapport, chaque semaine (le lundi) ou chaque mois (le 1er), vers 7 h (heure de Dakar, UTC). Le destinataire est **toujours l'adresse du compte** ; aucune adresse n'est saisie, aucune adresse externe n'est possible. L'écran montre la prochaine date d'envoi et le dernier envoi.
+- **« Recevoir un exemple maintenant »** : envoie le rapport tout de suite, à sa propre adresse seulement (un message par membre et par tranche de cinq minutes, par la clé d'idempotence de Resend). C'est aussi le moyen de le tester sans attendre un lundi.
+- **Le contenu** (`supabase/functions/_shared/rapport-email.ts`) : programmes et projets avec leurs trois taux (résultats, physique, financier) **tels que les vues d'avancement les donnent, sans recalcul**, un statut en toutes lettres par projet (pas seulement une couleur), et les **points d'attention selon les mêmes règles que le rapport PDF d'un programme** (résultats en retard, budget dépassé, étapes en retard, aucune donnée d'indicateur). Un tiret remplace un taux inconnu, jamais un zéro inventé. Sans projet suivi, le message le dit. Le projet exemple et les projets terminés ou clôturés n'y figurent pas. Chaque nom venu des données est échappé dans le HTML ; aucun saut de ligne ne peut entrer dans l'objet. Pied de message : pourquoi on le reçoit, et le lien pour l'arrêter ; en-tête `List-Unsubscribe`.
+- **La carte n'apparaît que si l'envoi est configuré** (la fonction répond « disponible » seulement si `RESEND_API_KEY`, `EMAIL_FROM` et `APP_URL` sont valides) : aucun réglage qui ne produirait rien, comme pour le paiement.
+
+### Comment c'est construit
+
+- **Base** (migrations `20261127110000_lot4b_rapports_programmes.sql` et `20261127120000_lot4b_planificateur_rapports.sql`, appliquées : `lot4b_rapports_programmes` et `lot4b_planificateur_rapports`) : table `rapports_abonnes` (une ligne par membre) ; le client n'écrit que la fréquence (droits par colonne), le compte, l'organisation et les dates sont posés par la base ; chacun ne lit, ne modifie et ne supprime que sa ligne. **Se désabonner n'est jamais bloqué, même en lecture seule** : retirer son consentement doit toujours être possible. Quatre fonctions **réservées à la clé de service** (vérifié sur le vrai projet : ni `anon` ni `authenticated`) : réserver les envois dus (exclusif, `for update skip locked`, échéance repoussée d'une heure le temps d'envoyer : pas de double envoi, un passage interrompu est repris), marquer le résultat (raté : nouvel essai dans une heure, à la cinquième défaillance on attend l'échéance régulière), lire le contenu, vérifier le jeton du planificateur. Une organisation en **lecture seule ne reçoit rien** (ses abonnements sont conservés). **53 assertions pgTAP** (`16_lot4b_rapports_programmes.test.sql` ; 851 au total).
+- **Planificateur** : `pg_cron` toutes les heures, à la cinquième minute, appelle la fonction par `pg_net`. **Ces deux extensions sont maintenant activées sur votre projet** (elles étaient disponibles et non installées, voir section 24). Le jeton qui prouve l'identité du planificateur est tiré par la base à la migration et stocké dans `private.rapports_config` (fermée au client), comparé par la fonction ; **aucun secret de plus à poser par vous**.
+- **Edge Function `rapports-programmes`** (déployée, version 1, `verify_jwt` désactivé : elle authentifie elle-même) : trois actions, `cron` (jeton du planificateur ; **sans Resend configuré, elle ne réserve rien** : les échéances restent dues), `exemple` et `etat` (session d'un membre). Resend est appelé par son API REST, sans SDK ; la clé n'apparaît ni dans une réponse ni dans le journal, qui ne contient **aucune adresse e-mail**. Si Resend limite le débit, le passage s'arrête et les envois restants restent dus. Le fichier partagé `stripe.ts` déployé avec cette fonction n'en contient que ce dont elle a besoin (`adresseApp` et les types) : c'est volontaire.
+
+### Vérifié
+
+- **851 assertions pgTAP** (53 nouvelles) et **855 tests Vitest** (43 nouveaux : composition du message, points d'attention, échappement, objet sans saut de ligne, logique de la fonction avec une fausse API Resend : jeton, configuration, idempotence, limite de débit, plantage isolé, destinataire = adresse du compte, journal sans adresse ni clé ; carte des paramètres : masquée sans configuration, abonnement, changement, désabonnement, exemple), types et lint sans erreur.
+- **Sur le vrai projet** : droits des fonctions et des colonnes ; **la chaîne complète du planificateur** : depuis la base, `pg_net` appelle la fonction avec le jeton, la fonction le reconnaît et répond « non configuré » (503) en ne réservant rien ; sans jeton, mauvais jeton, sans session, action inconnue et méthode GET sont refusés comme il faut. Les conseils de sécurité de Supabase n'ont qu'une information de plus : `private.rapports_config` a la RLS sans politique, voulu (comme `private.fichiers_a_retirer`).
+
+### Ce qui n'est PAS vérifié
+
+- **Aucun e-mail n'a été envoyé** : il faut d'abord les secrets. **Ni la mise en page dans un vrai client de messagerie, ni la livraison, ni la carte à l'écran avec la vraie configuration.**
+- **Envoi à d'autres membres** : sans domaine vérifié, Resend n'envoie (selon sa documentation) qu'à l'adresse du propriétaire du compte, depuis `onboarding@resend.dev`. L'envoi aux autres membres exige un domaine d'envoi.
+- Le déclenchement réel un lundi ou un 1er du mois (le calcul des échéances est testé en base ; le passage planifié, lui, n'a eu lieu qu'à la main).
+- **La landing garde « Rapports automatiques programmés » en « Bientôt »** : elle ne changera qu'après un vrai envoi reçu, puis, pour être honnête, qu'un domaine permette d'écrire aux autres membres.
+
+### Pour mettre en service (à faire par vous, dans Edge Functions > Secrets)
+
+1. `RESEND_API_KEY` : une clé d'API Resend (`re_…`), idéalement limitée à l'envoi.
+2. `EMAIL_FROM` : pour un premier essai, `Pilot M&E <onboarding@resend.dev>` (ne livre qu'à l'adresse du propriétaire du compte Resend) ; en production, une adresse d'un domaine vérifié, par exemple `Pilot M&E <rapports@mail.votre-domaine>`.
+3. `APP_URL` : déjà posée (`http://localhost:4173` pour l'essai ; l'adresse publique en `https://` en production), c'est elle qui bâtit les liens du message.

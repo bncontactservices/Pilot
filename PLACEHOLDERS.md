@@ -29,7 +29,7 @@ Ces trois variables fournies doivent aussi être définies **dans Vercel** : ell
 
 | Secret | État | Effet tant qu'il est vide |
 |---|---|---|
-| `RESEND_API_KEY`, `EMAIL_FROM` | Compte Resend créé, mais **aucun domaine n'y est enregistré** (vérifié le 25 novembre 2026). À faire : ajouter le domaine d'envoi chez Resend, poser les enregistrements DNS demandés, attendre « Verified », puis poser la clé et l'expéditeur dans les secrets. Je ne peux pas voir les secrets Supabase : leur présence n'est pas vérifiée | Ni invitation ni notification de demande par e-mail |
+| `RESEND_API_KEY`, `EMAIL_FROM` (invitations, **et rapport de suivi par e-mail du Lot 4b**) | Compte Resend créé, mais **aucun domaine n'y est enregistré** (vérifié le 25 novembre 2026). À faire : ajouter le domaine d'envoi chez Resend, poser les enregistrements DNS demandés, attendre « Verified », puis poser la clé et l'expéditeur dans les secrets. Je ne peux pas voir les secrets Supabase : leur présence n'est pas vérifiée | Ni invitation, ni notification de demande, ni rapport de suivi par e-mail (la carte « Rapport de suivi par e-mail » reste masquée). Pour un premier essai : `EMAIL_FROM` = `Pilot M&E <onboarding@resend.dev>`, qui ne livre qu'à l'adresse du propriétaire du compte Resend |
 | `CONTACT_EMAIL` | à poser (adresse de réception des demandes) | Les demandes sont seulement enregistrées dans la table `leads` |
 | `TURNSTILE_SECRET_KEY`, `IP_HASH_SALT` | facultatifs | Pas de vérification Turnstile ; l'empreinte des IP utilise la clé service |
 

@@ -68,6 +68,13 @@ export default function Confidentialite() {
             et la traçabilité des données, que la loi impose au responsable de mettre en œuvre.
           </li>
           <li>
+            <strong>Rapport de suivi par e-mail</strong>, si vous le demandez dans votre profil : la fréquence choisie
+            (chaque semaine ou chaque mois) et les dates du prochain et du dernier envoi. Le message est envoyé à
+            l’adresse de votre compte et reprend l’avancement de votre organisation. Finalité : vous envoyer le rapport
+            que vous avez demandé (consentement). Vous pouvez l’arrêter à tout moment dans votre profil ; la ligne est
+            alors supprimée.
+          </li>
+          <li>
             <strong>Demandes de contact</strong> (démonstration, client pilote, offre Enterprise) : nom, organisation,
             e-mail et besoin exprimé, ainsi qu’une empreinte non réversible de l’adresse IP, conservée seulement pour
             limiter les envois abusifs (l’adresse elle-même n’est jamais enregistrée). Finalité : répondre à votre
@@ -91,8 +98,8 @@ export default function Confidentialite() {
           <li>Supabase : base de données, authentification et stockage des fichiers (Union européenne, Irlande).</li>
           <li>Vercel : diffusion du site et de l’application.</li>
           <li>
-            Resend : envoi des e-mails d’invitation et de notification, lorsque cet envoi est activé (traitement dans{" "}
-            <ACompleter>région de traitement</ACompleter>).
+            Resend : envoi des e-mails d’invitation et de notification, et du rapport de suivi que vous choisissez de
+            recevoir, lorsque cet envoi est activé (traitement dans <ACompleter>région de traitement</ACompleter>).
           </li>
           <li>
             Plausible Analytics : mesure d’audience sans cookie, conçue pour ne pas identifier les visiteurs, si elle

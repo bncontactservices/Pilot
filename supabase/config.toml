@@ -446,3 +446,8 @@ verify_jwt = false
 
 [functions.stripe-webhook]
 verify_jwt = false
+
+# Lot 4b : rapport de suivi par e-mail. Appelée par le planificateur (jeton de private.rapports_config) et par les membres
+# (leur session, vérifiée dans la fonction).
+[functions.rapports-programmes]
+verify_jwt = false
