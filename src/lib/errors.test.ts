@@ -10,7 +10,8 @@ describe("analyserErreur", () => {
   });
   it("reconnaît les codes métier", () => {
     expect(analyserErreur({ code: "P0001", message: "ESSAI_EXPIRE" }).cle).toBe("erreurs.ESSAI_EXPIRE");
-    expect(analyserErreur(new Error("DEJA_INSCRIT")).cle).toBe("erreurs.DEJA_INSCRIT");
+    expect(analyserErreur(new Error("INVITATION_RECENTE")).cle).toBe("erreurs.INVITATION_RECENTE");
+    expect(analyserErreur(new Error("TROP_D_INVITATIONS")).cle).toBe("erreurs.TROP_D_INVITATIONS");
   });
   it("traduit les erreurs d'authentification", () => {
     expect(analyserErreur({ code: "invalid_credentials", message: "Invalid login credentials" }).cle).toBe(

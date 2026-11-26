@@ -23,7 +23,7 @@ export const meta = () => [{ title: i18n.t("auth.inscription.meta") }];
 
 const motDePasse = z
   .string()
-  .min(8, { error: "auth.validation.mot_de_passe_longueur" })
+  .min(10, { error: "auth.validation.mot_de_passe_longueur" })
   .regex(/[A-Za-zÀ-ÿ]/, { error: "auth.validation.mot_de_passe_lettre" })
   .regex(/\d/, { error: "auth.validation.mot_de_passe_chiffre" });
 

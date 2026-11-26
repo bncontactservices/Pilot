@@ -7,6 +7,7 @@
 // sont configurés, et que Stripe confirme ce prix ; sinon l'application n'en montre rien. Seul un administrateur de
 // l'organisation peut souscrire ou ouvrir le portail. Les redirections ne reposent que sur APP_URL (jamais sur la requête).
 
+import { entetesCors } from "./cors.ts";
 import {
   type AbonnementNormalise,
   adresseApp,
@@ -48,16 +49,11 @@ export type Deps = {
   journal: (...elements: unknown[]) => void;
 };
 
-const ENTETES_CORS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
-
-function repondre(statut: number, corps: Record<string, unknown>, cors = true): Response {
+/** Réponse JSON ; `cors` vient de entetesCors (_shared/cors.ts), et reste vide pour le webhook, qu'aucun navigateur n'appelle. */
+function repondreAvec(statut: number, corps: Record<string, unknown>, cors: Record<string, string> = {}): Response {
   return new Response(JSON.stringify(corps), {
     status: statut,
-    headers: { ...(cors ? ENTETES_CORS : {}), "Content-Type": "application/json" },
+    headers: { ...cors, "Content-Type": "application/json" },
   });
 }
 
@@ -65,6 +61,8 @@ type Authentification = { ok: true; email: string | null; membre: Membre } | { o
 
 /** L'appelant doit être un utilisateur connecté, administrateur de son organisation. */
 async function authentifierAdmin(requete: Request, deps: Deps): Promise<Authentification> {
+  const cors = entetesCors(requete, deps.env);
+  const repondre = (statut: number, corps: Record<string, unknown>) => repondreAvec(statut, corps, cors);
   const jwt = requete.headers.get("Authorization")?.replace(/^Bearer\s+/i, "");
   if (!jwt) return { ok: false, reponse: repondre(401, { erreur: "NON_AUTHENTIFIE" }) };
   try {
@@ -132,7 +130,9 @@ async function lirePrix(deps: Deps, cle: string, plan: Plan, periodicite: Period
 }
 
 export async function traiterPaiement(requete: Request, deps: Deps): Promise<Response> {
-  if (requete.method === "OPTIONS") return new Response("ok", { headers: ENTETES_CORS });
+  const cors = entetesCors(requete, deps.env);
+  const repondre = (statut: number, corps: Record<string, unknown>) => repondreAvec(statut, corps, cors);
+  if (requete.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (requete.method !== "POST") return repondre(405, { erreur: "METHODE_NON_AUTORISEE" });
   const auth = await authentifierAdmin(requete, deps);
   if (!auth.ok) return auth.reponse;
@@ -209,7 +209,9 @@ export async function traiterPaiement(requete: Request, deps: Deps): Promise<Res
 // stripe-portal ------------------------------------------------------------------------------------------------
 
 export async function traiterPortail(requete: Request, deps: Deps): Promise<Response> {
-  if (requete.method === "OPTIONS") return new Response("ok", { headers: ENTETES_CORS });
+  const cors = entetesCors(requete, deps.env);
+  const repondre = (statut: number, corps: Record<string, unknown>) => repondreAvec(statut, corps, cors);
+  if (requete.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (requete.method !== "POST") return repondre(405, { erreur: "METHODE_NON_AUTORISEE" });
   const auth = await authentifierAdmin(requete, deps);
   if (!auth.ok) return auth.reponse;
@@ -243,26 +245,28 @@ export async function traiterPortail(requete: Request, deps: Deps): Promise<Resp
 // stripe-webhook -----------------------------------------------------------------------------------------------
 
 export async function traiterWebhook(requete: Request, deps: Deps): Promise<Response> {
-  if (requete.method !== "POST") return repondre(405, { erreur: "METHODE_NON_AUTORISEE" }, false);
+  // Appelé par Stripe, jamais par un navigateur : aucun en-tête CORS.
+  const repondre = (statut: number, corps: Record<string, unknown>) => repondreAvec(statut, corps);
+  if (requete.method !== "POST") return repondre(405, { erreur: "METHODE_NON_AUTORISEE" });
   const secret = secretWebhook(deps.env);
-  if (!secret) return repondre(503, { erreur: "PAIEMENT_NON_CONFIGURE" }, false);
+  if (!secret) return repondre(503, { erreur: "PAIEMENT_NON_CONFIGURE" });
 
   // Le corps brut, tel que reçu : la signature porte sur ces octets exacts.
   const brut = await requete.text();
   const valide = await verifierSignature(brut, requete.headers.get("stripe-signature"), secret, deps.maintenant());
-  if (!valide) return repondre(400, { erreur: "SIGNATURE_INVALIDE" }, false);
+  if (!valide) return repondre(400, { erreur: "SIGNATURE_INVALIDE" });
 
   let evenement: unknown;
   try {
     evenement = JSON.parse(brut);
   } catch {
-    return repondre(400, { erreur: "REQUETE_INVALIDE" }, false);
+    return repondre(400, { erreur: "REQUETE_INVALIDE" });
   }
   const normalise = normaliserEvenement(evenement, deps.env);
   // Un type d'événement qui ne nous concerne pas est acquitté : Stripe n'a pas à le renvoyer.
   if (!normalise.ok) {
     if (normalise.raison === "evenement_invalide") deps.journal("webhook:evenement_invalide");
-    return repondre(200, { recu: true, traite: false, raison: normalise.raison }, false);
+    return repondre(200, { recu: true, traite: false, raison: normalise.raison });
   }
   const abonnement = normalise.valeur;
   if (abonnement.prixInconnu && ["active", "trialing", "past_due"].includes(abonnement.statut)) {
@@ -279,10 +283,10 @@ export async function traiterWebhook(requete: Request, deps: Deps): Promise<Resp
       `fin_planifiee=${abonnement.annuleEnFinDePeriode}`,
       String(resultat),
     );
-    return repondre(200, { recu: true, traite: true, resultat }, false);
+    return repondre(200, { recu: true, traite: true, resultat });
   } catch (erreur) {
     // Une panne de base : on répond 500 pour que Stripe renvoie l'événement.
     deps.journal("webhook:application", String(erreur));
-    return repondre(500, { erreur: "TRAITEMENT_IMPOSSIBLE" }, false);
+    return repondre(500, { erreur: "TRAITEMENT_IMPOSSIBLE" });
   }
 }

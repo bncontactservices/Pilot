@@ -1,9 +1,13 @@
 import type { Browser, BrowserContext, Page } from "@playwright/test";
 import { expect } from "@playwright/test";
+import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const AXE = require.resolve("axe-core/axe.min.js");
+// Évalué par le protocole du navigateur (page.evaluate), pas injecté comme balise : le build est servi avec sa politique de
+// sécurité (CSP), qui refuse tout script inline non prévu, et c'est voulu.
+const SOURCE_AXE = readFileSync(AXE, "utf8");
 
 /** Adresse du build servi par npm run apercu (voir playwright.config.ts). */
 export const URL_APERCU = "http://localhost:4173";
@@ -65,7 +69,7 @@ export async function ouvrirPageProjet(
 /** Contrôle axe-core (WCAG 2 A/AA, 2.1 AA et bonnes pratiques) de la page affichée : une ligne par violation. */
 export async function violations(page: Page): Promise<string[]> {
   // Le script reste en place tant que la page n'est pas rechargée : on ne le réinjecte pas pour chaque formulaire.
-  if (!(await page.evaluate(() => "axe" in window))) await page.addScriptTag({ path: AXE });
+  if (!(await page.evaluate(() => "axe" in window))) await page.evaluate(SOURCE_AXE);
   return page.evaluate(async () => {
     const axe = (
       window as unknown as {

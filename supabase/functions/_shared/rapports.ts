@@ -12,6 +12,7 @@
 // Garde-fous : le destinataire est toujours l'adresse du compte, jamais une adresse reçue ; la clé Resend ne figure ni dans
 // une réponse ni dans le journal ; le journal ne contient aucune adresse e-mail.
 
+import { entetesCors } from "./cors.ts";
 import { type Cadence, composerRapport, type ContenuRapport } from "./rapport-email.ts";
 import { adresseApp, type Env, type Fetch } from "./stripe.ts";
 
@@ -44,16 +45,10 @@ export type DepsRapports = {
   journal: (...elements: unknown[]) => void;
 };
 
-const ENTETES_CORS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
-
-function repondre(statut: number, corps: Record<string, unknown>): Response {
+function repondreAvec(statut: number, corps: Record<string, unknown>, cors: Record<string, string>): Response {
   return new Response(JSON.stringify(corps), {
     status: statut,
-    headers: { ...ENTETES_CORS, "Content-Type": "application/json" },
+    headers: { ...cors, "Content-Type": "application/json" },
   });
 }
 
@@ -122,7 +117,10 @@ function lecteurContenu(deps: DepsRapports) {
 }
 
 export async function traiterRapports(requete: Request, deps: DepsRapports): Promise<Response> {
-  if (requete.method === "OPTIONS") return new Response("ok", { headers: ENTETES_CORS });
+  // Les membres appellent depuis le navigateur ; le planificateur (pg_net) n'envoie pas d'Origin et n'a pas besoin de CORS.
+  const cors = entetesCors(requete, deps.env);
+  const repondre = (statut: number, corps: Record<string, unknown>) => repondreAvec(statut, corps, cors);
+  if (requete.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (requete.method !== "POST") return repondre(405, { erreur: "METHODE_NON_AUTORISEE" });
 
   let corps: { action?: unknown };

@@ -1,7 +1,7 @@
 // Implémentation de `BaseRapports` (voir rapports.ts) avec supabase-js et la clé de service. Fichier propre à Deno : il n'est
 // pas importé par les tests, qui utilisent une fausse base. Une requête par méthode.
 
-import { createClient } from "jsr:@supabase/supabase-js@2";
+import { createClient } from "jsr:@supabase/supabase-js@2.119.2";
 import type { BaseRapports } from "./rapports.ts";
 
 export function creerBaseRapports(): BaseRapports {

@@ -106,10 +106,29 @@ const json = async (r: Response) => (await r.json()) as Record<string, unknown>;
 describe("stripe-checkout : droits", () => {
   it("répond à la requête préalable CORS et refuse les autres méthodes", async () => {
     const d = deps(creerBase(), creerStripe());
-    const options = await traiterPaiement(requete(null, {}, "OPTIONS"), d);
+    const options = await traiterPaiement(requete(null, { Origin: "https://app.exemple.org" }, "OPTIONS"), d);
     expect(options.status).toBe(200);
-    expect(options.headers.get("Access-Control-Allow-Origin")).toBe("*");
+    expect(options.headers.get("Access-Control-Allow-Origin")).toBe("https://app.exemple.org");
     expect((await traiterPaiement(requete(null, {}, "GET"), d)).status).toBe(405);
+  });
+
+  it("n'admet que l'origine de l'application : jamais de joker, pour les réponses comme pour le refus", async () => {
+    const d = deps(creerBase(), creerStripe());
+    const etrangere = await traiterPaiement(
+      requete({ action: "etat" }, { Authorization: "Bearer faux", Origin: "https://pirate.example" }),
+      d,
+    );
+    expect(etrangere.status).toBe(401);
+    expect(etrangere.headers.get("Access-Control-Allow-Origin")).toBe("https://app.exemple.org");
+    const portail = await traiterPortail(requete(null, { Origin: "https://pirate.example" }, "OPTIONS"), d);
+    expect(portail.headers.get("Access-Control-Allow-Origin")).not.toBe("*");
+    expect(portail.headers.get("Access-Control-Allow-Origin")).not.toBe("https://pirate.example");
+    // Sans APP_URL ni ALLOWED_ORIGINS, aucune origine n'est admise.
+    const sans = await traiterPaiement(
+      requete(null, { Origin: "https://app.exemple.org" }, "OPTIONS"),
+      deps(creerBase(), creerStripe(), {}),
+    );
+    expect(sans.headers.get("Access-Control-Allow-Origin")).toBe("null");
   });
 
   it("refuse sans jeton, avec un jeton invalide, et à tout autre rôle que l'administrateur", async () => {

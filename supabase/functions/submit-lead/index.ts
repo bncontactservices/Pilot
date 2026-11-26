@@ -14,22 +14,18 @@
 // Secrets : SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY (injectés par Supabase) ;
 // IP_HASH_SALT, TURNSTILE_SECRET_KEY, RESEND_API_KEY, EMAIL_FROM, CONTACT_EMAIL (facultatifs).
 
-import { createClient } from "jsr:@supabase/supabase-js@2";
+import { createClient } from "jsr:@supabase/supabase-js@2.119.2";
+import { entetesCors } from "../_shared/cors.ts";
 import { validerLead } from "./lead.ts";
 
-const ENTETES_CORS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
 const TAILLE_MAX_CORPS = 10_000;
 const DEMANDES_MAX_PAR_HEURE = 5;
 const DEMANDES_MAX_PAR_JOUR = 15;
 
-function repondre(statut: number, corps: Record<string, unknown>): Response {
+function repondreAvec(statut: number, corps: Record<string, unknown>, cors: Record<string, string>): Response {
   return new Response(JSON.stringify(corps), {
     status: statut,
-    headers: { ...ENTETES_CORS, "Content-Type": "application/json" },
+    headers: { ...cors, "Content-Type": "application/json" },
   });
 }
 
@@ -79,7 +75,8 @@ async function notifier(lead: { type_demande: string; nom: string | null; organi
         from: expediteur,
         to: [destinataire],
         reply_to: lead.email,
-        subject: `${LIBELLES_TYPE[lead.type_demande] ?? "Nouvelle demande"} — ${lead.organisation ?? lead.email}`,
+        // Une ligne, jamais de retour à la ligne dans un objet d'e-mail (le champ organisation en accepte).
+        subject: `${LIBELLES_TYPE[lead.type_demande] ?? "Nouvelle demande"} — ${(lead.organisation ?? lead.email).replace(/[\r\n]+/g, " ")}`,
         html: `<div style="font-family:system-ui,sans-serif;font-size:15px;color:#1f2933">${ligne("Type", LIBELLES_TYPE[lead.type_demande] ?? lead.type_demande)}${ligne("Nom", lead.nom)}${ligne("Organisation", lead.organisation)}${ligne("E-mail", lead.email)}${ligne("Besoin", lead.besoin)}</div>`,
       }),
     });
@@ -90,7 +87,10 @@ async function notifier(lead: { type_demande: string; nom: string | null; organi
 }
 
 Deno.serve(async (requete) => {
-  if (requete.method === "OPTIONS") return new Response("ok", { headers: ENTETES_CORS });
+  // Seules les origines de l'application sont admises (ALLOWED_ORIGINS, APP_URL) : voir _shared/cors.ts.
+  const cors = entetesCors(requete, (nom) => Deno.env.get(nom));
+  const repondre = (statut: number, corps: Record<string, unknown>) => repondreAvec(statut, corps, cors);
+  if (requete.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (requete.method !== "POST") return repondre(405, { error: "METHODE" });
 
   const texte = await requete.text();

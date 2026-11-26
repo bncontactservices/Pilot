@@ -1,34 +1,31 @@
 // Edge Function « invite-member » : crée une invitation pour l'organisation de l'appelant.
-// Vérifie : appelant admin, organisation en écriture, quota d'utilisateurs (trigger SQL),
-// e-mail sans compte existant (une organisation par utilisateur au MVP).
+// Vérifie : appelant admin, organisation en écriture, quota d'utilisateurs (trigger SQL), personne déjà membre de
+// l'organisation, et plafond d'envoi (public.invitations_autoriser_envoi : délai par adresse, plafond par adresse et par
+// organisation). Un compte existant dans une autre organisation n'est jamais signalé (pas d'énumération de comptes).
 // Renvoie toujours le lien, pour le copier ou le partager sur WhatsApp, et tente d'envoyer
 // l'invitation par e-mail (Resend) quand APP_URL, RESEND_API_KEY et EMAIL_FROM sont configurés.
 // Le statut de l'envoi est renvoyé : « envoye », « non_configure » ou « echec ».
 //
 // Secrets : SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY (injectés par Supabase),
-// APP_URL, RESEND_API_KEY, EMAIL_FROM (à poser dans Edge Functions > Secrets).
+// APP_URL, RESEND_API_KEY, EMAIL_FROM (à poser dans Edge Functions > Secrets). CORS : APP_URL et ALLOWED_ORIGINS.
 //
 // Déployée avec verify_jwt désactivé : la fonction authentifie elle-même l'appelant
 // (auth.getUser sur le jeton), ce qui fonctionne avec toutes les clés de signature
 // du projet et laisse passer la requête CORS préalable, qui n'a pas d'en-tête Authorization.
 
-import { createClient } from "jsr:@supabase/supabase-js@2";
+import { createClient } from "jsr:@supabase/supabase-js@2.119.2";
+import { entetesCors } from "../_shared/cors.ts";
 
-const ENTETES_CORS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
 const ROLES = ["admin", "editeur", "lecteur"] as const;
 const LIBELLES_ROLES: Record<string, string> = { admin: "administrateur", editeur: "éditeur", lecteur: "lecteur" };
 const DUREE_VALIDITE_JOURS = 7;
 
 type StatutEmail = "envoye" | "non_configure" | "echec";
 
-function repondre(statut: number, corps: Record<string, unknown>): Response {
+function repondreAvec(statut: number, corps: Record<string, unknown>, cors: Record<string, string>): Response {
   return new Response(JSON.stringify(corps), {
     status: statut,
-    headers: { ...ENTETES_CORS, "Content-Type": "application/json" },
+    headers: { ...cors, "Content-Type": "application/json" },
   });
 }
 
@@ -100,7 +97,10 @@ async function envoyerEmail(p: ParametresEmail): Promise<StatutEmail> {
 }
 
 Deno.serve(async (requete) => {
-  if (requete.method === "OPTIONS") return new Response("ok", { headers: ENTETES_CORS });
+  // Seules les origines de l'application sont admises (ALLOWED_ORIGINS, APP_URL) : voir _shared/cors.ts.
+  const cors = entetesCors(requete, (nom) => Deno.env.get(nom));
+  const repondre = (statut: number, corps: Record<string, unknown>) => repondreAvec(statut, corps, cors);
+  if (requete.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (requete.method !== "POST") return repondre(405, { erreur: "METHODE_NON_AUTORISEE" });
 
   const jwt = requete.headers.get("Authorization")?.replace(/^Bearer\s+/i, "");
@@ -163,7 +163,24 @@ Deno.serve(async (requete) => {
       console.error("invite-member:deja-membre", erreurDejaMembre.code, erreurDejaMembre.message);
       return repondre(500, { erreur: "INVITATION_IMPOSSIBLE" });
     }
-    return repondre(409, { erreur: dejaMembre ? "DEJA_MEMBRE" : "DEJA_INSCRIT" });
+    // Un membre de sa propre organisation est déjà visible dans l'équipe : le dire ne révèle rien. Un compte qui existe dans
+    // une autre organisation, en revanche, n'est jamais signalé (sinon tout inscrit pourrait tester des adresses) : on poursuit
+    // comme pour une adresse inconnue. Cette personne ne pourra pas créer un second compte ; l'invitation expirera.
+    if (dejaMembre) return repondre(409, { erreur: "DEJA_MEMBRE" });
+  }
+
+  // Plafond d'envoi (journal indépendant des invitations : révoquer puis recréer ne le remet pas à zéro). Avant le
+  // remplacement ci-dessous, pour qu'un refus ne supprime pas l'invitation en attente.
+  const { data: autorisation, error: erreurPlafond } = await admin.rpc("invitations_autoriser_envoi", {
+    p_org: membre.org_id,
+    p_email: email,
+  });
+  if (erreurPlafond) {
+    console.error("invite-member:plafond", erreurPlafond.code, erreurPlafond.message);
+    return repondre(500, { erreur: "INVITATION_IMPOSSIBLE" });
+  }
+  if (autorisation !== "ok") {
+    return repondre(429, { erreur: autorisation === "delai" ? "INVITATION_RECENTE" : "TROP_D_INVITATIONS" });
   }
 
   // Une nouvelle invitation remplace celle en attente pour la même adresse (c'est aussi le « renvoi »).

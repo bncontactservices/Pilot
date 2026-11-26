@@ -285,8 +285,16 @@ describe("requêtes invalides", () => {
 
   it("répond à la requête préalable CORS (l'appel du navigateur)", async () => {
     const c = creer();
-    const r = await traiterRapports(new Request("https://f.test", { method: "OPTIONS" }), c.deps);
+    const r = await traiterRapports(
+      new Request("https://f.test", { method: "OPTIONS", headers: { Origin: "https://app.exemple.org" } }),
+      c.deps,
+    );
     expect(r.status).toBe(200);
-    expect(r.headers.get("Access-Control-Allow-Origin")).toBe("*");
+    expect(r.headers.get("Access-Control-Allow-Origin")).toBe("https://app.exemple.org");
+    const etrangere = await traiterRapports(
+      new Request("https://f.test", { method: "OPTIONS", headers: { Origin: "https://pirate.example" } }),
+      c.deps,
+    );
+    expect(etrangere.headers.get("Access-Control-Allow-Origin")).toBe("https://app.exemple.org");
   });
 });
