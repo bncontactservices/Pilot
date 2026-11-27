@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { DialogueConfirmation } from "~/components/app/DialogueConfirmation";
 import { EntetePage } from "~/components/app/EntetePage";
-import { EtatErreur } from "~/components/app/Etats";
+import { EtatErreur, EtatVide } from "~/components/app/Etats";
 import { useGestionErreur } from "~/components/app/LimitePlan";
 import { DialogueLocalite } from "~/components/app/zones/DialogueLocalite";
 import { Badge } from "~/components/ui/badge";
@@ -80,7 +80,8 @@ export default function Localites() {
 
       {!peutModifier && org.peutEcrire && <Bandeau>{t("travail.lecture_seule_role")}</Bandeau>}
       {!org.peutEcrire && <Bandeau>{t("travail.lecture_seule_essai")}</Bandeau>}
-      <Bandeau>{t("localites.referentiel_aide")}</Bandeau>
+      {/* Aucune localité n'est préchargée : l'explication n'a de sens que si la plateforme en a chargé. */}
+      {liste.some(estReferentiel) && <Bandeau>{t("localites.referentiel_aide")}</Bandeau>}
 
       {localites.isPending ? (
         <div className="grid gap-3" aria-busy>
@@ -89,6 +90,20 @@ export default function Localites() {
         </div>
       ) : localites.error ? (
         <EtatErreur erreur={localites.error} onReessayer={() => void localites.refetch()} />
+      ) : liste.length === 0 ? (
+        <EtatVide
+          visuel={<MapPin className="size-10 text-navy/40" aria-hidden />}
+          titre={t("localites.vide.titre")}
+          description={peutModifier ? t("localites.vide.texte") : t("localites.vide.texte_lecteur")}
+          actions={
+            peutModifier && (
+              <Button onClick={() => setEdition("nouvelle")}>
+                <Plus aria-hidden />
+                {t("localites.creer")}
+              </Button>
+            )
+          }
+        />
       ) : (
         <>
           <div className="relative max-w-md">

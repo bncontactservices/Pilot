@@ -70,14 +70,16 @@ Mêmes comptes de test que ci-dessus.
   son budget dépensé, l'autre sans donnée) et le téléchargement du rapport PDF consolidé par un administrateur et par un
   lecteur (un vrai PDF, nommé d'après le programme et la date), plus l'accessibilité de la page et, sur téléphone (375 px), l'absence de débordement. Il crée un programme et
   deux projets de test, qu'il supprime à la fin ; il demande de la place pour deux projets dans le quota de trois.
-- `zones.spec.ts` (Lot 3d) : les zones d'intervention d'un projet, choisies dans le référentiel de Yoff (la commune a des coordonnées
-  sourcées, ses quartiers n'en ont pas), la création d'une localité de l'organisation (refusée si elle recrée une localité du
-  référentiel, ou avec une latitude hors limites), la carte (un repère par zone avec coordonnées, repère atteignable au clavier,
-  images de fond OpenStreetMap, aucune violation de la politique de sécurité), une réalisation et une saisie rattachées à une
-  localité, le retrait d'une zone qui laisse les rattachements, la suppression d'une localité refusée tant qu'une zone s'en sert,
-  la lecture seule du lecteur, et les refus de la base (lecteur, écriture du référentiel, niveau figé, localité hors zone). **Il
-  charge des images depuis tile.openstreetmap.org : il exige un accès au réseau.** Il crée « Projet E2E zones » et des localités
-  « … E2E », qu'il supprime à la fin ; il demande une place libre dans le quota de trois projets.
+- `zones.spec.ts` (Lot 3d) : aucune localité n'est préchargée (l'organisation de test n'en a aucune au départ : état vide, aucun
+  « Référentiel »), la création d'une petite hiérarchie par l'éditeur (commune et village avec coordonnées, quartier sans
+  coordonnées ; un même nom sous un même parent est refusé, ainsi qu'une latitude hors limites), la carte (un repère par zone
+  avec coordonnées, repère atteignable au clavier, images de fond OpenStreetMap, aucune violation de la politique de sécurité),
+  une réalisation et une saisie rattachées à une localité, le retrait d'une zone qui laisse les rattachements, la suppression
+  d'une localité refusée tant qu'une zone s'en sert ou qu'elle contient d'autres localités, la lecture seule du lecteur, et les
+  refus de la base (lecteur, écriture du référentiel, niveau figé, localité hors zone). **Il charge des images depuis
+  tile.openstreetmap.org : il exige un accès au réseau.** Il crée « Projet E2E zones » et des localités « … E2E », qu'il supprime
+  à la fin ; il demande une place libre dans le quota de trois projets. **Réécrit après le retrait de Yoff : pas encore rejoué
+  en réel.**
 - `hors-ligne.spec.ts` (Lot 4a) : la saisie hors ligne, contre le build et le vrai Supabase. (1) Le serveur de l'application est ARRÊTÉ (le test lance
   son propre serveur sur le port 4191 et le tue), le navigateur est hors ligne et le jeton d'accès est rendu périmé : l'application s'ouvre depuis le
   cache du service worker, reprend la session gardée, affiche les données gardées ; une valeur saisie sans réseau reste dans la file et survit à un

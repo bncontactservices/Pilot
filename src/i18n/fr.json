@@ -892,7 +892,7 @@
       "quantite": "Quantité",
       "unite": "Unité",
       "lieu": "Lieu",
-      "lieu_aide": "Texte libre (village, commune…). Le référentiel de localités arrivera avec le suivi géographique.",
+      "lieu_aide": "Texte libre (village, commune…) pour préciser l’endroit.",
       "noeud": "Résultat ou activité du cadre logique",
       "noeud_vide": "Le cadre logique du projet n’a pas encore de résultat ni d’activité.",
       "aucun": "Aucun lien",
@@ -2187,7 +2187,7 @@
   "localites": {
     "meta": "Localités - Pilot M&E",
     "titre": "Localités",
-    "description": "Le référentiel de la plateforme et les localités de votre organisation : régions, communes, villages, quartiers. Chaque projet y choisit ses zones d’intervention.",
+    "description": "Les lieux de votre organisation, que vous renseignez vous-même : régions, communes, villages, quartiers. Chaque projet y choisit ses zones d’intervention.",
     "niveaux": {
       "region": "Région",
       "departement": "Département",
@@ -2198,6 +2198,11 @@
     },
     "referentiel": "Référentiel",
     "referentiel_aide": "Les localités du référentiel viennent de la plateforme, avec leur source : vous pouvez les utiliser, pas les modifier.",
+    "vide": {
+      "titre": "Aucune localité pour le moment",
+      "texte": "Pilot M&E ne charge aucune localité à votre place : vous créez les lieux où vous travaillez, du plus large au plus fin, avec leurs coordonnées si vous les avez.",
+      "texte_lecteur": "Votre organisation n’a pas encore renseigné de localité."
+    },
     "propre": "Votre organisation",
     "recherche": "Rechercher une localité",
     "resume_one": "{{count}} localité",
@@ -2223,7 +2228,7 @@
       "niveau": "Niveau",
       "parent": "Rattachée à",
       "parent_aucun": "Aucune (au sommet de la hiérarchie)",
-      "parent_aide": "Une localité plus large qui la contient, du référentiel ou de votre organisation.",
+      "parent_aide": "Une localité plus large qui la contient, parmi celles de votre organisation.",
       "latitude": "Latitude",
       "longitude": "Longitude",
       "coordonnees_aide": "En degrés décimaux, par exemple 14,7604 et −17,4681. Une latitude sud ou une longitude ouest est négative. Renseignez les deux, ou aucune.",
@@ -2250,10 +2255,10 @@
     "creer": "Créer une localité",
     "resume_one": "{{count}} zone d’intervention",
     "resume_other": "{{count}} zones d’intervention",
-    "exemple": "Ce projet exemple est rattaché à la commune de Yoff pour montrer la carte ; ses données restent fictives.",
     "vide": {
       "titre": "Aucune zone d’intervention",
       "texte": "Choisissez les localités où ce projet agit : elles s’afficheront sur la carte et pourront être précisées dans les saisies et les réalisations.",
+      "texte_sans_localite": "Votre organisation n’a pas encore de localité. Créez les lieux où ce projet agit : ils deviennent aussitôt ses zones d’intervention.",
       "texte_lecteur": "Aucune zone n’a encore été désignée pour ce projet."
     },
     "liste": "Liste des zones",
@@ -2283,14 +2288,15 @@
     },
     "dialogue": {
       "titre": "Ajouter une zone d’intervention",
-      "description": "Choisissez une localité du référentiel ou de votre organisation.",
+      "description": "Choisissez une localité de votre organisation.",
       "recherche": "Rechercher une localité",
       "liste": "Localités",
       "aucun_resultat": "Aucune localité ne correspond à « {{recherche}} ».",
       "deja": "Déjà une zone",
       "ajouter": "Ajouter",
       "creer": "Créer une localité",
-      "tout_ajoute": "Toutes les localités visibles sont déjà des zones de ce projet."
+      "tout_ajoute": "Toutes les localités visibles sont déjà des zones de ce projet.",
+      "aucune_localite": "Votre organisation n’a pas encore de localité à choisir."
     }
   },
   "abonnement": {

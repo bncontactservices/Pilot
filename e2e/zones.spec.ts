@@ -1,16 +1,20 @@
 // Localités, zones d'intervention et carte (Lot 3d), contre le build servi (npm run apercu) et le vrai Supabase :
-// le référentiel de Yoff (lecture seule), la création d'une localité de l'organisation, la carte (repères, fond
-// OpenStreetMap, aucune violation de la politique de sécurité), le rattachement d'une réalisation et d'une saisie, le
-// retrait d'une zone qui laisse les rattachements, la suppression refusée tant qu'une localité sert, la lecture seule
-// du lecteur et les refus de la base. Mêmes comptes de test que parcours.spec.ts (voir e2e/README.md). Il crée
+// aucune localité n'est préchargée (c'est l'organisation qui renseigne les siennes), la création d'une petite hiérarchie
+// (commune, village, quartier) avec ses coordonnées, la carte (repères, fond OpenStreetMap, aucune violation de la
+// politique de sécurité), le rattachement d'une réalisation et d'une saisie, le retrait d'une zone qui laisse les
+// rattachements, la suppression refusée tant qu'une localité sert ou contient d'autres localités, la lecture seule du
+// lecteur et les refus de la base. Mêmes comptes de test que parcours.spec.ts (voir e2e/README.md). Il crée
 // « Projet E2E zones » et des localités « … E2E », qu'il supprime à la fin : il demande une place libre dans le quota
-// de trois projets de l'essai.
+// de trois projets de l'essai, et une organisation de test sans localité au départ.
 
 import { expect, type APIRequestContext, type Page, test } from "@playwright/test";
 import { COMPTES, COMPTES_ABSENTS, ouvrirPageProjet, ouvrirSession, PHASE, violations } from "./aide";
 
 const NOM = "Projet E2E zones";
+const COMMUNE = "Commune E2E";
 const VILLAGE = "Village E2E";
+const QUARTIER = "Quartier E2E";
+const LIEU_QUARTIER = `${QUARTIER}, ${VILLAGE}, ${COMMUNE}`;
 const URL_SUPABASE = process.env.VITE_SUPABASE_URL;
 const CLE = process.env.VITE_SUPABASE_ANON_KEY;
 const ANNEE = new Date().getFullYear();
@@ -105,7 +109,7 @@ async function ouvrirProjet(page: Page) {
 }
 
 test.describe("localités, zones d'intervention et carte", () => {
-  test("éditeur : zones du référentiel de Yoff, localité de l'organisation, carte", async ({ browser }) => {
+  test("éditeur : aucune localité préchargée, hiérarchie créée par l'organisation, carte", async ({ browser }) => {
     test.skip(quotaPlein, "quota de projets plein : supprimer les projets de test (e2e/README.md)");
     const { contexte, page } = await ouvrirSession(browser, "editeur");
     const refusesParLaPolitique: string[] = [];
@@ -114,39 +118,60 @@ test.describe("localités, zones d'intervention et carte", () => {
     });
     await ouvrirProjet(page);
     await ouvrirPageProjet(page, "Planification", "Zones");
+    // Rien n'est chargé à la place de l'organisation : ni zone, ni localité, ni référentiel.
     await expect(page.getByText("Aucune zone d’intervention")).toBeVisible();
-
-    // Le référentiel de Yoff : la commune a des coordonnées sourcées, ses quartiers n'en ont pas.
+    await expect(page.getByText(/Votre organisation n’a pas encore de localité/)).toBeVisible();
     await page.getByRole("button", { name: "Ajouter une zone" }).first().click();
     let tiroir = page.getByRole("dialog");
-    await expect(tiroir.getByRole("button", { name: "Ajouter : Région de Dakar" })).toBeVisible();
-    await expect(tiroir.getByText("Référentiel").first()).toBeVisible();
-    await tiroir.getByLabel("Rechercher une localité").fill("yoff");
-    await tiroir.getByRole("button", { name: "Ajouter : Commune de Yoff" }).click();
-    await expect(page.getByText("Zone ajoutée.").first()).toBeVisible();
-    await expect(tiroir.getByText("Déjà une zone")).toBeVisible();
-    // Sans accents : « layene » trouve « Layène ».
-    await tiroir.getByLabel("Rechercher une localité").fill("layene");
-    await tiroir.getByRole("button", { name: "Ajouter : Layène" }).click();
-    // Derrière la fenêtre ouverte, la liste est masquée aux requêtes par rôle : on le lit dans la fenêtre.
-    await expect(tiroir.getByText("Déjà une zone")).toHaveCount(1);
-    await tiroir.getByLabel("Rechercher une localité").fill("");
-    await expect(tiroir.getByText("Déjà une zone")).toHaveCount(2);
+    await expect(tiroir.getByText("Votre organisation n’a pas encore de localité à choisir.")).toBeVisible();
+    await expect(tiroir.getByText("Référentiel")).toHaveCount(0);
     await tiroir.getByRole("button", { name: "Fermer" }).first().click();
     await expect(page.getByRole("dialog")).toHaveCount(0);
 
-    const yoff = page.getByRole("heading", { level: 2, name: "Commune de Yoff" }).locator("xpath=ancestor::li[1]");
-    await expect(yoff).toContainText("Référentiel");
-    await expect(yoff).toContainText("14,760358 N, 17,468149 O");
-    await expect(yoff).toContainText("Arrondissement des Almadies, Département de Dakar, Région de Dakar");
-    const layene = page.getByRole("heading", { level: 2, name: "Layène" }).locator("xpath=ancestor::li[1]");
-    await expect(layene).toContainText("Sans coordonnées : absente de la carte");
+    // La commune, sans parent, avec ses coordonnées : elle devient aussitôt une zone du projet.
+    await page.getByRole("button", { name: "Créer une localité" }).first().click();
+    tiroir = page.getByRole("dialog");
+    await tiroir.getByLabel("Nom", { exact: true }).fill(COMMUNE);
+    await tiroir.getByLabel("Niveau").selectOption({ label: "Commune" });
+    await tiroir.getByLabel(/^Latitude/).fill("14,7604");
+    await tiroir.getByLabel(/^Longitude/).fill("−17,4681");
+    await tiroir.getByLabel(/^Source des coordonnées/).fill("Relevé de test E2E");
+    await tiroir.getByRole("button", { name: "Ajouter" }).click();
+    await expect(page.getByText("Localité ajoutée.").first()).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: COMMUNE })).toBeVisible();
 
-    // La carte : un repère pour Yoff seulement, avec le fond OpenStreetMap et son attribution.
+    // Le village, rattaché à la commune, avec ses coordonnées.
+    await page.getByRole("button", { name: "Créer une localité" }).first().click();
+    tiroir = page.getByRole("dialog");
+    await tiroir.getByLabel("Nom", { exact: true }).fill(VILLAGE);
+    await tiroir.getByLabel("Niveau").selectOption({ label: "Village" });
+    await tiroir.getByLabel(/^Rattachée à/).selectOption({ label: `${COMMUNE} (Commune)` });
+    await tiroir.getByLabel(/^Latitude/).fill("14,7700");
+    await tiroir.getByLabel(/^Longitude/).fill("−17,4700");
+    await tiroir.getByLabel(/^Source des coordonnées/).fill("Relevé de test E2E");
+    await tiroir.getByRole("button", { name: "Ajouter" }).click();
+    await expect(page.getByRole("heading", { level: 2, name: VILLAGE })).toBeVisible();
+
+    // Le quartier, sans coordonnées : utilisable, mais absent de la carte (aucune coordonnée n'est inventée).
+    await page.getByRole("button", { name: "Créer une localité" }).first().click();
+    tiroir = page.getByRole("dialog");
+    await tiroir.getByLabel("Nom", { exact: true }).fill(QUARTIER);
+    await tiroir.getByLabel("Niveau").selectOption({ label: "Quartier" });
+    await tiroir.getByLabel(/^Rattachée à/).selectOption({ label: `${VILLAGE}, ${COMMUNE} (Village)` });
+    await tiroir.getByRole("button", { name: "Ajouter" }).click();
+    const quartier = page.getByRole("heading", { level: 2, name: QUARTIER }).locator("xpath=ancestor::li[1]");
+    await expect(quartier).toBeVisible();
+    await expect(quartier).toContainText("Sans coordonnées : absente de la carte");
+    await expect(quartier).toContainText(`${VILLAGE}, ${COMMUNE}`);
+    await expect(page.getByRole("heading", { level: 2, name: COMMUNE }).locator("xpath=ancestor::li[1]")).toContainText(
+      "14,7604 N, 17,4681 O",
+    );
+
+    // La carte : un repère par zone qui a des coordonnées, avec le fond OpenStreetMap et son attribution.
     const carte = page.getByRole("region", { name: /Carte des zones d’intervention du projet/ });
     await expect(carte).toBeVisible();
-    await expect(page.locator('.leaflet-marker-icon[title="Commune de Yoff"]')).toBeVisible();
-    await expect(page.locator(".leaflet-marker-icon")).toHaveCount(1);
+    await expect(page.locator(`.leaflet-marker-icon[title="${COMMUNE}"]`)).toBeVisible();
+    await expect(page.locator(".leaflet-marker-icon")).toHaveCount(2);
     await expect(page.getByText("1 zone sans coordonnées n’apparaît pas sur la carte.")).toBeVisible();
     await expect(carte.getByRole("link", { name: "les contributeurs d’OpenStreetMap" })).toHaveAttribute(
       "href",
@@ -158,36 +183,17 @@ test.describe("localités, zones d'intervention et carte", () => {
       .evaluateAll((i) => i.map((e) => (e as HTMLImageElement).src));
     for (const src of tuiles) expect(src).toMatch(/^https:\/\/tile\.openstreetmap\.org\/\d+\/\d+\/\d+\.png$/);
     // Le repère s'atteint au clavier et ouvre une fenêtre de texte.
-    await page.locator('.leaflet-marker-icon[title="Commune de Yoff"]').focus();
+    await page.locator(`.leaflet-marker-icon[title="${COMMUNE}"]`).focus();
     await page.keyboard.press("Enter");
-    await expect(page.locator(".leaflet-popup-content")).toContainText("Commune de Yoff");
+    await expect(page.locator(".leaflet-popup-content")).toContainText(COMMUNE);
 
-    // Une localité propre à l'organisation, rattachée à la commune, avec ses coordonnées : elle devient une zone.
+    // Un même nom sous un même parent est refusé, sans tenir compte de la casse.
     await page.getByRole("button", { name: "Créer une localité" }).first().click();
     tiroir = page.getByRole("dialog");
-    await tiroir.getByLabel("Nom", { exact: true }).fill(VILLAGE);
-    await tiroir.getByLabel("Niveau").selectOption({ label: "Village" });
-    await tiroir
-      .getByLabel(/^Rattachée à/)
-      .selectOption({ label: "Commune de Yoff, Arrondissement des Almadies (Commune)" });
-    await tiroir.getByLabel(/^Latitude/).fill("14,7700");
-    await tiroir.getByLabel(/^Longitude/).fill("−17,4700");
-    await tiroir.getByLabel(/^Source des coordonnées/).fill("Relevé de test E2E");
+    await tiroir.getByLabel("Nom", { exact: true }).fill(COMMUNE.toLowerCase());
+    await tiroir.getByLabel("Niveau").selectOption({ label: "Commune" });
     await tiroir.getByRole("button", { name: "Ajouter" }).click();
-    await expect(page.getByText("Localité ajoutée.").first()).toBeVisible();
-    await expect(page.getByRole("heading", { level: 2, name: VILLAGE })).toBeVisible();
-    await expect(page.locator(".leaflet-marker-icon")).toHaveCount(2);
-
-    // Le référentiel n'est pas recréé : une localité du référentiel de même nom et de même parent est refusée.
-    await page.getByRole("button", { name: "Créer une localité" }).first().click();
-    tiroir = page.getByRole("dialog");
-    await tiroir.getByLabel("Nom", { exact: true }).fill("Layène");
-    await tiroir.getByLabel("Niveau").selectOption({ label: "Quartier" });
-    await tiroir
-      .getByLabel(/^Rattachée à/)
-      .selectOption({ label: "Village traditionnel de Yoff, Commune de Yoff (Village)" });
-    await tiroir.getByRole("button", { name: "Ajouter" }).click();
-    await expect(page.getByText(/existe déjà dans le référentiel de la plateforme/).first()).toBeVisible();
+    await expect(page.getByText("Une localité de ce nom existe déjà au même endroit.").first()).toBeVisible();
     // Une latitude hors limites est refusée avant tout envoi.
     await tiroir.getByLabel("Nom", { exact: true }).fill("Autre village E2E");
     await tiroir.getByLabel(/^Latitude/).fill("95");
@@ -210,47 +216,47 @@ test.describe("localités, zones d'intervention et carte", () => {
     await ouvrirPageProjet(page, "Mise en œuvre", "Réalisations");
     await page.getByRole("button", { name: "Ajouter une réalisation" }).first().click();
     const tiroir = page.getByRole("dialog");
-    await tiroir.getByLabel("Intitulé").fill("Forage de Layène E2E");
+    await tiroir.getByLabel("Intitulé").fill("Forage du quartier E2E");
     const choix = tiroir.getByLabel(/^Localité/);
     // Seules les zones du projet sont proposées.
     await expect(choix.locator("option")).toHaveText([
       "Aucune localité précisée",
-      "Commune de Yoff, Arrondissement des Almadies, Département de Dakar",
-      "Layène, Village traditionnel de Yoff, Commune de Yoff",
-      `${VILLAGE}, Commune de Yoff, Arrondissement des Almadies`,
+      COMMUNE,
+      LIEU_QUARTIER,
+      `${VILLAGE}, ${COMMUNE}`,
     ]);
-    await choix.selectOption({ label: "Layène, Village traditionnel de Yoff, Commune de Yoff" });
+    await choix.selectOption({ label: LIEU_QUARTIER });
     await tiroir.getByRole("button", { name: "Enregistrer la réalisation" }).click();
     await expect(page.getByText("Réalisation enregistrée.").first()).toBeVisible();
-    await expect(page.getByText("Layène, Village traditionnel de Yoff").first()).toBeVisible();
+    await expect(page.getByText(LIEU_QUARTIER).first()).toBeVisible();
 
     await ouvrirPageProjet(page, "Pilotage", "Saisie");
     await page.getByLabel(/^Valeur/).fill("7");
-    await page.getByLabel(/^Localité/).selectOption({ label: "Layène, Village traditionnel de Yoff, Commune de Yoff" });
+    await page.getByLabel(/^Localité/).selectOption({ label: LIEU_QUARTIER });
     await page.getByRole("button", { name: "Enregistrer" }).click();
     await expect(page.getByText(/Valeur enregistrée/).first()).toBeVisible();
     const historique = page.getByRole("table");
     await expect(historique.getByRole("columnheader", { name: "Localité" })).toBeVisible();
-    await expect(historique).toContainText("Layène, Village traditionnel de Yoff");
+    await expect(historique).toContainText(LIEU_QUARTIER);
 
-    // L'usage par zone : une saisie et une réalisation à Layène.
+    // L'usage par zone : une saisie et une réalisation dans le quartier.
     await ouvrirPageProjet(page, "Planification", "Zones");
-    const layene = page.getByRole("heading", { level: 2, name: "Layène" }).locator("xpath=ancestor::li[1]");
-    await expect(layene).toContainText("1 saisie · 1 réalisation");
+    const quartier = page.getByRole("heading", { level: 2, name: QUARTIER }).locator("xpath=ancestor::li[1]");
+    await expect(quartier).toContainText("1 saisie · 1 réalisation");
 
     // Retirer la zone laisse la réalisation et la saisie rattachées.
-    await page.getByRole("button", { name: "Actions pour la zone Layène" }).click();
+    await page.getByRole("button", { name: `Actions pour la zone ${QUARTIER}` }).click();
     await page.getByRole("menuitem", { name: "Retirer des zones" }).click();
     await expect(page.getByRole("dialog").getByText(/gardent/)).toBeVisible();
     await page.getByRole("dialog").getByRole("button", { name: "Retirer" }).click();
     await expect(page.getByText("Zone retirée.").first()).toBeVisible();
-    await expect(page.getByRole("heading", { level: 2, name: "Layène" })).toHaveCount(0);
+    await expect(page.getByRole("heading", { level: 2, name: QUARTIER })).toHaveCount(0);
     await ouvrirPageProjet(page, "Mise en œuvre", "Réalisations");
-    await expect(page.getByText("Layène, Village traditionnel de Yoff").first()).toBeVisible();
+    await expect(page.getByText(LIEU_QUARTIER).first()).toBeVisible();
     await contexte.close();
   });
 
-  test("éditeur : gérer les localités de l'organisation, suppression refusée tant qu'une zone s'en sert", async ({
+  test("éditeur : gérer les localités de l'organisation, suppression refusée tant qu'une localité sert ou contient d'autres localités", async ({
     browser,
   }) => {
     test.skip(quotaPlein, "quota de projets plein : parcours non exécuté");
@@ -261,20 +267,19 @@ test.describe("localités, zones d'intervention et carte", () => {
       .getByRole("link", { name: "Localités" })
       .click();
     await expect(page.getByRole("heading", { level: 1, name: "Localités" })).toBeVisible();
-    await expect(page.getByText(/vous pouvez les utiliser, pas les modifier/)).toBeVisible();
-    // Le référentiel (12 localités de Yoff) plus celle de l'organisation ; seule celle-ci a un menu d'actions.
+    // Aucun référentiel : pas d'explication à son sujet, aucune étiquette « Référentiel », et toutes les localités sont les siennes.
+    await expect(page.getByText(/vous pouvez les utiliser, pas les modifier/)).toHaveCount(0);
+    await expect(page.getByText("Référentiel", { exact: true })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /^Actions pour la localité/ })).toHaveCount(3);
     const village = page
       .getByRole("heading", { level: 2, name: new RegExp(`^${VILLAGE}`) })
       .locator("xpath=ancestor::li[1]");
     await expect(village).toContainText("Votre organisation");
     await expect(village).toContainText("14,7700 N, 17,4700 O");
     await expect(village).toContainText("Source : Relevé de test E2E");
-    await expect(page.getByRole("button", { name: /^Actions pour la localité/ })).toHaveCount(1);
-    await page.getByLabel("Rechercher une localité").fill("tonghor");
-    await expect(page.getByRole("heading", { level: 2, name: /^Tonghor/ })).toBeVisible();
-    await expect(
-      page.getByText("Village traditionnel de Yoff, Commune de Yoff, Arrondissement des Almadies"),
-    ).toBeVisible();
+    await page.getByLabel("Rechercher une localité").fill("quartier");
+    await expect(page.getByRole("heading", { level: 2, name: new RegExp(`^${QUARTIER}`) })).toBeVisible();
+    await expect(page.getByText(`${VILLAGE}, ${COMMUNE}`)).toBeVisible();
     await page.getByLabel("Rechercher une localité").fill("");
 
     // Modifier le nom et les coordonnées.
@@ -287,14 +292,14 @@ test.describe("localités, zones d'intervention et carte", () => {
     await expect(page.getByText("Localité modifiée.").first()).toBeVisible();
     await expect(page.getByRole("heading", { level: 2, name: new RegExp(`^${VILLAGE} renommé`) })).toBeVisible();
 
-    // Elle est encore une zone du projet : la suppression est refusée, et le dit.
+    // Elle est encore une zone du projet et contient un quartier : la suppression est refusée, et le dit.
     await page.getByRole("button", { name: `Actions pour la localité ${VILLAGE} renommé` }).click();
     await page.getByRole("menuitem", { name: "Supprimer" }).click();
     await page.getByRole("dialog").getByRole("button", { name: "Supprimer" }).click();
     await expect(page.getByText(/utilisé ailleurs/).first()).toBeVisible();
     await page.getByRole("dialog").getByRole("button", { name: "Annuler" }).click();
 
-    // Une fois retirée des zones, elle se supprime.
+    // Une fois retirée des zones, elle reste protégée par le quartier qu'elle contient.
     await ouvrirProjet(page);
     await ouvrirPageProjet(page, "Planification", "Zones");
     await page.getByRole("button", { name: `Actions pour la zone ${VILLAGE} renommé` }).click();
@@ -305,8 +310,19 @@ test.describe("localités, zones d'intervention et carte", () => {
     await page.getByRole("button", { name: `Actions pour la localité ${VILLAGE} renommé` }).click();
     await page.getByRole("menuitem", { name: "Supprimer" }).click();
     await page.getByRole("dialog").getByRole("button", { name: "Supprimer" }).click();
+    await expect(page.getByText(/utilisé ailleurs/).first()).toBeVisible();
+    await page.getByRole("dialog").getByRole("button", { name: "Annuler" }).click();
+
+    // Une localité que rien n'utilise se supprime.
+    await page.getByRole("button", { name: "Ajouter une localité" }).first().click();
+    await page.getByRole("dialog").getByLabel("Nom", { exact: true }).fill("Hameau E2E");
+    await page.getByRole("dialog").getByRole("button", { name: "Ajouter" }).click();
+    await expect(page.getByText("Localité ajoutée.").first()).toBeVisible();
+    await page.getByRole("button", { name: "Actions pour la localité Hameau E2E" }).click();
+    await page.getByRole("menuitem", { name: "Supprimer" }).click();
+    await page.getByRole("dialog").getByRole("button", { name: "Supprimer" }).click();
     await expect(page.getByText("Localité supprimée.").first()).toBeVisible();
-    await expect(page.getByRole("heading", { level: 2, name: new RegExp(VILLAGE) })).toHaveCount(0);
+    await expect(page.getByRole("heading", { level: 2, name: /^Hameau E2E/ })).toHaveCount(0);
     await contexte.close();
   });
 
@@ -315,14 +331,14 @@ test.describe("localités, zones d'intervention et carte", () => {
     const { contexte, page } = await ouvrirSession(browser, "lecteur");
     await ouvrirProjet(page);
     await ouvrirPageProjet(page, "Planification", "Zones");
-    await expect(page.getByRole("heading", { level: 2, name: "Commune de Yoff" })).toBeVisible();
-    await expect(page.locator('.leaflet-marker-icon[title="Commune de Yoff"]')).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: COMMUNE })).toBeVisible();
+    await expect(page.locator(`.leaflet-marker-icon[title="${COMMUNE}"]`)).toBeVisible();
     await expect(page.getByRole("button", { name: "Ajouter une zone" })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Créer une localité" })).toHaveCount(0);
     await expect(page.getByRole("button", { name: /^Actions pour la zone/ })).toHaveCount(0);
     await expect(page.getByText(/Votre rôle est en lecture seule/)).toBeVisible();
     await page.goto("/app/localites");
-    await expect(page.getByRole("heading", { level: 2, name: /^Commune de Yoff/ })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: new RegExp(`^${COMMUNE}`) })).toBeVisible();
     await expect(page.getByRole("button", { name: "Ajouter une localité" })).toHaveCount(0);
     await expect(page.getByRole("button", { name: /^Actions pour la localité/ })).toHaveCount(0);
     await contexte.close();
@@ -339,8 +355,9 @@ test.describe("localités, zones d'intervention et carte", () => {
       const anonyme = await request.get(`${URL_SUPABASE}/rest/v1/localites?select=id`, { headers: { apikey: CLE! } });
       expect(anonyme.status(), "anonyme : aucune lecture").toBeGreaterThanOrEqual(401);
 
+      // Aucune localité n'est livrée avec la plateforme : le référentiel est vide.
       const lecture = await lecteur.lire<{ id: string; org_id: string | null }[]>("localites?select=id,org_id");
-      expect(lecture.filter((l) => l.org_id === null)).toHaveLength(12);
+      expect(lecture.filter((l) => l.org_id === null)).toHaveLength(0);
 
       const refus = await lecteur.ecrire("post", "localites", { org_id: orgId, niveau: "village", nom: "Intrus E2E" });
       expect(refus.status(), "lecteur : pas de création").toBe(403);
@@ -353,16 +370,14 @@ test.describe("localités, zones d'intervention et carte", () => {
         source: "inventé",
       });
       expect(faux.status(), "éditeur : pas d'écriture dans le référentiel").toBe(403);
-      const yoff = (
-        await editeur.lire<{ id: string; nom: string }[]>("localites?select=id,nom&nom=eq.Commune%20de%20Yoff")
-      )[0]!;
-      const modification = await editeur.ecrire("patch", `localites?id=eq.${yoff.id}`, { nom: "Piraté" });
-      expect(await modification.json(), "aucune ligne du référentiel n'est modifiée").toEqual([]);
-      const suppression = await editeur.ecrire("delete", `localites?id=eq.${yoff.id}`);
-      expect(await suppression.json(), "aucune ligne du référentiel n'est supprimée").toEqual([]);
-      expect((await editeur.lire<{ nom: string }[]>(`localites?select=nom&id=eq.${yoff.id}`))[0]!.nom).toBe(
-        "Commune de Yoff",
-      );
+      // Une commune de l'organisation sert de parent aux contrôles suivants.
+      const commune = await editeur.ecrire("post", "localites", {
+        org_id: orgId,
+        niveau: "commune",
+        nom: "Parent E2E",
+      });
+      expect(commune.ok(), await commune.text()).toBe(true);
+      const parentId = ((await commune.json()) as { id: string }[])[0]!.id;
 
       // Niveau et parent d'une localité ne changent plus.
       const creation = await editeur.ecrire("post", "localites", { org_id: orgId, niveau: "village", nom: "Fixe E2E" });
@@ -373,13 +388,13 @@ test.describe("localités, zones d'intervention et carte", () => {
         "niveau figé",
       ).toBe(403);
       expect(
-        (await editeur.ecrire("patch", `localites?id=eq.${id}`, { parent_id: yoff.id })).status(),
+        (await editeur.ecrire("patch", `localites?id=eq.${id}`, { parent_id: parentId })).status(),
         "parent figé",
       ).toBe(403);
       // Un enfant n'est pas de niveau supérieur à son parent.
       const incoherent = await editeur.ecrire("post", "localites", {
         org_id: orgId,
-        parent_id: yoff.id,
+        parent_id: parentId,
         niveau: "region",
         nom: "Région sous une commune E2E",
       });
@@ -395,6 +410,7 @@ test.describe("localités, zones d'intervention et carte", () => {
       expect(hors.status()).toBe(400);
       expect(await hors.text()).toContain("LOCALITE_HORS_PROJET");
       expect((await editeur.ecrire("delete", `localites?id=eq.${id}`)).ok()).toBe(true);
+      expect((await editeur.ecrire("delete", `localites?id=eq.${parentId}`)).ok()).toBe(true);
     } finally {
       await request.dispose();
     }

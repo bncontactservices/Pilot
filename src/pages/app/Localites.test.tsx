@@ -80,6 +80,45 @@ beforeEach(() => {
 });
 
 describe("Localités de l'organisation", () => {
+  it("ne charge aucune localité à la place de l'organisation : état vide, et création de la première", async () => {
+    base.tables.localites = [];
+    monter();
+    expect(await screen.findByText("Aucune localité pour le moment")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Rechercher une localité")).not.toBeInTheDocument();
+    expect(screen.queryByText(/vous pouvez les utiliser, pas les modifier/)).not.toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: "Ajouter une localité" }).length).toBeGreaterThan(0);
+    fireEvent.click(screen.getAllByRole("button", { name: "Ajouter une localité" })[0]!);
+    const dialogue = await screen.findByRole("dialog");
+    fireEvent.change(within(dialogue).getByLabelText("Nom"), { target: { value: "Village de Test" } });
+    fireEvent.click(within(dialogue).getByRole("button", { name: "Ajouter" }));
+    await waitFor(() => {
+      const appel = base.appels.find((a) => a.table === "localites" && a.operation === "insert");
+      expect(appel?.valeurs).toMatchObject({
+        org_id: "o1",
+        nom: "Village de Test",
+        niveau: "village",
+        parent_id: null,
+      });
+    });
+  });
+
+  it("à un lecteur, dit que rien n'est encore renseigné, sans bouton de création", async () => {
+    base.tables.localites = [];
+    monter("lecteur");
+    expect(await screen.findByText("Aucune localité pour le moment")).toBeInTheDocument();
+    expect(screen.getByText("Votre organisation n’a pas encore renseigné de localité.")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Ajouter une localité" })).not.toBeInTheDocument();
+  });
+
+  it("n'explique le référentiel que s'il y en a un : des localités propres seules n'en parlent pas", async () => {
+    base.tables.localites = [
+      localite("p", "Village de l’organisation", "village", null, { org_id: "o1", source: null }),
+    ];
+    monter();
+    await screen.findByRole("heading", { name: /Village de l’organisation/ });
+    expect(screen.queryByText(/vous pouvez les utiliser, pas les modifier/)).not.toBeInTheDocument();
+  });
+
   it("montre la hiérarchie, l'origine de chaque localité, ses coordonnées et sa source", async () => {
     donnees();
     monter();

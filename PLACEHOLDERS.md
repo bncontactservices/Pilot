@@ -183,10 +183,8 @@ Sauvegardez ou remettez d'abord à l'administrateur l'export de ses données si 
 
 | Élément | État |
 |---|---|
-| Référentiel de la plateforme | **Yoff seulement** : région, département, arrondissement, commune, village traditionnel et ses sept quartiers (12 lignes, chacune avec sa source). Le reste du Sénégal n'est pas chargé : il faudra un jeu de données complet, daté et sourcé |
-| Coordonnées | Seule la commune de Yoff en a (OpenStreetMap, recoupé avec le plan communal). Les quartiers n'en ont pas, aucune n'est inventée |
-| Population de Yoff | Non stockée : 119 351 (recensement 2023, via citypopulation.de qui cite l'ANSD) contre 118 220 (projection du plan communal) ; le rapport ANSD n'a pas pu être lu |
-| Localités de l'organisation | Autorisées (admins et éditeurs) : c'est ce qui rend la fonction utile hors de Yoff |
+| Référentiel de la plateforme | **Vide, volontairement** : aucune localité n'est préchargée (le référentiel de Yoff livré d'abord a été retiré, `DECISIONS.md` §32). Le mécanisme existe encore (lignes sans organisation, lecture seule pour le client) : il ne servirait qu'à charger plus tard un jeu de données complet, daté et sourcé |
+| Localités de l'organisation | Créées par les admins et éditeurs (nom, niveau, rattachement, coordonnées et source facultatives) : c'est la seule source de localités. Le projet exemple n'a plus de zone |
 | Fond de carte | OpenStreetMap (gratuit, usage raisonnable, sans garantie). Pour un fournisseur sous contrat : `VITE_CARTE_TUILES_URL` **et** `img-src` dans `vercel.json` |
 | Politique de confidentialité | Dit que la carte charge des images depuis OpenStreetMap (adresse IP visible). À faire relire avec le reste par un juriste |
 

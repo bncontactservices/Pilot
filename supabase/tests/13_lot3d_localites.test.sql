@@ -60,33 +60,40 @@ insert into public.projects (id, org_id, nom, date_debut, date_fin) values
   (tests.id('p2'),  tests.id('org2'), 'Projet Beta',    '2026-01-01', '2026-12-31');
 insert into public.kpis (id, project_id, nom, cible) values (tests.id('k1'), tests.id('p1'), 'Indicateur Alpha', 100);
 
--- Le référentiel est chargé par la migration : on en retient quelques repères.
-insert into tests.ids select 'yoff', id from public.localites where org_id is null and nom = 'Commune de Yoff';
-insert into tests.ids select 'village', id from public.localites where org_id is null and nom = 'Village traditionnel de Yoff';
-insert into tests.ids select 'tonghor', id from public.localites where org_id is null and nom = 'Tonghor';
+select plan(68);
+
+-- Aucune localité n'est livrée avec la plateforme ---------------------------------------------------
+select is((select count(*) from public.localites), 0::bigint, 'aucune localité préchargée : les organisations renseignent les leurs');
+select is((select count(*) from public.localites where org_id is null), 0::bigint, 'aucune ligne dans le référentiel de la plateforme');
+select hasnt_function('private', 'charger_contenu_exemple_lot3d', array['uuid'], 'le projet exemple n''est plus rattaché d''office à une localité');
+
+-- Le mécanisme du référentiel reste : on charge ici, comme la plateforme le ferait, trois lignes de test sourcées.
+insert into public.localites (niveau, nom, source) values ('region', 'Region de reference', 'Source de test');
+insert into public.localites (parent_id, niveau, nom, latitude, longitude, source)
+select id, 'commune', 'Commune de reference', 14.5, -17.5, 'Source de test' from public.localites where nom = 'Region de reference';
+insert into public.localites (parent_id, niveau, nom, source)
+select id, 'village', 'Village de reference', 'Source de test' from public.localites where nom = 'Commune de reference';
+insert into public.localites (parent_id, niveau, nom, source)
+select id, 'quartier', 'Quartier de reference', 'Source de test' from public.localites where nom = 'Village de reference';
+insert into tests.ids select 'commune', id from public.localites where org_id is null and nom = 'Commune de reference';
+insert into tests.ids select 'villageref', id from public.localites where org_id is null and nom = 'Village de reference';
+insert into tests.ids select 'quartierref', id from public.localites where org_id is null and nom = 'Quartier de reference';
 insert into public.localites (id, org_id, parent_id, niveau, nom) values
-  (tests.id('l1'), tests.id('org1'), tests.id('yoff'), 'village', 'Village test Alpha'),
-  (tests.id('l2'), tests.id('org2'), tests.id('yoff'), 'village', 'Village test Beta');
+  (tests.id('l1'), tests.id('org1'), tests.id('commune'), 'village', 'Village test Alpha'),
+  (tests.id('l2'), tests.id('org2'), tests.id('commune'), 'village', 'Village test Beta');
 
-select plan(73);
-
--- Référentiel de la plateforme : Yoff ---------------------------------------------------
-select is((select count(*) from public.localites where org_id is null), 12::bigint, 'référentiel : douze localités (hiérarchie de Yoff et ses sept quartiers)');
-select is((select latitude from public.localites where id = tests.id('yoff')), 14.760358::numeric, 'référentiel : latitude de la commune de Yoff (OpenStreetMap)');
-select is((select longitude from public.localites where id = tests.id('yoff')), -17.468149::numeric, 'référentiel : longitude de la commune de Yoff');
-select is((select p.nom from public.localites p where p.id = (select parent_id from public.localites where id = tests.id('yoff'))), 'Arrondissement des Almadies', 'référentiel : Yoff est dans l''arrondissement des Almadies');
-select is((select count(*) from public.localites where org_id is null and parent_id is null), 1::bigint, 'référentiel : une seule racine (la région de Dakar)');
-select is((select count(*) from public.localites where org_id is null and niveau = 'quartier' and parent_id = tests.id('village')), 7::bigint, 'référentiel : sept quartiers sous le village traditionnel');
-select is((select count(*) from public.localites where niveau = 'quartier' and org_id is null and (latitude is not null or longitude is not null)), 0::bigint, 'référentiel : aucune coordonnée inventée pour les quartiers');
+-- Référentiel de la plateforme (lignes de test) ------------------------------------------------------
+select is((select count(*) from public.localites where org_id is null), 4::bigint, 'référentiel : quatre lignes de test');
 select is((select count(*) from public.localites where org_id is null and (source is null or source = '')), 0::bigint, 'référentiel : chaque ligne a sa source');
+select throws_ok($$ insert into public.localites (niveau, nom) values ('region', 'Sans source') $$, '23514', null, 'référentiel : une ligne sans source est refusée');
 
 -- Lecture : le référentiel et sa propre organisation ----------------------------------------------
 select tests.connecter(tests.id('lecteur1'));
-select is((select count(*) from public.localites), 13::bigint, 'lecteur : lit le référentiel et les localités de son organisation');
+select is((select count(*) from public.localites), 5::bigint, 'lecteur : lit le référentiel et les localités de son organisation');
 select is((select count(*) from public.localites where org_id = tests.id('org2')), 0::bigint, 'lecteur : ne voit pas les localités d''une autre organisation');
 select throws_ok($$ insert into public.localites (org_id, niveau, nom) values (tests.id('org1'), 'village', 'Intrus') $$, '42501', null, 'lecteur : ne crée pas de localité');
 select lives_ok($$ update public.localites set nom = 'Piraté'; delete from public.localites $$, 'lecteur : modifier ou supprimer ne touche aucune ligne');
-select is((select count(*) from public.localites), 13::bigint, 'lecteur : localités intactes');
+select is((select count(*) from public.localites), 5::bigint, 'lecteur : localités intactes');
 select tests.deconnecter();
 
 select tests.anonyme();
@@ -96,16 +103,16 @@ select tests.deconnecter();
 -- Localités d'une organisation : écriture par admin et éditeur ----------------------------------------
 select tests.connecter(tests.id('editeur1'));
 select lives_ok($$ insert into public.localites (org_id, parent_id, niveau, nom, latitude, longitude, source)
-                   values (tests.id('org1'), tests.id('yoff'), 'village', 'Village test Gamma', 14.7650, -17.4700, 'Relevé GPS du 12 mars') $$,
+                   values (tests.id('org1'), tests.id('commune'), 'village', 'Village test Gamma', 14.7650, -17.4700, 'Relevé GPS du 12 mars') $$,
   'éditeur : ajoute un village sous une commune du référentiel, avec ses coordonnées');
 select is((select created_by from public.localites where nom = 'Village test Gamma'), tests.id('editeur1'), 'l''auteur est renseigné');
 select throws_ok($$ insert into public.localites (org_id, niveau, nom, source) values (null, 'village', 'Faux référentiel', 'inventé') $$,
   '42501', null, 'le client ne peut pas écrire dans le référentiel de la plateforme');
 select throws_ok($$ insert into public.localites (org_id, niveau, nom) values (tests.id('org2'), 'village', 'Chez les autres') $$,
   '42501', null, 'on n''ajoute pas de localité à une autre organisation');
-select throws_ok($$ insert into public.localites (org_id, parent_id, niveau, nom) values (tests.id('org1'), tests.id('yoff'), 'village', 'VILLAGE TEST ALPHA') $$,
+select throws_ok($$ insert into public.localites (org_id, parent_id, niveau, nom) values (tests.id('org1'), tests.id('commune'), 'village', 'VILLAGE TEST ALPHA') $$,
   '23505', null, 'un nom n''existe qu''une fois sous un même parent, sans tenir compte de la casse');
-select throws_ok($$ insert into public.localites (org_id, parent_id, niveau, nom) values (tests.id('org1'), tests.id('village'), 'quartier', 'layène') $$,
+select throws_ok($$ insert into public.localites (org_id, parent_id, niveau, nom) values (tests.id('org1'), tests.id('villageref'), 'quartier', 'QUARTIER DE REFERENCE') $$,
   'P0001', 'LOCALITE_EXISTE', 'une organisation ne recrée pas une localité du référentiel');
 select throws_ok($$ insert into public.localites (org_id, niveau, nom, latitude) values (tests.id('org1'), 'village', 'Latitude seule', 14.7) $$,
   '23514', null, 'les coordonnées vont par paire');
@@ -115,18 +122,18 @@ select throws_ok($$ insert into public.localites (org_id, niveau, nom, latitude,
   '23514', null, 'la longitude reste entre -180 et 180');
 select throws_ok($$ insert into public.localites (org_id, parent_id, niveau, nom) values (tests.id('org1'), tests.id('l2'), 'quartier', 'Enfant d''ailleurs') $$,
   'P0001', 'LOCALITE_PARENT_INVALIDE', 'le parent d''une autre organisation est refusé');
-select throws_ok($$ insert into public.localites (org_id, parent_id, niveau, nom) values (tests.id('org1'), tests.id('yoff'), 'region', 'Région sous une commune') $$,
+select throws_ok($$ insert into public.localites (org_id, parent_id, niveau, nom) values (tests.id('org1'), tests.id('commune'), 'region', 'Région sous une commune') $$,
   'P0001', 'LOCALITE_NIVEAU_INVALIDE', 'un enfant a un niveau inférieur à celui de son parent');
 select lives_ok($$ insert into public.localites (org_id, niveau, nom) values (tests.id('org1'), 'village', 'Village isolé') $$,
   'un village peut n''avoir aucun parent (hors du référentiel)');
 select lives_ok($$ update public.localites set nom = 'Village test Alpha 2', latitude = 14.77, longitude = -17.47, source = 'Relevé GPS' where id = tests.id('l1') $$,
   'éditeur : corrige le nom et les coordonnées d''une localité de son organisation');
 select throws_ok($$ update public.localites set niveau = 'quartier' where id = tests.id('l1') $$, '42501', null, 'le niveau ne se change pas');
-select throws_ok($$ update public.localites set parent_id = tests.id('village') where id = tests.id('l1') $$, '42501', null, 'le parent ne se change pas');
+select throws_ok($$ update public.localites set parent_id = tests.id('villageref') where id = tests.id('l1') $$, '42501', null, 'le parent ne se change pas');
 select lives_ok($$ update public.localites set nom = 'Piraté' where org_id is null $$, 'éditeur : tente de modifier le référentiel');
 select is((select count(*) from public.localites where nom = 'Piraté'), 0::bigint, 'le référentiel n''est pas modifiable par le client');
 select lives_ok($$ delete from public.localites where org_id is null $$, 'éditeur : tente de supprimer le référentiel');
-select is((select count(*) from public.localites where org_id is null), 12::bigint, 'le référentiel n''est pas supprimable par le client');
+select is((select count(*) from public.localites where org_id is null), 4::bigint, 'le référentiel n''est pas supprimable par le client');
 select lives_ok($$ insert into public.localites (org_id, parent_id, niveau, nom)
                    select tests.id('org1'), id, 'quartier', 'Quartier isolé' from public.localites where nom = 'Village isolé' $$,
   'éditeur : ajoute un quartier sous son village');
@@ -137,12 +144,12 @@ select tests.deconnecter();
 
 -- Zones d'intervention d'un projet ------------------------------------------------------------------
 select tests.connecter(tests.id('editeur1'));
-select lives_ok($$ insert into public.projet_localites (project_id, localite_id, notes) values (tests.id('p1'), tests.id('yoff'), 'Commune d''intervention') $$,
+select lives_ok($$ insert into public.projet_localites (project_id, localite_id, notes) values (tests.id('p1'), tests.id('commune'), 'Commune d''intervention') $$,
   'éditeur : désigne une commune du référentiel comme zone d''intervention');
-select is((select org_id from public.projet_localites where localite_id = tests.id('yoff')), tests.id('org1'), 'l''organisation est dérivée du projet');
+select is((select org_id from public.projet_localites where localite_id = tests.id('commune')), tests.id('org1'), 'l''organisation est dérivée du projet');
 select throws_ok($$ insert into public.projet_localites (project_id, localite_id) values (tests.id('p1'), tests.id('l2')) $$,
   'P0001', 'LOCALITE_INTROUVABLE', 'une localité d''une autre organisation ne peut pas être une zone');
-select throws_ok($$ insert into public.projet_localites (project_id, localite_id) values (tests.id('p1'), tests.id('yoff')) $$,
+select throws_ok($$ insert into public.projet_localites (project_id, localite_id) values (tests.id('p1'), tests.id('commune')) $$,
   '23505', null, 'une localité n''est zone d''un projet qu''une fois');
 select lives_ok($$ insert into public.projet_localites (project_id, localite_id) values (tests.id('p1'), tests.id('l1')) $$,
   'éditeur : désigne aussi une localité de son organisation');
@@ -150,34 +157,34 @@ select throws_ok($$ delete from public.localites where id = tests.id('l1') $$, '
 select tests.deconnecter();
 
 select tests.connecter(tests.id('lecteur1'));
-select throws_ok($$ insert into public.projet_localites (project_id, localite_id) values (tests.id('p1b'), tests.id('yoff')) $$, '42501', null, 'lecteur : ne désigne pas de zone');
+select throws_ok($$ insert into public.projet_localites (project_id, localite_id) values (tests.id('p1b'), tests.id('commune')) $$, '42501', null, 'lecteur : ne désigne pas de zone');
 select is((select count(*) from public.projet_localites), 2::bigint, 'lecteur : lit les zones');
 select tests.deconnecter();
 
 select tests.connecter(tests.id('admin2'));
-select throws_ok($$ insert into public.projet_localites (project_id, localite_id) values (tests.id('p1'), tests.id('tonghor')) $$,
+select throws_ok($$ insert into public.projet_localites (project_id, localite_id) values (tests.id('p1'), tests.id('quartierref')) $$,
   'P0001', 'PROJET_INTROUVABLE', 'une autre organisation ne peut pas ajouter de zone à ce projet');
 select tests.deconnecter();
 
 -- Saisies et réalisations rattachées à une localité ---------------------------------------------------
 select tests.connecter(tests.id('editeur1'));
-select lives_ok($$ insert into public.kpi_entries (kpi_id, date, valeur, localite_id) values (tests.id('k1'), '2026-03-01', 5, tests.id('yoff')) $$,
+select lives_ok($$ insert into public.kpi_entries (kpi_id, date, valeur, localite_id) values (tests.id('k1'), '2026-03-01', 5, tests.id('commune')) $$,
   'éditeur : rattache une saisie à une zone du projet');
-select throws_ok($$ insert into public.kpi_entries (kpi_id, date, valeur, localite_id) values (tests.id('k1'), '2026-03-02', 5, tests.id('tonghor')) $$,
+select throws_ok($$ insert into public.kpi_entries (kpi_id, date, valeur, localite_id) values (tests.id('k1'), '2026-03-02', 5, tests.id('quartierref')) $$,
   'P0001', 'LOCALITE_HORS_PROJET', 'une saisie ne se rattache pas à une localité qui n''est pas zone du projet');
 select throws_ok($$ insert into public.kpi_entries (kpi_id, date, valeur, localite_id) values (tests.id('k1'), '2026-03-03', 5, tests.id('l2')) $$,
   'P0001', 'LOCALITE_HORS_PROJET', 'ni à la localité d''une autre organisation');
 select lives_ok($$ insert into public.kpi_entries (kpi_id, date, valeur) values (tests.id('k1'), '2026-03-04', 6) $$, 'la localité reste facultative');
-select lives_ok($$ insert into public.realisations (project_id, date, titre, localite_id) values (tests.id('p1'), '2026-03-05', 'Forage réceptionné', tests.id('yoff')) $$,
+select lives_ok($$ insert into public.realisations (project_id, date, titre, localite_id) values (tests.id('p1'), '2026-03-05', 'Forage réceptionné', tests.id('commune')) $$,
   'éditeur : rattache une réalisation à une zone du projet');
-select throws_ok($$ insert into public.realisations (project_id, date, titre, localite_id) values (tests.id('p1'), '2026-03-06', 'Ailleurs', tests.id('tonghor')) $$,
+select throws_ok($$ insert into public.realisations (project_id, date, titre, localite_id) values (tests.id('p1'), '2026-03-06', 'Ailleurs', tests.id('quartierref')) $$,
   'P0001', 'LOCALITE_HORS_PROJET', 'une réalisation ne se rattache pas à une localité qui n''est pas zone du projet');
-select throws_ok($$ update public.kpi_entries set localite_id = tests.id('tonghor') where date = '2026-03-01' $$,
+select throws_ok($$ update public.kpi_entries set localite_id = tests.id('quartierref') where date = '2026-03-01' $$,
   'P0001', 'LOCALITE_HORS_PROJET', 'changer la localité d''une saisie est contrôlé de la même façon');
 
 -- Retirer une zone ne modifie pas les saisies déjà rattachées.
-select lives_ok($$ delete from public.projet_localites where project_id = tests.id('p1') and localite_id = tests.id('yoff') $$, 'éditeur : retire une zone d''intervention');
-select is((select count(*) from public.kpi_entries where localite_id = tests.id('yoff')) + (select count(*) from public.realisations where localite_id = tests.id('yoff')),
+select lives_ok($$ delete from public.projet_localites where project_id = tests.id('p1') and localite_id = tests.id('commune') $$, 'éditeur : retire une zone d''intervention');
+select is((select count(*) from public.kpi_entries where localite_id = tests.id('commune')) + (select count(*) from public.realisations where localite_id = tests.id('commune')),
   2::bigint, 'retirer la zone laisse la saisie et la réalisation rattachées');
 select lives_ok($$ update public.kpi_entries set localite_id = localite_id, valeur = 9 where date = '2026-03-01' $$,
   'corriger une saisie dont la zone a été retirée reste possible, la localité étant inchangée');
@@ -185,36 +192,32 @@ select tests.deconnecter();
 
 -- Supprimer un projet efface ses zones, pas le référentiel -------------------------------------
 select tests.connecter(tests.id('admin1'));
-select lives_ok($$ insert into public.projet_localites (project_id, localite_id) values (tests.id('p1b'), tests.id('yoff')) $$, 'admin : zone sur un second projet');
+select lives_ok($$ insert into public.projet_localites (project_id, localite_id) values (tests.id('p1b'), tests.id('commune')) $$, 'admin : zone sur un second projet');
 select lives_ok($$ delete from public.projects where id = tests.id('p1b') $$, 'admin : supprime ce projet');
 select is((select count(*) from public.projet_localites where project_id = tests.id('p1b')), 0::bigint, 'ses zones partent avec lui');
-select is((select count(*) from public.localites where org_id is null), 12::bigint, 'le référentiel reste intact');
+select is((select count(*) from public.localites where org_id is null), 4::bigint, 'le référentiel reste intact');
 select tests.deconnecter();
 
 -- Fin d'essai : lecture seule ----------------------------------------------------------------
 update public.organisations set essai_fin = now() - interval '1 day' where id = tests.id('org1');
 select tests.connecter(tests.id('editeur1'));
 select throws_ok($$ insert into public.localites (org_id, niveau, nom) values (tests.id('org1'), 'village', 'Après essai') $$, 'P0001', 'ESSAI_EXPIRE', 'fin d''essai : pas de nouvelle localité');
-select throws_ok($$ insert into public.projet_localites (project_id, localite_id) values (tests.id('p1'), tests.id('yoff')) $$, 'P0001', 'ESSAI_EXPIRE', 'fin d''essai : pas de nouvelle zone');
+select throws_ok($$ insert into public.projet_localites (project_id, localite_id) values (tests.id('p1'), tests.id('commune')) $$, 'P0001', 'ESSAI_EXPIRE', 'fin d''essai : pas de nouvelle zone');
 select cmp_ok((select count(*) from public.localites), '>', 0::bigint, 'fin d''essai : les localités restent lisibles');
 select tests.deconnecter();
 update public.organisations set essai_fin = now() + interval '10 days' where id = tests.id('org1');
 
--- Projet exemple ----------------------------------------------------------------------------------
+-- Projet exemple : aucune zone posée d'office -------------------------------------------------------
 select tests.connecter(tests.id('admin2'));
 select lives_ok($$ select public.charger_projet_exemple() $$, 'l''administrateur charge le projet exemple');
 select tests.deconnecter();
 insert into tests.ids select 'demo', id from public.projects where org_id = tests.id('org2') and is_demo;
-select is((select count(*) from public.projet_localites where project_id = tests.id('demo')), 1::bigint, 'exemple : une zone d''intervention');
-select is((select l.nom from public.projet_localites pl join public.localites l on l.id = pl.localite_id where pl.project_id = tests.id('demo')),
-  'Commune de Yoff', 'exemple : rattaché à la commune de Yoff');
-select lives_ok($$ select private.charger_contenu_exemple_lot3d(tests.id('demo')) $$, 'recharger le contenu ne fait rien');
-select is((select count(*) from public.projet_localites where project_id = tests.id('demo')), 1::bigint, 'exemple : toujours une seule zone');
+select is((select count(*) from public.projet_localites where project_id = tests.id('demo')), 0::bigint, 'exemple : aucune zone d''intervention n''est posée d''office');
+select is((select count(*) from public.localites where org_id = tests.id('org2') and nom <> 'Village test Beta'), 0::bigint, 'exemple : aucune localité n''est créée pour l''organisation');
 select tests.connecter(tests.id('admin2'));
 select lives_ok($$ delete from public.projects where id = tests.id('demo') $$, 'supprimer le projet exemple');
 select tests.deconnecter();
-select is((select count(*) from public.projet_localites where project_id = tests.id('demo')), 0::bigint, 'sa zone part avec lui');
-select is((select count(*) from public.localites where org_id is null), 12::bigint, 'la commune de Yoff reste dans le référentiel');
+select is((select count(*) from public.localites where org_id is null), 4::bigint, 'le référentiel de test reste intact');
 
 -- Supprimer une organisation efface ses localités et ses zones dans la même instruction ----------------
 select lives_ok($$ delete from public.organisations where id = tests.id('org2') $$, 'supprimer une organisation qui a des localités et des zones');

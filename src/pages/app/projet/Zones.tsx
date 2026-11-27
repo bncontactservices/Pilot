@@ -120,6 +120,8 @@ export default function Zones() {
   const chargement = localites.isPending || zones.isPending;
   const erreur = localites.error ?? zones.error;
   const vide = localites.isSuccess && zones.isSuccess && lignes.length === 0;
+  // Aucune localité n'est préchargée : tant que l'organisation n'a pas créé les siennes, il n'y a rien à choisir.
+  const sansLocalite = localites.isSuccess && localites.data.length === 0;
 
   const actions =
     peutModifier && !chargement ? (
@@ -151,7 +153,6 @@ export default function Zones() {
 
       {!peutModifier && org.peutEcrire && <Bandeau>{t("travail.lecture_seule_role")}</Bandeau>}
       {!org.peutEcrire && <Bandeau>{t("travail.lecture_seule_essai")}</Bandeau>}
-      {projet.is_demo && <Bandeau>{t("zones.exemple")}</Bandeau>}
 
       {chargement ? (
         <div className="grid gap-3" aria-busy>
@@ -170,14 +171,26 @@ export default function Zones() {
         <EtatVide
           visuel={<MapPin className="size-10 text-navy/40" aria-hidden />}
           titre={t("zones.vide.titre")}
-          description={peutModifier ? t("zones.vide.texte") : t("zones.vide.texte_lecteur")}
+          description={
+            !peutModifier
+              ? t("zones.vide.texte_lecteur")
+              : sansLocalite
+                ? t("zones.vide.texte_sans_localite")
+                : t("zones.vide.texte")
+          }
           actions={
-            peutModifier && (
+            peutModifier &&
+            (sansLocalite ? (
+              <Button onClick={() => setCreation(true)}>
+                <Plus aria-hidden />
+                {t("zones.creer")}
+              </Button>
+            ) : (
               <Button onClick={() => setAjout(true)}>
                 <Plus aria-hidden />
                 {t("zones.ajouter")}
               </Button>
-            )
+            ))
           }
         />
       ) : (

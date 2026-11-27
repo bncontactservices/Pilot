@@ -124,6 +124,29 @@ describe("Zones d'intervention", () => {
     expect(screen.getAllByRole("button", { name: "Ajouter une zone" }).length).toBeGreaterThan(0);
   });
 
+  it("sans aucune localité dans l'organisation, propose d'abord d'en créer une et ne montre rien de préchargé", async () => {
+    base.tables.localites = [];
+    base.tables.projet_localites = [];
+    monterProjet(<Zones />);
+    expect(await screen.findByText("Aucune zone d’intervention")).toBeInTheDocument();
+    expect(screen.getByText(/Votre organisation n’a pas encore de localité/)).toBeInTheDocument();
+    expect(screen.queryByText(/Yoff/)).not.toBeInTheDocument();
+    fireEvent.click(screen.getAllByRole("button", { name: "Créer une localité" })[0]!);
+    const dialogue = await screen.findByRole("dialog");
+    expect(within(dialogue).getByLabelText("Nom")).toBeInTheDocument();
+  });
+
+  it("dans la fenêtre d'ajout, dit qu'il n'y a aucune localité à choisir plutôt que d'afficher une recherche vide", async () => {
+    base.tables.localites = [];
+    base.tables.projet_localites = [];
+    monterProjet(<Zones />);
+    fireEvent.click(await screen.findByRole("button", { name: "Ajouter une zone" }));
+    const dialogue = await screen.findByRole("dialog");
+    expect(within(dialogue).getByText("Votre organisation n’a pas encore de localité à choisir.")).toBeInTheDocument();
+    expect(within(dialogue).queryByLabelText("Rechercher une localité")).not.toBeInTheDocument();
+    expect(within(dialogue).getByRole("button", { name: "Créer une localité" })).toBeInTheDocument();
+  });
+
   it("n'offre aucune écriture à un lecteur, et le dit", async () => {
     donnees();
     monterProjet(<Zones />, { role: "lecteur" });

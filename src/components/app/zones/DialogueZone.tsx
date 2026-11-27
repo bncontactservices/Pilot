@@ -77,21 +77,27 @@ function Corps({ onFermer, projetId, localites, zonesIds, onCreer }: Props) {
       </DrawerHeader>
       <DrawerBody>
         <div className="grid gap-4">
-          <Champ id="zone-recherche" libelle={t("zones.dialogue.recherche")}>
-            {(a) => (
-              <Input
-                {...a}
-                type="search"
-                autoComplete="off"
-                value={recherche}
-                onChange={(e) => setRecherche(e.target.value)}
-              />
-            )}
-          </Champ>
+          {localites.length > 0 && (
+            <Champ id="zone-recherche" libelle={t("zones.dialogue.recherche")}>
+              {(a) => (
+                <Input
+                  {...a}
+                  type="search"
+                  autoComplete="off"
+                  value={recherche}
+                  onChange={(e) => setRecherche(e.target.value)}
+                />
+              )}
+            </Champ>
+          )}
           {toutesDejaZones && recherche === "" && (
             <p className="text-sm text-muted-foreground">{t("zones.dialogue.tout_ajoute")}</p>
           )}
-          {lignes.length === 0 ? (
+          {localites.length === 0 ? (
+            <p role="status" className="text-sm text-muted-foreground">
+              {t("zones.dialogue.aucune_localite")}
+            </p>
+          ) : lignes.length === 0 ? (
             <p role="status" className="text-sm text-muted-foreground">
               {t("zones.dialogue.aucun_resultat", { recherche })}
             </p>
