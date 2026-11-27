@@ -17,7 +17,8 @@ export function PageLegale({ titre, majLe, children }: { titre: string; majLe?: 
           <h1 className="text-4xl font-extrabold text-navy">{titre}</h1>
           {majLe && <p className="font-mono text-xs text-muted-foreground">{majLe}</p>}
         </div>
-        <div className="grid gap-8 text-[0.975rem] leading-relaxed [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-navy [&_li]:ml-5 [&_li]:list-disc [&_section]:grid [&_section]:gap-3">
+        {/* Paragraphes et listes justifiés ; la coupure des mots (page en français) évite les grands blancs sur téléphone. */}
+        <div className="grid gap-8 text-[0.975rem] leading-relaxed hyphens-auto [&_h2]:hyphens-manual [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-navy [&_li]:ml-5 [&_li]:list-disc [&_li]:text-justify [&_p]:text-justify [&_section]:grid [&_section]:gap-3">
           {children}
         </div>
       </main>
