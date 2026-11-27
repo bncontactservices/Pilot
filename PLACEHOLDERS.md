@@ -79,9 +79,9 @@ Trois pages, rédigées en entier sur la base de la loi sénégalaise n° 2008-1
 
 | Page | Valeurs |
 |---|---|
-| Mentions légales | Forme juridique, capital, numéro RCCM, NINEA, adresse du siège, adresse postale de correspondance, directeur ou directrice de la publication ; raison sociale, adresse **et téléphone** de Vercel et de Supabase (la loi demande ceux de l'hébergeur) ; tribunal compétent ; prix **hors taxes ou toutes taxes comprises** |
+| Mentions légales | Sans ligne de version ni mention « provisoire, à valider par un juriste » (retirées sur votre demande, comme sur les conditions d'utilisation ; elles ne restent que sur la politique de confidentialité). Réduites aux rubriques de Farata.net (`DECISIONS.md` §34). Siège social : « Dakar, Sénégal », donné par vous le 27 novembre 2026 (sans adresse de rue). Tribunaux compétents : « Dakar », donné par vous le même jour (l'article 18 des conditions d'utilisation garde son champ « ville de la juridiction » à compléter). Statut : « Entreprise individuelle », donné par vous le même jour. Plus rien à compléter dans cette page, sauf l'e-mail de contact tant que `VITE_CONTACT_EMAIL` manque (le directeur ou la directrice de la publication est dit « le gérant ou la gérante », sans nom, comme chez Farata), e-mail de contact (variable `VITE_CONTACT_EMAIL`). L'adresse de Vercel (440 N Barranca Avenue #4133, Covina, CA 91723) vient de l'avis de confidentialité de Vercel, lu le 27 novembre 2026. **Retirés sur votre demande** : raison sociale, capital, RCCM, NINEA, téléphone et WhatsApp, adresse postale, Supabase comme hébergeur des données (toujours cité dans la politique de confidentialité), prix, responsabilité et signalement (article 13 des conditions d'utilisation) |
 | Confidentialité | Numéro de déclaration (récépissé) auprès de la CDP ; région de traitement de Resend |
-| Conditions d'utilisation | Tribunal compétent ; adresse postale ; prix hors taxes ou toutes taxes comprises |
+| Conditions d'utilisation | Tribunaux de Dakar (article 18, donné par vous le 27 novembre 2026) ; la mention du courrier et de l'adresse postale (article 19) est supprimée sur votre demande. La phrase « et s'entendent hors taxes ou toutes taxes comprises » de l'article 5 a été supprimée sur votre demande : les conditions ne disent plus si les prix sont hors taxes ou toutes taxes comprises (à trancher avec le juriste et la TVA) |
 
 ### Démarches à accomplir par vous (je ne peux pas les faire)
 
@@ -99,7 +99,7 @@ Ce sont des décisions commerciales ou de gestion, écrites dans les textes par 
 | Consultation et export après la fin de l'abonnement ; remise d'une copie sur demande | 30 jours ; 30 jours |
 | Conservation des demandes de contact | 24 mois après le dernier échange |
 | Préavis avant modification des conditions ou des prix | 30 jours, par e-mail à l'administrateur |
-| Paiement | Virement ou mobile money, d'avance pour la période, à réception de la facture |
+| Paiement | Virement, d'avance pour la période, à réception de la facture (carte en ligne par Stripe, en mode test) |
 | Impayé | Suspension de l'écriture puis résiliation 15 jours après rappel écrit |
 | Renouvellement | Tacite, sur paiement ; résiliation à tout moment, effective en fin de période, période commencée non remboursée |
 | Mise en demeure avant résiliation pour manquement | 15 jours |

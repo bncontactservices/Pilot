@@ -2,12 +2,7 @@ import { Link } from "react-router";
 import i18n from "~/i18n";
 import { DUREE_ESSAI_JOURS } from "~/lib/constants";
 import { env } from "~/lib/env";
-import {
-  DELAI_EXPORT_JOURS,
-  DELAI_SUPPRESSION_JOURS,
-  PREAVIS_MODIFICATION_JOURS,
-  VERSION_CONDITIONS_LISIBLE,
-} from "~/lib/legal";
+import { DELAI_EXPORT_JOURS, DELAI_SUPPRESSION_JOURS, PREAVIS_MODIFICATION_JOURS } from "~/lib/legal";
 import { ACompleter, PageLegale } from "./PageLegale";
 
 export const meta = () => [{ title: i18n.t("legal.conditions_meta") }];
@@ -23,10 +18,7 @@ function Contact() {
 export default function ConditionsUtilisation() {
   const editeur = env.editeur ?? <ACompleter>raison sociale</ACompleter>;
   return (
-    <PageLegale
-      titre="Conditions générales d’utilisation"
-      majLe={`Version du ${VERSION_CONDITIONS_LISIBLE} - provisoire, à valider par un juriste avant publication`}
-    >
+    <PageLegale titre="Conditions générales d’utilisation">
       <section>
         <h2>1. Objet et champ d’application</h2>
         <p>
@@ -107,12 +99,11 @@ export default function ConditionsUtilisation() {
         <ul>
           <li>
             Les prix sont ceux affichés sur la page Tarifs à la date de l’activation du plan. Ils sont indiqués en
-            dollars américains, avec un équivalent indicatif en francs CFA, et s’entendent{" "}
-            <ACompleter>hors taxes ou toutes taxes comprises</ACompleter>.
+            dollars américains, avec un équivalent indicatif en francs CFA.
           </li>
           <li>
-            Le paiement se fait par virement ou par mobile money, d’avance pour la période choisie (mensuelle ou
-            annuelle), à réception de la facture. Il n’existe pas de paiement en ligne par carte.
+            Le paiement se fait par virement, d’avance pour la période choisie (mensuelle ou annuelle), à réception de
+            la facture. Il n’existe pas de paiement en ligne par carte.
           </li>
           <li>
             Sans paiement dans les 15 jours suivant un rappel écrit, l’Éditeur peut suspendre l’accès en écriture, puis
@@ -344,7 +335,7 @@ export default function ConditionsUtilisation() {
         <p>
           Les présentes conditions sont régies par le droit sénégalais. En cas de différend, les parties cherchent
           d’abord une solution amiable, dans un délai de 30 jours à compter de la réclamation écrite. À défaut, les
-          tribunaux de <ACompleter>ville de la juridiction compétente</ACompleter> sont seuls compétents.
+          tribunaux de Dakar sont seuls compétents.
         </p>
       </section>
 
@@ -352,8 +343,7 @@ export default function ConditionsUtilisation() {
         <h2>19. Contact et réclamations</h2>
         <p>
           Pour toute question ou réclamation : <Contact />
-          {env.whatsappNumber ? `, téléphone et WhatsApp +${env.whatsappNumber}` : null}, ou par courrier à{" "}
-          <ACompleter>adresse postale</ACompleter>.
+          {env.whatsappNumber ? `, téléphone et WhatsApp +${env.whatsappNumber}` : null}.
         </p>
       </section>
     </PageLegale>

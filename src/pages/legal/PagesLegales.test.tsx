@@ -10,52 +10,70 @@ const afficher = (page: React.ReactElement) => render(<MemoryRouter>{page}</Memo
 const titres = () => screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
 
 describe("Pages légales : datées, versionnées, sans fait inventé", () => {
-  it("la version est une date ISO, affichée en toutes lettres sur chaque page", () => {
+  it("la version est une date ISO, enregistrée à l'inscription et affichée en toutes lettres sur la politique de confidentialité", () => {
     expect(VERSION_CONDITIONS).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    for (const page of [<MentionsLegales key="m" />, <Confidentialite key="c" />, <ConditionsUtilisation key="u" />]) {
+    afficher(<Confidentialite />);
+    expect(screen.getByText(new RegExp(`Version du ${VERSION_CONDITIONS_LISIBLE}`))).toBeInTheDocument();
+    expect(screen.getByText(/à valider par un juriste/)).toBeInTheDocument();
+  });
+
+  it("les mentions légales et les conditions n'affichent pas de ligne de version, à votre demande", () => {
+    for (const page of [<MentionsLegales key="m" />, <ConditionsUtilisation key="u" />]) {
       const { unmount } = afficher(page);
-      expect(screen.getByText(new RegExp(`Version du ${VERSION_CONDITIONS_LISIBLE}`))).toBeInTheDocument();
-      expect(screen.getByText(/à valider par un juriste/)).toBeInTheDocument();
+      expect(screen.queryByText(/Version du|à valider par un juriste/)).not.toBeInTheDocument();
       unmount();
     }
   });
 
   it("chaque valeur juridique qui n'est pas établie est visible comme « à compléter », jamais inventée", () => {
     afficher(<MentionsLegales />);
-    for (const manquant of [
-      /forme juridique/,
-      /RCCM/,
-      /NINEA/,
-      /adresse complète/,
-      /nom - à compléter/,
-      /adresse de correspondance/,
-    ]) {
-      expect(screen.getAllByText(manquant, { selector: "mark" }).length).toBeGreaterThan(0);
-    }
-    // Aucun numéro d'immatriculation ni capital ne figure en dur dans le texte.
+    // Le statut, le siège et le tribunal sont ceux que vous avez indiqués : donnés, non à compléter.
+    expect(screen.getByText("Statut : Entreprise individuelle")).toBeInTheDocument();
+    expect(screen.getByText("Siège social : Dakar, Sénégal")).toBeInTheDocument();
+    expect(screen.getByText(/les tribunaux de Dakar sont seuls compétents/)).toBeInTheDocument();
+    // Seul l'e-mail de contact, qui vient de la configuration, peut rester « à compléter » (tant qu'elle manque).
+    for (const marque of screen.queryAllByText(/à compléter/, { selector: "mark" }))
+      expect(marque.textContent).toMatch(/e-mail de contact/);
+    // Aucun numéro d'immatriculation ni marque déposée n'est affirmé : rien ne l'établit.
     expect(screen.queryByText(/RCCM\s*:?\s*SN/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/marques? déposées?/i)).not.toBeInTheDocument();
   });
 });
 
 describe("Mentions légales", () => {
-  it("couvre les informations exigées d'un éditeur de service en ligne", () => {
+  it("ne garde que les rubriques des mentions légales de Farata.net, réécrites pour Pilot M&E", () => {
     afficher(<MentionsLegales />);
     expect(titres()).toEqual([
-      "Éditeur du service",
-      "Contact et réclamations",
+      "Éditeur du site",
       "Hébergement",
-      "Prix et conditions",
       "Propriété intellectuelle",
-      "Données personnelles",
-      "Responsabilité et signalement",
+      "Protection des données",
+      "Conditions d’utilisation",
       "Droit applicable et litiges",
+      "Une question juridique ?",
     ]);
-    // Hébergeur : identité, adresse et téléphone sont demandés pour chacun.
-    expect(screen.getAllByText(/adresse et téléphone de l’hébergeur/, { selector: "mark" })).toHaveLength(2);
-    expect(screen.getAllByRole("link", { name: /conditions générales d’utilisation/ })[0]).toHaveAttribute(
+    // Hébergeur : Vercel, avec l'adresse publiée par Vercel lui-même.
+    expect(screen.getByText(/Hébergeur : Vercel Inc\./)).toBeInTheDocument();
+    expect(screen.getByText(/440 N Barranca Avenue #4133, Covina, CA 91723/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "vercel.com" })).toHaveAttribute("href", "https://vercel.com");
+    expect(screen.getByRole("link", { name: /conditions générales d’utilisation complètes/ })).toHaveAttribute(
       "href",
       "/conditions-utilisation",
     );
+    expect(screen.getByRole("link", { name: "politique de confidentialité" })).toHaveAttribute(
+      "href",
+      "/confidentialite",
+    );
+  });
+
+  it("ne contient plus ce que le modèle n'a pas : immatriculation, téléphone, prix, autre hébergeur, responsabilité", () => {
+    afficher(<MentionsLegales />);
+    expect(
+      screen.queryByText(/RCCM|NINEA|capital|WhatsApp|Supabase|dollars|euros|mobile money|Farata/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: /Responsabilité|Prix|Contact et réclamations/ }),
+    ).not.toBeInTheDocument();
   });
 });
 
@@ -144,9 +162,12 @@ describe("Conditions générales d'utilisation", () => {
     expect(within(donnees).getByText(/sous-traitants ultérieurs/)).toBeInTheDocument();
   });
 
-  it("garde les choix commerciaux à confirmer en évidence plutôt que de les présenter comme acquis", () => {
+  it("dit les choix que vous avez faits, et n'affirme rien d'autre sur les taxes ni sur le courrier", () => {
     afficher(<ConditionsUtilisation />);
-    expect(screen.getAllByText(/hors taxes ou toutes taxes comprises/, { selector: "mark" })).toHaveLength(1);
-    expect(screen.getAllByText(/ville de la juridiction compétente/, { selector: "mark" })).toHaveLength(1);
+    // Les prix ne disent plus s'ils s'entendent hors taxes ou toutes taxes comprises : rien n'est affirmé à ce sujet.
+    expect(screen.queryByText(/hors taxes|toutes taxes comprises|s’entendent/)).not.toBeInTheDocument();
+    // Tribunaux de Dakar : votre réponse. Plus d'adresse postale : la rubrique contact n'en parle plus.
+    expect(screen.getByText(/les tribunaux de Dakar sont seuls compétents/)).toBeInTheDocument();
+    expect(screen.queryByText(/courrier|adresse postale/i)).not.toBeInTheDocument();
   });
 });
