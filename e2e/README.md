@@ -78,8 +78,8 @@ Mêmes comptes de test que ci-dessus.
   d'une localité refusée tant qu'une zone s'en sert ou qu'elle contient d'autres localités, la lecture seule du lecteur, et les
   refus de la base (lecteur, écriture du référentiel, niveau figé, localité hors zone). **Il charge des images depuis
   tile.openstreetmap.org : il exige un accès au réseau.** Il crée « Projet E2E zones » et des localités « … E2E », qu'il supprime
-  à la fin ; il demande une place libre dans le quota de trois projets. **Réécrit après le retrait de Yoff : pas encore rejoué
-  en réel.**
+  à la fin ; il demande une place libre dans le quota de trois projets. **Réécrit après le retrait de Yoff, puis joué en réel le
+  27 novembre 2026 : 5 tests sur 5.**
 - `hors-ligne.spec.ts` (Lot 4a) : la saisie hors ligne, contre le build et le vrai Supabase. (1) Le serveur de l'application est ARRÊTÉ (le test lance
   son propre serveur sur le port 4191 et le tue), le navigateur est hors ligne et le jeton d'accès est rendu périmé : l'application s'ouvre depuis le
   cache du service worker, reprend la session gardée, affiche les données gardées ; une valeur saisie sans réseau reste dans la file et survit à un

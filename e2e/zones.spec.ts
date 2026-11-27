@@ -14,7 +14,9 @@ const NOM = "Projet E2E zones";
 const COMMUNE = "Commune E2E";
 const VILLAGE = "Village E2E";
 const QUARTIER = "Quartier E2E";
+// Dans les listes déroulantes, une localité est suivie de deux ancêtres ; dans les listes de réalisations et de saisies, d'un seul.
 const LIEU_QUARTIER = `${QUARTIER}, ${VILLAGE}, ${COMMUNE}`;
+const LIEU_LISTE = `${QUARTIER}, ${VILLAGE}`;
 const URL_SUPABASE = process.env.VITE_SUPABASE_URL;
 const CLE = process.env.VITE_SUPABASE_ANON_KEY;
 const ANNEE = new Date().getFullYear();
@@ -228,7 +230,7 @@ test.describe("localités, zones d'intervention et carte", () => {
     await choix.selectOption({ label: LIEU_QUARTIER });
     await tiroir.getByRole("button", { name: "Enregistrer la réalisation" }).click();
     await expect(page.getByText("Réalisation enregistrée.").first()).toBeVisible();
-    await expect(page.getByText(LIEU_QUARTIER).first()).toBeVisible();
+    await expect(page.getByText(LIEU_LISTE).first()).toBeVisible();
 
     await ouvrirPageProjet(page, "Pilotage", "Saisie");
     await page.getByLabel(/^Valeur/).fill("7");
@@ -237,7 +239,7 @@ test.describe("localités, zones d'intervention et carte", () => {
     await expect(page.getByText(/Valeur enregistrée/).first()).toBeVisible();
     const historique = page.getByRole("table");
     await expect(historique.getByRole("columnheader", { name: "Localité" })).toBeVisible();
-    await expect(historique).toContainText(LIEU_QUARTIER);
+    await expect(historique).toContainText(LIEU_LISTE);
 
     // L'usage par zone : une saisie et une réalisation dans le quartier.
     await ouvrirPageProjet(page, "Planification", "Zones");
@@ -252,7 +254,7 @@ test.describe("localités, zones d'intervention et carte", () => {
     await expect(page.getByText("Zone retirée.").first()).toBeVisible();
     await expect(page.getByRole("heading", { level: 2, name: QUARTIER })).toHaveCount(0);
     await ouvrirPageProjet(page, "Mise en œuvre", "Réalisations");
-    await expect(page.getByText(LIEU_QUARTIER).first()).toBeVisible();
+    await expect(page.getByText(LIEU_LISTE).first()).toBeVisible();
     await contexte.close();
   });
 
