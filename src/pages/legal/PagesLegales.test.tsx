@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, expect, it } from "vitest";
-import { VERSION_CONDITIONS, VERSION_CONDITIONS_LISIBLE } from "~/lib/legal";
+import { VERSION_CONDITIONS } from "~/lib/legal";
 import Confidentialite from "./Confidentialite";
 import ConditionsUtilisation from "./ConditionsUtilisation";
 import MentionsLegales from "./MentionsLegales";
@@ -10,15 +10,12 @@ const afficher = (page: React.ReactElement) => render(<MemoryRouter>{page}</Memo
 const titres = () => screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
 
 describe("Pages légales : datées, versionnées, sans fait inventé", () => {
-  it("la version est une date ISO, enregistrée à l'inscription et affichée en toutes lettres sur la politique de confidentialité", () => {
+  it("la version des conditions reste une date ISO, enregistrée à l'inscription (la preuve de ce qui a été accepté)", () => {
     expect(VERSION_CONDITIONS).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    afficher(<Confidentialite />);
-    expect(screen.getByText(new RegExp(`Version du ${VERSION_CONDITIONS_LISIBLE}`))).toBeInTheDocument();
-    expect(screen.getByText(/à valider par un juriste/)).toBeInTheDocument();
   });
 
-  it("les mentions légales et les conditions n'affichent pas de ligne de version, à votre demande", () => {
-    for (const page of [<MentionsLegales key="m" />, <ConditionsUtilisation key="u" />]) {
+  it("aucune page légale n'affiche de ligne de version ni de mention « à valider par un juriste », à votre demande", () => {
+    for (const page of [<MentionsLegales key="m" />, <Confidentialite key="c" />, <ConditionsUtilisation key="u" />]) {
       const { unmount } = afficher(page);
       expect(screen.queryByText(/Version du|à valider par un juriste/)).not.toBeInTheDocument();
       unmount();
@@ -31,9 +28,10 @@ describe("Pages légales : datées, versionnées, sans fait inventé", () => {
     expect(screen.getByText("Statut : Entreprise individuelle")).toBeInTheDocument();
     expect(screen.getByText("Siège social : Dakar, Sénégal")).toBeInTheDocument();
     expect(screen.getByText(/les tribunaux de Dakar sont seuls compétents/)).toBeInTheDocument();
-    // Seul l'e-mail de contact, qui vient de la configuration, peut rester « à compléter » (tant qu'elle manque).
+    // Seuls l'éditeur et l'e-mail de contact, qui viennent de la configuration, peuvent rester « à compléter » (tant qu'elle manque).
+    expect(screen.getByText(/^Éditeur :/)).toBeInTheDocument();
     for (const marque of screen.queryAllByText(/à compléter/, { selector: "mark" }))
-      expect(marque.textContent).toMatch(/e-mail de contact/);
+      expect(marque.textContent).toMatch(/e-mail de contact|raison sociale/);
     // Aucun numéro d'immatriculation ni marque déposée n'est affirmé : rien ne l'établit.
     expect(screen.queryByText(/RCCM\s*:?\s*SN/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/marques? déposées?/i)).not.toBeInTheDocument();
@@ -78,13 +76,13 @@ describe("Mentions légales", () => {
 });
 
 describe("Politique de confidentialité", () => {
-  it("couvre les neuf informations à donner à la collecte (loi 2008-12, art. 58)", () => {
+  it("couvre les informations à donner à la collecte (loi 2008-12, art. 58), sauf le transfert à l'étranger retiré sur demande", () => {
     afficher(<Confidentialite />);
     expect(titres()).toEqual([
       "Qui est responsable de vos données ?", // identité du responsable
       "Quelles données, et pourquoi ?", // catégories, finalités, caractère obligatoire ou facultatif
       "Qui reçoit vos données ?", // destinataires
-      "Où sont-elles hébergées ? Transfert hors du Sénégal", // transferts à l'étranger
+      "Où sont-elles hébergées ?", // hébergement, style de Farata.net ; plus de transfert hors du Sénégal
       "Comment sont-elles protégées ?",
       "Cookies et stockage local",
       "Combien de temps ?", // durée de conservation
@@ -93,6 +91,37 @@ describe("Politique de confidentialité", () => {
     ]);
     expect(screen.getByText(/obligatoires : sans elles, le compte ne peut pas être créé/)).toBeInTheDocument();
     expect(screen.getByText(/ne plus figurer dans un/)).toBeInTheDocument();
+  });
+
+  it("dit où sont les données dans le style de Farata.net : jamais vendues, partagées avec les prestataires et les autorités", () => {
+    afficher(<Confidentialite />);
+    const hebergement = screen.getByRole("heading", { name: "Où sont-elles hébergées ?" }).closest("section")!;
+    expect(within(hebergement).getByText(/Nous ne vendons jamais vos données/)).toBeInTheDocument();
+    expect(within(hebergement).getByText(/Union européenne \(Irlande\)/)).toBeInTheDocument();
+    expect(within(hebergement).getByText("Prestataires techniques")).toBeInTheDocument();
+    expect(within(hebergement).getByText("Autorités")).toBeInTheDocument();
+    expect(within(hebergement).getByText(/Les données sont chiffrées en transit/)).toBeInTheDocument();
+    // Plus de champ « à compléter » sur la déclaration à la CDP dans cette rubrique ; le transfert à l'étranger n'y est plus décrit.
+    expect(within(hebergement).queryByText(/à compléter/)).not.toBeInTheDocument();
+    expect(within(hebergement).queryByText(/transfert|CDP/i)).not.toBeInTheDocument();
+  });
+
+  it("liste les droits un par un dans le style de Farata.net : accès, rectification, suppression, portabilité, opposition", () => {
+    afficher(<Confidentialite />);
+    const droits = screen.getByRole("heading", { name: "Vos droits" }).closest("section")!;
+    expect(within(droits).getByText(/vous disposez des droits suivants/)).toBeInTheDocument();
+    for (const droit of ["Accès", "Rectification", "Suppression", "Portabilité", "Opposition"])
+      expect(within(droits).getByText(droit)).toBeInTheDocument();
+    expect(within(droits).getAllByRole("listitem")).toHaveLength(5);
+    // La procédure et le délai restent, ainsi que le recours à la CDP.
+    expect(within(droits).getByText(/en justifiant de votre identité/)).toBeInTheDocument();
+    expect(within(droits).getByText(/Commission de protection des données personnelles/)).toBeInTheDocument();
+  });
+
+  it("ne renvoie plus à une date « en haut » de page : la ligne de version n'existe plus", () => {
+    afficher(<Confidentialite />);
+    expect(screen.queryByText(/datée en haut/)).not.toBeInTheDocument();
+    expect(screen.getByText(/la version en vigueur est celle publiée sur cette page/)).toBeInTheDocument();
   });
 
   it("annonce le délai d'un mois de la loi pour la rectification et la suppression", () => {
@@ -169,5 +198,14 @@ describe("Conditions générales d'utilisation", () => {
     // Tribunaux de Dakar : votre réponse. Plus d'adresse postale : la rubrique contact n'en parle plus.
     expect(screen.getByText(/les tribunaux de Dakar sont seuls compétents/)).toBeInTheDocument();
     expect(screen.queryByText(/courrier|adresse postale/i)).not.toBeInTheDocument();
+  });
+
+  it("dit les prix dans la devise de la section Tarifs et de Stripe (euros), et renvoie le support à l'article 19", () => {
+    afficher(<ConditionsUtilisation />);
+    const prix = screen.getByRole("heading", { name: "5. Prix et paiement" }).closest("section")!;
+    expect(within(prix).getByText(/indiqués en euros, avec un équivalent indicatif en francs CFA/)).toBeInTheDocument();
+    expect(screen.queryByText(/dollars/i)).not.toBeInTheDocument();
+    // Le support n'est plus renvoyé aux mentions légales (qui ne donnent plus WhatsApp) mais à l'article 19.
+    expect(screen.getByText(/aux coordonnées indiquées à l’article 19/)).toBeInTheDocument();
   });
 });

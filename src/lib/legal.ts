@@ -7,7 +7,6 @@
  * ce qui permet de produire, en cas de litige, la version acceptée (décret n° 2008-718, art. 36).
  */
 export const VERSION_CONDITIONS = "2026-11-25";
-export const VERSION_CONDITIONS_LISIBLE = "25 novembre 2026";
 
 // Valeurs proposées par défaut : des choix de l'éditeur, à confirmer (voir PLACEHOLDERS.md).
 /** Délai de suppression des données d'une organisation après la fermeture de son compte. */

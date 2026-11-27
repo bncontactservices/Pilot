@@ -99,7 +99,7 @@ export default function ConditionsUtilisation() {
         <ul>
           <li>
             Les prix sont ceux affichés sur la page Tarifs à la date de l’activation du plan. Ils sont indiqués en
-            dollars américains, avec un équivalent indicatif en francs CFA.
+            euros, avec un équivalent indicatif en francs CFA.
           </li>
           <li>
             Le paiement se fait par virement, d’avance pour la période choisie (mensuelle ou annuelle), à réception de
@@ -238,8 +238,7 @@ export default function ConditionsUtilisation() {
             l’absence d’interruption. Les maintenances sont, autant que possible, annoncées à l’avance.
           </li>
           <li>
-            Le support se fait par e-mail ou par WhatsApp, en jours ouvrés, aux coordonnées des{" "}
-            <Link to="/mentions-legales">mentions légales</Link>.
+            Le support se fait par e-mail ou par WhatsApp, en jours ouvrés, aux coordonnées indiquées à l’article 19.
           </li>
           <li>
             Les sauvegardes dépendent de l’offre de l’hébergeur. L’Éditeur ne garantit pas de pouvoir restituer des

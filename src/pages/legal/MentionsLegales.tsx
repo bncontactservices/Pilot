@@ -7,7 +7,8 @@ export const meta = () => [{ title: i18n.t("legal.mentions_meta") }];
 
 // Cette page ne reprend que les rubriques des mentions légales de Farata.net (https://farata.net/mentions-legales), sur
 // demande du 27 novembre 2026 : éditeur, hébergement, propriété intellectuelle, protection des données, conditions
-// d'utilisation, droit applicable et litiges, question juridique. Les textes sont réécrits pour Pilot M&E. Les faits propres
+// d'utilisation, droit applicable et litiges, question juridique, plus la ligne « Éditeur » que les conditions d'utilisation et la
+// politique de confidentialité citent pour identifier l'éditeur. Les textes sont réécrits pour Pilot M&E. Les faits propres
 // à l'éditeur ne sont jamais repris d'ailleurs : ils restent « à compléter » (PLACEHOLDERS.md). Les informations que la loi
 // sénégalaise n° 2008-08 demande à un éditeur (immatriculation, téléphone, hébergeur des données, prix) ne figurent plus ici :
 // voir DECISIONS.md, section 34.
@@ -24,6 +25,7 @@ export default function MentionsLegales() {
         <p>Informations légales concernant le site Pilot M&amp;E, conformément aux obligations réglementaires.</p>
         <ul>
           <li>Nom du site : Pilot M&amp;E</li>
+          <li>Éditeur : {env.editeur ?? <ACompleter>raison sociale</ACompleter>}</li>
           <li>Statut : Entreprise individuelle</li>
           <li>Siège social : Dakar, Sénégal</li>
           <li>E-mail de contact : {contact}</li>

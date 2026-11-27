@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import i18n from "~/i18n";
 import { env } from "~/lib/env";
-import { CONSERVATION_DEMANDES_MOIS, DELAI_SUPPRESSION_JOURS, VERSION_CONDITIONS_LISIBLE } from "~/lib/legal";
+import { CONSERVATION_DEMANDES_MOIS, DELAI_SUPPRESSION_JOURS } from "~/lib/legal";
 import { ACompleter, PageLegale } from "./PageLegale";
 
 export const meta = () => [{ title: i18n.t("legal.confidentialite_meta") }];
@@ -17,13 +17,12 @@ function Contact() {
 // Rédigée selon la loi sénégalaise n° 2008-12 du 25 janvier 2008 sur la protection des données à caractère personnel :
 // la collecte directe impose d'informer la personne de neuf points (art. 58) — responsable, finalités, catégories de
 // données, destinataires, caractère obligatoire ou facultatif, possibilité de ne plus figurer au fichier, droits d'accès
-// et de rectification, durée de conservation, transferts à l'étranger — qui sont chacun traités ci-dessous.
+// et de rectification, durée de conservation, transferts à l'étranger — qui étaient chacun traités ci-dessous.
+// Sur demande (27 novembre 2026), la rubrique d'hébergement est réécrite dans le style de celle de Farata.net (« Partage des
+// données ») : elle ne parle plus du transfert hors du Sénégal ni de la déclaration à la CDP (voir DECISIONS.md, section 36).
 export default function Confidentialite() {
   return (
-    <PageLegale
-      titre="Politique de confidentialité"
-      majLe={`Version du ${VERSION_CONDITIONS_LISIBLE} - provisoire, à valider par un juriste avant publication`}
-    >
+    <PageLegale titre="Politique de confidentialité">
       <section>
         <h2>Qui est responsable de vos données ?</h2>
         <p>
@@ -99,7 +98,7 @@ export default function Confidentialite() {
           <li>Vercel : diffusion du site et de l’application.</li>
           <li>
             Resend : envoi des e-mails d’invitation et de notification, et du rapport de suivi que vous choisissez de
-            recevoir, lorsque cet envoi est activé (traitement dans <ACompleter>région de traitement</ACompleter>).
+            recevoir.
           </li>
           <li>
             Plausible Analytics : mesure d’audience sans cookie, conçue pour ne pas identifier les visiteurs, si elle
@@ -117,13 +116,21 @@ export default function Confidentialite() {
         <p>Les données peuvent aussi être communiquées à une autorité, sur réquisition légale.</p>
       </section>
       <section>
-        <h2>Où sont-elles hébergées ? Transfert hors du Sénégal</h2>
+        <h2>Où sont-elles hébergées ?</h2>
         <p>
-          Les données sont hébergées dans l’Union européenne (Irlande). L’Irlande étant un pays autre que le Sénégal,
-          cet hébergement constitue un transfert de données à l’étranger : il est déclaré à la Commission de protection
-          des données personnelles (CDP) dans la déclaration du traitement,{" "}
-          <ACompleter>référence ou récépissé de la déclaration</ACompleter>. Les données sont chiffrées en transit.
+          Nous ne vendons jamais vos données. Elles sont hébergées dans l’Union européenne (Irlande) et ne sont
+          partagées qu’avec :
         </p>
+        <ul>
+          <li>
+            <strong>Prestataires techniques</strong> : hébergement (Vercel), base de données, authentification et
+            fichiers (Supabase), e-mails (Resend), ainsi que les services cités plus haut lorsqu’ils sont activés.
+          </li>
+          <li>
+            <strong>Autorités</strong> : si la loi l’exige ou pour protéger nos droits et la sécurité des utilisateurs.
+          </li>
+        </ul>
+        <p>Les données sont chiffrées en transit.</p>
       </section>
       <section>
         <h2>Comment sont-elles protégées ?</h2>
@@ -185,10 +192,26 @@ export default function Confidentialite() {
         <h2>Vos droits</h2>
         <p>
           Conformément à la loi sénégalaise n° 2008-12 sur la protection des données à caractère personnel, vous
-          disposez d’un droit d’accès (obtenir la confirmation que vos données sont traitées, et une copie), de
-          rectification, de suppression et d’opposition pour des motifs légitimes. Vous pouvez aussi demander à ne plus
-          figurer dans un fichier, et vous opposer sans frais à toute prospection.
+          disposez des droits suivants :
         </p>
+        <ul>
+          <li>
+            <strong>Accès</strong> : obtenir la confirmation que vos données sont traitées, et en demander une copie.
+          </li>
+          <li>
+            <strong>Rectification</strong> : corriger des informations inexactes ou incomplètes.
+          </li>
+          <li>
+            <strong>Suppression</strong> : demander la suppression de votre compte et de vos données.
+          </li>
+          <li>
+            <strong>Portabilité</strong> : recevoir vos données dans un format structuré et lisible.
+          </li>
+          <li>
+            <strong>Opposition</strong> : vous opposer, pour des motifs légitimes, à certains traitements, et sans frais
+            à toute prospection. Vous pouvez aussi demander à ne plus figurer dans un fichier.
+          </li>
+        </ul>
         <p>
           Pour les exercer, écrivez à <Contact />, en justifiant de votre identité. La rectification ou la suppression
           est faite sans frais, dans un délai d’un mois après l’enregistrement de la demande ; nous répondons dans le
@@ -204,8 +227,8 @@ export default function Confidentialite() {
       <section>
         <h2>Mises à jour de cette politique</h2>
         <p>
-          Cette politique peut évoluer avec le produit : la version en vigueur est celle publiée sur cette page, datée
-          en haut. L’éditeur conserve les versions successives.
+          Cette politique peut évoluer avec le produit : la version en vigueur est celle publiée sur cette page.
+          L’éditeur conserve les versions successives.
         </p>
       </section>
     </PageLegale>
