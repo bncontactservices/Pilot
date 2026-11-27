@@ -8,7 +8,7 @@ const base = creerFausseBase();
 vi.mock("~/lib/supabase", () => ({ getSupabase: () => base.client }));
 vi.mock("~/components/app/LimitePlan", () => ({ useGestionErreur: () => vi.fn() }));
 
-const FACTURATION_MANUELLE = /L’activation se fait avec notre équipe, par virement ou mobile money/;
+const FACTURATION_MANUELLE = /L’activation se fait avec notre équipe, par virement/;
 const EN_LIGNE = /Votre plan est géré par l’abonnement en ligne ci-dessous/;
 
 const abonnement = (statut: string) => ({

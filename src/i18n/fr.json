@@ -168,7 +168,7 @@
     "users": "Le plan {{plan}} comprend {{limite}} utilisateur(s), invitations en attente comprises. Pour agrandir l’équipe, passez à un plan supérieur.",
     "inclus_pro": "{{projets}} projets, {{kpis}} indicateurs par projet, {{utilisateurs}} utilisateurs.",
     "inclus_enterprise": "Projets, indicateurs et utilisateurs illimités, support dédié.",
-    "facturation": "L’activation se fait avec notre équipe, par virement ou mobile money : vos données sont conservées.",
+    "facturation": "L’activation se fait avec notre équipe, par virement : vos données sont conservées.",
     "whatsapp": "Écrire sur WhatsApp",
     "email": "Écrire à l’équipe",
     "message_whatsapp": "Bonjour, je souhaite passer à un plan supérieur pour {{organisation}} (plan actuel : {{plan}}).",
@@ -320,7 +320,7 @@
       "utilisateurs": "Utilisateurs",
       "illimite": "∞",
       "souhaite": "Plan choisi à l’inscription : {{plan}}.",
-      "en_ligne": "Votre plan est géré par l’abonnement en ligne ci-dessous. Pour payer autrement (virement, mobile money), écrivez à notre équipe."
+      "en_ligne": "Votre plan est géré par l’abonnement en ligne ci-dessous. Pour payer par virement, écrivez à notre équipe."
     },
     "profil": {
       "titre": "Profil",
@@ -1708,7 +1708,7 @@
       },
       "commencer": "Commencer",
       "parler": "Parler à l’équipe",
-      "facturation": "Facturation par virement ou mobile money, activée par notre équipe. Le paiement en ligne n’existe pas encore."
+      "facturation": "Facturation par virement, activée par notre équipe. Le paiement en ligne n’existe pas encore."
     },
     "faq": {
       "surtitre": "Les réponses",
