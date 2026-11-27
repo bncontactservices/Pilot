@@ -66,6 +66,12 @@ for (const a of avertissements) console.warn(`⚠ ${a}`);
 if (erreurs.length > 0) {
   for (const e of erreurs) console.error(`✗ ${e}`);
   console.error("Build interrompu : corrigez les variables d'environnement (voir .env.example).");
+  if (process.env.VERCEL) {
+    console.error(
+      "Sur Vercel : Project > Settings > Environment Variables, ajoutez chaque variable manquante (Production et Preview),\n" +
+        "puis Deployments > Redeploy. Les variables VITE_ sont lues à la construction : un changement n'agit qu'après un nouveau build.",
+    );
+  }
   process.exit(1);
 }
 console.log(
